@@ -1,127 +1,191 @@
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
-  <head>
-    <meta charset="utf-8">
-    <title>Upload to IPFS</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="canonical" href="https://upload2ipfs.smitop.com/" />
-    <meta name="description" content="Upload files to the IPFS network using this simple tool.">
-    <link rel="me" href="https://smitop.com/" type="text/html">
-    <link rel="dns-prefetch" href="https://ipfs.infura.io:5001/api/v0/add">
-    <script type="text/javascript">
-      function usingGateway() {
-        var gateways = ["ipfs.io","gateway.ipfs.io","ipfs.infura.io","rx14.co.uk","ninetailed.ninja","upload.global","ipfs.globalupload.io","ipfs.jes.xxx","catalunya.network","siderus.io","eu.siderus.io","na.siderus.io","ap.siderus.io","ipfs.eternum.io","hardbin.com","ipfs.macholibre.org","ipfs.works","ipfs.wa.hle.rs","api.wisdom.sh","gateway.blocksec.com","ipfs.renehsz.com","cloudflare-ipfs.com","ipns.co","ipfs.netw0rk.io","gateway.swedneck.xyz","ipfs.mrh.io","gateway.originprotocol.com","ipfs.dapps.earth","gateway.pinata.cloud","ipfs.doolta.com","ipfs.sloppyta.co","ipfs.busy.org","ipfs.greyh.at","gateway.serph.network","jorropo.ovh","gateway.temporal.cloud","ipfs.fooock.com","ipfstube.erindachtler.me","cdn.cwinfo.net","ipfs.privacytools.io"];
-        if (gateways.indexOf(location.host) > -1) return true;
-        return false;
-      }
-      window.addEventListener("load", function () {
-        if (usingGateway()) {
-          document.getElementById("using-gateway").style.display = "block";
+
+<head>
+  <meta charset="utf-8">
+  <title>Upload to IPFS</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="canonical" href="https://upload2ipfs.smitop.com/" />
+  <meta name="description" content="Upload files to the IPFS network using this simple tool.">
+  <link rel="me" href="https://smitop.com/" type="text/html">
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+  <script type="text/javascript">
+    window.addEventListener("load", function () {
+      var gatewaysToCheck = [
+        "https://cloudflare-ipfs.com/ipfs/",
+        "https://ipfs.eth.aragon.network/ipfs/",
+        "https://konubinix.eu/ipfs/",
+        "https://ipfs.treejer.com/ipfs/",
+        "https://ipfs.stardustxr.org/ipfs/",
+        "https://ipfs.oversas.org/ipfs/"
+      ];
+      var gatewaysAlwaysAdd = [
+        "https://api.thegraph.com/ipfs/api/v0/cat?arg=",
+        "https://gateway.ipfs.io/ipfs/",
+        "https://gateway.pinata.cloud/ipfs/",
+        "https://ipfs.io/ipfs/",
+      ];
+      var fileHash = "bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m";
+      var selectElem = document.getElementById("gateway-select");
+
+      gatewaysAlwaysAdd.forEach(gateway => {
+        var option = document.createElement("option");
+        option.text = gateway;
+        option.value = gateway;
+        selectElem.add(option);
+      });
+
+      gatewaysToCheck.forEach(gateway => {
+        fetch(gateway + fileHash, { method: "HEAD" })
+          .then(response => {
+            if (response.ok) {
+              var option = document.createElement("option");
+              option.text = gateway;
+              option.value = gateway;
+              selectElem.add(option);
+            }
+          })
+          .catch(error => console.log('There was a problem with the fetch operation: ' + error.message));
+      });
+
+      document.getElementById("submit").style.display = "block";
+      document.getElementById("submit").addEventListener("click", function (e) {
+        e.preventDefault();
+        var files = document.getElementById("file").files;
+        var uploadGatewaySelectElem = document.getElementById("upload-gateway-select");
+        if (files.length === 0) return;
+        var fd = new FormData();
+        document.getElementById("loading").style.display = "block";
+        document.getElementById("submit").disabled = true;
+        for (var i = 0; i < files.length; i++) {
+          var file = files[i];
+          fd.append("file", file);
         }
-        document.getElementById("submit").style.display = "block";
-        document.getElementById("submit").addEventListener("click", function (e) {
-          e.preventDefault();
-          var files = document.getElementById("file").files;
-          if (files.length === 0) return;
-          var fd = new FormData();
-          document.getElementById("loading").style.display = "block";
-          document.getElementById("submit").disabled = true;
-          for (var i = 0; i < files.length; i++) {
-            var file = files[i];
-            fd.append("file", file);
-          }
-          var req = new XMLHttpRequest();
-          req.addEventListener("error", function () {
-            alert("There was an error uploading a file: " + file.name);
+        var req = new XMLHttpRequest();
+        req.addEventListener("error", function () {
+          alert("There was an error uploading a file: " + file.name);
+        });
+        req.addEventListener("load", function (e) {
+          var lines = req.responseText.split("\n");
+          lines.pop();
+          var json = lines.map(function (l) { return JSON.parse(l) });
+          document.getElementById("loading").style.display = "none";
+          document.getElementById("submit").disabled = false;
+
+          var hashesList = document.getElementById("hashes");
+          json.forEach(function (obj) {
+            var li = document.createElement("li");
+            var link = document.createElement("a");
+            link.setAttribute("target", "_blank");
+            var paramConnector = selectElem.value.includes("?") ? "&" : "?";
+            var urlWithFilename = selectElem.value + obj.Hash + paramConnector + "filename=" + encodeURIComponent(obj.Name);
+            link.setAttribute("href", urlWithFilename);
+            link.innerText = obj.Hash + " (" + obj.Name + ")";
+            li.appendChild(link);
+            hashesList.appendChild(li);
           });
-          req.addEventListener("load", function (e) {
-            var lines = req.responseText.split("\n");
-            lines.pop();
-            var json = lines.map(function (l) { return JSON.parse(l) });
-            document.getElementById("loading").style.display = "none";
-            document.getElementById("submit").disabled = false;
 
-            document.getElementById("hashes").innerHTML =
-              json.map(function (obj) {
-                return "<li><a href='https://cloudflare-ipfs.com/ipfs/" + obj.Hash + "'>" + obj.Hash + "</a> (" + obj.Name + ")</li>";
-              })
-              .join("");
-            document.getElementById("hashes").style.display = "block";
-            document.getElementById("pin-code").innerText = json
-              .map(obj => "ipfs pin add " + obj.Hash)
-              .join("; ")
-            document.getElementById("pin-div").style.display = "block";
+          hashesList.style.display = "block";
+          document.getElementById("pin-code").innerText = json
+            .map(obj => "ipfs pin add " + obj.Hash)
+            .join("; ")
+          document.getElementById("pin-div").style.display = "block";
 
-            // warm caches
+          // pin the file
+          if (document.getElementById("pin-file-toggle").checked) {
             json.forEach(function (file) {
               var req = new XMLHttpRequest();
-              req.open("GET", "https://ipfs.infura.io:5001/api/v0/pin/add?arg=/ipfs/" + file.Hash);
+              var url = "https://api.thegraph.com/ipfs/api/v0/pin/add?arg=" + file.Hash;
+              req.open("POST", url);
               req.send();
             });
-          });
-          req.open("POST", "https://ipfs.infura.io:5001/api/v0/add?pin=true");
-          req.send(fd);
-          document.getElementById("addForm").reset();
+          }
         });
+        //req.open("POST", "https://api.thegraph.com/ipfs/api/v0/add?pin=true");
+        req.open("POST", uploadGatewaySelectElem.value);
+        req.send(fd);
+        document.getElementById("addForm").reset();
       });
-    </script>
-    <style>
-      body {
-        font-family: sans-serif;
-      }
-      h1 {
-        margin-top: 0.33em;
-        margin-bottom: 0.5em;
-      }
-      #using-gateway {
-        background: #ff857c;
-        margin-bottom: 1em;
-        border: 3px dashed red;
-        padding: 0.333em;
-        width: fit-content;
-        font-size: 1.5em;
-      }
-    </style>
-  </head>
-  <body>
+    });
+  </script>
+  <style>
+    body {
+      font-family: 'Roboto', sans-serif;
+      background-color: #F8F9FA;
+    }
+
+    h1 {
+      margin-top: 0.33em;
+      margin-bottom: 0.5em;
+      text-align: center;
+    }
+
+    .upload-form {
+      max-width: 500px;
+      margin: auto;
+    }
+
+    .alert {
+      border: 3px dashed red;
+    }
+
+    footer {
+      text-align: center;
+      padding: 1em 0;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container py-5">
     <h1>Upload files to IPFS</h1>
-    <div id="using-gateway" style="display: none;">
+    <div id="using-gateway" class="alert alert-warning" role="alert" style="display: none;">
       It looks like you're accessing this via an IPFS gateway.
-      <a href="https://upload2ipfs.smitop.com">Visit the offical site.</a>
+      <a href="https://upload2ipfs.smitop.com">Visit the official site.</a>
     </div>
-    <div>
-      This will upload files to the <a href="https://ipfs.io">IPFS</a> network,
-      using <a href="https://infura.io">Infura</a>. You can hold <kbd>CTRL</kbd>
+    <div class="text-center my-4">
+      This will upload files to the <a href="https://ipfs.io">IPFS</a> network. You can hold <kbd>CTRL</kbd>
       while selecting files to upload multiple at once.
     </div>
-    <noscript>
-      It looks like you have JavaScript disabled. You'll get JSON data shown to
-      you instead of a list of links.
-    </noscript>
-    <form id="addForm" action="https://ipfs.infura.io:5001/api/v0/add" method="post" enctype="multipart/form-data">
-      <div>
-        <label for="file">Choose file(s): </label><input type="file" name="file" id="file" multiple>
-      </div>
-      <noscript>
-        <input type="submit" value="Upload" id="no-js-submit">
-      </noscript>
-    </form>
-    <div>
-      <button style="display: none;" id="submit">Upload</button>
+    <div class="form-check form-switch">
+      <input class="form-check-input" type="checkbox" id="pin-file-toggle">
+      <label class="form-check-label" for="pin-file-toggle">Pin the uploaded file</label>
     </div>
-    <div id="loading" style="display: none;">
+    <label for="gateway-select" class="form-label">Select a gateway to view your uploaded files:</label>
+    <select id="gateway-select" class="form-select"></select>
+    <label for="upload-gateway-select" class="form-label">Select a gateway to upload your files:</label>
+    <select id="upload-gateway-select" class="form-select">
+      <option value="https://demo.storj-ipfs.com/api/v0/add">https://demo.storj-ipfs.com/api/v0/add</option>
+      <option value="https://ipfs.treejer.com/api/v0/add">https://ipfs.treejer.com/api/v0/add</option>
+      <option value="https://ipfs.oversas.org/api/v0/add">https://ipfs.oversas.org/api/v0/add</option>
+      <option value="https://api.thegraph.com/ipfs/api/v0/add?pin=true">
+        https://api.thegraph.com/ipfs/api/v0/add?pin=true</option>
+    </select>
+    <form id="addForm" class="upload-form my-3" method="post" enctype="multipart/form-data">
+      <div class="mb-3">
+        <label for="file" class="form-label">Choose file(s):</label>
+        <input type="file" class="form-control" name="file" id="file" multiple>
+      </div>
+      <button class="btn btn-primary" style="display: none;" id="submit">Upload</button>
+    </form>
+    <div id="loading" class="alert alert-info" role="alert" style="display: none;">
       Loading, one sec.
     </div>
-    <ul id="hashes" style="display: none;">
+    <ul id="hashes" class="list-group my-3" style="display: none;">
     </ul>
-    <div id="pin-div" style="display: none;">
+    <div id="pin-div" class="alert alert-secondary" role="alert" style="display: none;">
       Pin these files to your local IPFS node:
       <code id="pin-code">
-        One sec
-      </code>
+          One sec
+        </code>
     </div>
-    <footer style="font-size: 0.8em; margin-top: 2em;">
+    <footer>
       Created by <a href="https://smitop.com">Smitop</a>.
     </footer>
-  </body>
+  </div>
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
 </html>
