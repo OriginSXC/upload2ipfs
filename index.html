@@ -1,13 +1,11 @@
 <!DOCTYPE html>
-<html lang="en" dir="ltr">
+<html lang="en" data-bs-theme="dark">
 
 <head>
   <meta charset="utf-8">
   <title>Upload to IPFS</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="canonical" href="https://upload2ipfs.smitop.com/" />
   <meta name="description" content="Upload files to the IPFS network using this simple tool.">
-  <link rel="me" href="https://smitop.com/" type="text/html">
   <!-- Bootstrap CSS -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
   <script type="text/javascript">
@@ -18,13 +16,17 @@
         "https://konubinix.eu/ipfs/",
         "https://ipfs.treejer.com/ipfs/",
         "https://ipfs.stardustxr.org/ipfs/",
-        "https://ipfs.oversas.org/ipfs/"
+        "https://ipfs.oversas.org/ipfs/",
+        "https://ipfs.web3.party/ipfs/",
       ];
       var gatewaysAlwaysAdd = [
+        "https://ipfs.network.thegraph.com/ipfs/api/v0/cat?arg=",
         "https://api.thegraph.com/ipfs/api/v0/cat?arg=",
+        "https://ipfs.gitcoin.co/api/v0/cat?arg=",
         "https://gateway.ipfs.io/ipfs/",
         "https://gateway.pinata.cloud/ipfs/",
         "https://ipfs.io/ipfs/",
+        "https://ipfs.questbook.app:8080/api/v0/cat?arg="
       ];
       var fileHash = "bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m";
       var selectElem = document.getElementById("gateway-select");
@@ -65,6 +67,8 @@
         var req = new XMLHttpRequest();
         req.addEventListener("error", function () {
           alert("There was an error uploading a file: " + file.name);
+          document.getElementById("loading").style.display = "none";
+          document.getElementById("submit").disabled = false;
         });
         req.addEventListener("load", function (e) {
           var lines = req.responseText.split("\n");
@@ -112,7 +116,7 @@
   <style>
     body {
       font-family: 'Roboto', sans-serif;
-      background-color: #F8F9FA;
+      background-color: darkslategrey;
     }
 
     h1 {
@@ -121,13 +125,8 @@
       text-align: center;
     }
 
-    .upload-form {
-      max-width: 500px;
-      margin: auto;
-    }
-
     .alert {
-      border: 3px dashed red;
+      border: 3px dashed gold;
     }
 
     footer {
@@ -150,38 +149,39 @@
     </div>
     <div class="form-check form-switch">
       <input class="form-check-input" type="checkbox" id="pin-file-toggle">
-      <label class="form-check-label" for="pin-file-toggle">Pin the uploaded file</label>
+      <label class="form-check-label" for="pin-file-toggle">Pin the uploaded files</label>
     </div>
     <label for="gateway-select" class="form-label">Select a gateway to view your uploaded files:</label>
     <select id="gateway-select" class="form-select"></select>
     <label for="upload-gateway-select" class="form-label">Select a gateway to upload your files:</label>
     <select id="upload-gateway-select" class="form-select">
+      <option value="https://unauthipfs.subquery.network/ipfs/api/v0/add?pin=true">https://unauthipfs.subquery.network/ipfs/api/v0/add?pin=true</option>
+      <option value="https://ipfs.gitcoin.co/api/v0/add?pin=true">https://ipfs.gitcoin.co/api/v0/add?pin=true</option>
       <option value="https://demo.storj-ipfs.com/api/v0/add">https://demo.storj-ipfs.com/api/v0/add</option>
-      <option value="https://ipfs.treejer.com/api/v0/add">https://ipfs.treejer.com/api/v0/add</option>
-      <option value="https://ipfs.oversas.org/api/v0/add">https://ipfs.oversas.org/api/v0/add</option>
-      <option value="https://api.thegraph.com/ipfs/api/v0/add?pin=true">
-        https://api.thegraph.com/ipfs/api/v0/add?pin=true</option>
+      <option value="https://ipfs.treejer.com/api/v0/add?pin=true">https://ipfs.treejer.com/api/v0/add?pin=true</option>
+      <option value="https://ipfs.oversas.org/api/v0/add?pin=true">https://ipfs.oversas.org/api/v0/add?pin=true</option>
+      <option value="https://api.thegraph.com/ipfs/api/v0/add?pin=true">https://api.thegraph.com/ipfs/api/v0/add?pin=true</option>
+      <option selected value="https://ipfs.network.thegraph.com/ipfs/api/v0/add?pin=true">https://ipfs.network.thegraph.com/ipfs/api/v0/add?pin=true</option>
+      <option value="https://ipfs.questbook.app/api/v0/add?pin=true">https://ipfs.questbook.app/api/v0/add?pin=true</option>
     </select>
-    <form id="addForm" class="upload-form my-3" method="post" enctype="multipart/form-data">
+    <form id="addForm" class="form my-3" method="post" enctype="multipart/form-data">
       <div class="mb-3">
         <label for="file" class="form-label">Choose file(s):</label>
         <input type="file" class="form-control" name="file" id="file" multiple>
       </div>
-      <button class="btn btn-primary" style="display: none;" id="submit">Upload</button>
+      <button class="btn btn-light" style="display: none;" id="submit">Upload</button>
     </form>
     <div id="loading" class="alert alert-info" role="alert" style="display: none;">
-      Loading, one sec.
+      Loading...
     </div>
     <ul id="hashes" class="list-group my-3" style="display: none;">
     </ul>
-    <div id="pin-div" class="alert alert-secondary" role="alert" style="display: none;">
-      Pin these files to your local IPFS node:
-      <code id="pin-code">
-          One sec
-        </code>
+    <div id="pin-div" class="alert alert-warning" role="warning" style="display: none;">
+      Despite being pinned, the file uploaded to the IPFS node might be deleted. To ensure its permanence, you can pin these files on your IPFS node:<br>
+      <code id="pin-code"></code>
     </div>
     <footer>
-      Created by <a href="https://smitop.com">Smitop</a>.
+      Created by <a href="https://smitop.com">Smitop</a>, modified by <a href="https://github.com/yusufgurdogan">Yusuf Gürdoğan</a>.
     </footer>
   </div>
   <!-- Bootstrap JS -->
