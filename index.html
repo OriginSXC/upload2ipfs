@@ -10,6 +10,16 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
   <script type="text/javascript">
     window.addEventListener("load", function () {
+      var gatewayMatchingList = {
+        "https://ipfs.network.thegraph.com/ipfs/api/v0/cat?arg=": "https://ipfs.network.thegraph.com/ipfs/api/v0/add?pin=true",
+        "https://ipfs.gitcoin.co/api/v0/cat/": "https://ipfs.gitcoin.co/api/v0/add?pin=true",
+        "https://ipfs-2.gitcoin.co/api/v0/cat/": "https://ipfs-2.gitcoin.co/api/v0/add?pin=true",
+        "https://ipfs-3.gitcoin.co/api/v0/cat/": "https://ipfs-3.gitcoin.co/api/v0/add?pin=true",
+        "https://ipfs.treejer.com/ipfs/": "https://ipfs.treejer.com/api/v0/add?pin=true",
+        "https://ipfs.oversas.org/ipfs/": "https://ipfs.oversas.org/api/v0/add?pin=true",
+        "https://api.thegraph.com/ipfs/api/v0/cat?arg=": "https://api.thegraph.com/ipfs/api/v0/add?pin=true",
+        "https://ipfs.questbook.app:8080/api/v0/cat/": "https://ipfs.questbook.app/api/v0/add?pin=true",
+      };
       var gatewaysToCheck = [
         "https://cloudflare-ipfs.com/ipfs/",
         "https://ipfs.eth.aragon.network/ipfs/",
@@ -22,11 +32,16 @@
       var gatewaysAlwaysAdd = [
         "https://ipfs.network.thegraph.com/ipfs/api/v0/cat?arg=",
         "https://api.thegraph.com/ipfs/api/v0/cat?arg=",
-        "https://ipfs.gitcoin.co/api/v0/cat?arg=",
+        "https://ipfs.gitcoin.co/api/v0/cat/",
+        "https://ipfs-2.gitcoin.co/api/v0/cat/",
+        "https://ipfs-3.gitcoin.co/api/v0/cat/",
         "https://gateway.ipfs.io/ipfs/",
         "https://gateway.pinata.cloud/ipfs/",
         "https://ipfs.io/ipfs/",
-        "https://ipfs.questbook.app:8080/api/v0/cat?arg="
+        "https://ipfs.questbook.app:8080/api/v0/cat/",
+        "https://test.cf-ipfs.com/ipfs/",
+        "https://chat.ipfs.io/api/v0/cat/",
+        "https://gateway-int.ipfs.io/api/v0/cat/"
       ];
       var fileHash = "bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m";
       var selectElem = document.getElementById("gateway-select");
@@ -51,6 +66,13 @@
           .catch(error => console.log('There was a problem with the fetch operation: ' + error.message));
       });
 
+      selectElem.onchange = function () {
+        var selectedGateway = selectElem.value;
+        var uploadGatewaySelectElem = document.getElementById("upload-gateway-select");
+        if (gatewayMatchingList[selectedGateway]) {
+          uploadGatewaySelectElem.value = gatewayMatchingList[selectedGateway];
+        }
+      }
       document.getElementById("submit").style.display = "block";
       document.getElementById("submit").addEventListener("click", function (e) {
         e.preventDefault();
@@ -157,6 +179,10 @@
     <select id="upload-gateway-select" class="form-select">
       <option value="https://unauthipfs.subquery.network/ipfs/api/v0/add?pin=true">https://unauthipfs.subquery.network/ipfs/api/v0/add?pin=true</option>
       <option value="https://ipfs.gitcoin.co/api/v0/add?pin=true">https://ipfs.gitcoin.co/api/v0/add?pin=true</option>
+      <option value="https://ipfs-2.gitcoin.co/api/v0/add?pin=true">https://ipfs-2.gitcoin.co/api/v0/add?pin=true
+      </option>
+      <option value="https://ipfs-3.gitcoin.co/api/v0/add?pin=true">https://ipfs-3.gitcoin.co/api/v0/add?pin=true
+      </option>
       <option value="https://demo.storj-ipfs.com/api/v0/add">https://demo.storj-ipfs.com/api/v0/add</option>
       <option value="https://ipfs.treejer.com/api/v0/add?pin=true">https://ipfs.treejer.com/api/v0/add?pin=true</option>
       <option value="https://ipfs.oversas.org/api/v0/add?pin=true">https://ipfs.oversas.org/api/v0/add?pin=true</option>
