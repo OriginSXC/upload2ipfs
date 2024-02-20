@@ -19,15 +19,22 @@
         "https://ipfs.oversas.org/ipfs/": "https://ipfs.oversas.org/api/v0/add?pin=true",
         "https://api.thegraph.com/ipfs/api/v0/cat?arg=": "https://api.thegraph.com/ipfs/api/v0/add?pin=true",
         "https://ipfs.questbook.app:8080/api/v0/cat?arg=": "https://ipfs.questbook.app/api/v0/add?pin=true",
+        "https://gw-seattle.crustcloud.io/ipfs/": "https://gw-seattle.crustcloud.io:443/api/v0/add",
       };
       var gatewaysToCheck = [
         "https://cloudflare-ipfs.com/ipfs/",
+        "https://ipfs.staging.cloudflare-ipfs.com/ipfs/",
         "https://ipfs.eth.aragon.network/ipfs/",
-        "https://konubinix.eu/ipfs/",
         "https://ipfs.treejer.com/ipfs/",
         "https://ipfs.stardustxr.org/ipfs/",
         "https://ipfs.oversas.org/ipfs/",
         "https://ipfs.web3.party/ipfs/",
+        "https://gw-seattle.crustcloud.io/ipfs/",
+        "https://ipfs.dlux.io/ipfs/",
+        "https://cdn.ipfsscan.io/ipfs/",
+        "https://ipfs.flock.io/ipfs/",
+        "https://ipfs.omniflix.studio/ipfs/",
+        "https://ipfs-gateway.omniflix.studio/ipfs/",
       ];
       var gatewaysAlwaysAdd = [
         "https://ipfs.network.thegraph.com/ipfs/api/v0/cat?arg=",
@@ -40,8 +47,9 @@
         "https://ipfs.io/ipfs/",
         "https://ipfs.questbook.app:8080/api/v0/cat?arg=",
         "https://test.cf-ipfs.com/ipfs/",
+        "https://lb-test.staging.cloudflare-ipfs.com/ipfs/",
         "https://chat.ipfs.io/api/v0/cat/",
-        "https://gateway-int.ipfs.io/api/v0/cat/"
+        "https://gateway-int.ipfs.io/api/v0/cat/",
       ];
       var fileHash = "bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m";
       var selectElem = document.getElementById("gateway-select");
@@ -189,6 +197,7 @@
       <option value="https://api.thegraph.com/ipfs/api/v0/add?pin=true">https://api.thegraph.com/ipfs/api/v0/add?pin=true</option>
       <option selected value="https://ipfs.network.thegraph.com/ipfs/api/v0/add?pin=true">https://ipfs.network.thegraph.com/ipfs/api/v0/add?pin=true</option>
       <option value="https://ipfs.questbook.app/api/v0/add?pin=true">https://ipfs.questbook.app/api/v0/add?pin=true</option>
+      <option value="https://gw-seattle.crustcloud.io:443/api/v0/add">https://gw-seattle.crustcloud.io:443/api/v0/add</option>
     </select>
     <form id="addForm" class="form my-3" method="post" enctype="multipart/form-data">
       <div class="mb-3">
