@@ -29,6 +29,8 @@
         "https://api.thegraph.com/ipfs/api/v0/cat?arg=": "https://api.thegraph.com/ipfs/api/v0/add?pin=true",
         "https://ipfs.questbook.app:8080/api/v0/cat?arg=": "https://ipfs.questbook.app/api/v0/add?pin=true",
         "https://gw-seattle.crustcloud.io/ipfs/": "https://gw-seattle.crustcloud.io:443/api/v0/add",
+        "https://magic.decentralized-content.com/ipfs/": "https://ipfs-uploader.zora.co/api/v0/add",
+        "https://ipfs.decentralized-content.com/ipfs/": "https://ipfs-uploader.zora.co/api/v0/add",
       };
       var downloadGateways = [
         "https://ipfs.network.thegraph.com/ipfs/api/v0/cat?arg=",
@@ -56,9 +58,13 @@
         "https://cdn.ipfsscan.io/ipfs/",
         "https://ipfs.flock.io/ipfs/",
         "https://ipfs.omniflix.studio/ipfs/",
-        "https://ipfs-gateway.omniflix.studio/ipfs/"
+        "https://ipfs-gateway.omniflix.studio/ipfs/",
+        "https://magic.decentralized-content.com/ipfs/",
+        "https://ipfs.decentralized-content.com/ipfs/",
       ];
       var uploadGateways = [
+        "https://ipfs-uploader.zora.co/api/v0/add",
+        "https://upload.ipfs.zora.co/api/v0/add", 
         "https://unauthipfs.subquery.network/ipfs/api/v0/add?pin=true",
         "https://ipfs.gitcoin.co/api/v0/add?pin=true",
         "https://ipfs-2.gitcoin.co/api/v0/add?pin=true",
@@ -74,6 +80,15 @@
       var fileHash = "bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m";
       var selectElem = document.getElementById("gateway-select");
       var uploadSelectElem = document.getElementById("upload-gateway-select");
+      var downloadCounter = document.getElementById("download-count");
+      var uploadCounter = document.getElementById("upload-count");
+
+      var downloadSelectElem = document.getElementById("gateway-select");
+      var uploadSelectElem = document.getElementById("upload-gateway-select");
+
+      // Populate the select elements with gateways
+      downloadGateways.forEach(gateway => addOptionIfNotExists(downloadSelectElem, gateway, gateway));
+      uploadGateways.forEach(gateway => addOptionIfNotExists(uploadSelectElem, gateway, gateway));
 
       // Populate the download gateway select element
       downloadGateways.forEach(gateway => {
@@ -98,35 +113,56 @@
       document.getElementById("check-upload-gateways").addEventListener("click", () => checkGateways(uploadGateways, uploadSelectElem, fileHash, true));
 
       selectElem.onchange = () => {
-        if (gatewayMatchingList[selectElem.value]) {
-          uploadSelectElem.value = gatewayMatchingList[selectElem.value];
+        var matchingUploadGateway = gatewayMatchingList[selectElem.value];
+        if (matchingUploadGateway) {
+          uploadSelectElem.value = matchingUploadGateway;
         }
       };
       // Form submission handling
       document.getElementById("submit").addEventListener("click", submitForm);
     });
+    function updateProgressBar(progressBarId, workingCount, totalGateways) {
+      const percentage = Math.round((workingCount / totalGateways) * 100);
+      const progressBar = document.getElementById(progressBarId);
+      progressBar.style.width = `${percentage}%`;
+      progressBar.setAttribute('aria-valuenow', percentage);
+      progressBar.innerText = `${workingCount}/${totalGateways} working`;  // Updated text display
+    }
+
     function checkGateways(gateways, selectElem, fileHash, isUpload = false) {
       selectElem.innerHTML = ""; // Clear existing options
+      let workingCount = 0;
+      let statusElementId = isUpload ? "upload-progress" : "download-progress";
+
       gateways.forEach(gateway => {
         const url = isUpload ? gateway : `${gateway}${fileHash}`;
         const method = isUpload ? "POST" : "HEAD";
-
         const body = isUpload ? new FormData() : null;
         if (isUpload) {
           const blob = new Blob(["Hello, world!"], { type: 'text/plain' });
           body.append('file', blob, 'hello.txt');
         }
 
-        fetch(url, { method, body })
+        const fetchPromise = fetch(url, { method, body });
+        const timeoutPromise = new Promise((resolve, reject) => {
+          setTimeout(() => reject(new Error('Request timed out')), 3000);
+        });
+
+        Promise.race([fetchPromise, timeoutPromise])
           .then(response => {
             if (response.ok) {
               addOptionIfNotExists(selectElem, gateway, gateway);
+              workingCount++;
             } else {
               console.error(`Error from ${gateway}: ${response.status} ${response.statusText}`);
               response.text().then(text => console.error(text));
             }
+            updateProgressBar(statusElementId, workingCount, gateways.length);
           })
-          .catch(error => console.error(`Network error on ${gateway}: ${error.message}`));
+          .catch(error => {
+            console.error(`Network or timeout error on ${gateway}: ${error.message}`);
+            updateProgressBar(statusElementId, workingCount, gateways.length);
+          });
       });
     }
 
@@ -184,11 +220,15 @@
   </script>
   <style>
     body {
-      font-family: 'Roboto', sans-serif;
-      background-color: darkslategrey;
+      font-family: 'Montserrat', sans-serif;
+      background-color: #2c3e50;
+      /* Dark grayish blue */
+      color: #bdc3c7;
+      /* Light silver */
     }
 
-    h1 {
+    h1,
+    h2 {
       margin-top: 0.33em;
       margin-bottom: 0.5em;
       text-align: center;
@@ -208,20 +248,40 @@
 <body>
   <div class="container py-5">
     <h1>Upload files to IPFS</h1>
-    <button id="check-download-gateways" class="btn btn-primary">Check download gateways</button>
-    <button id="check-upload-gateways" class="btn btn-primary">Check upload gateways</button>
+    <div class="row">
+      <div class="col-md-6">
+        <div class="progress my-2">
+          <div id="download-progress" class="progress-bar bg-success" role="progressbar" aria-valuenow="0"
+            aria-valuemin="0" aria-valuemax="100" style="width: 0%;">0%</div>
+        </div>
+        <div class="d-grid gap-2">
+          <button id="check-download-gateways" class="btn btn-primary btn-lg btn-block">Check download gateways</button>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="progress my-2">
+          <div id="upload-progress" class="progress-bar bg-success" role="progressbar" aria-valuenow="0"
+            aria-valuemin="0" aria-valuemax="100" style="width: 0%;">0%</div>
+        </div>
+        <div class="d-grid gap-2">
+          <button id="check-upload-gateways" class="btn btn-primary btn-lg btn-block">Check upload gateways</button>
+        </div>
+      </div>
+    </div>
     <div class="text-center my-4">
       This will upload files to the <a href="https://ipfs.io">IPFS</a> network. You can hold <kbd>CTRL</kbd> while
       selecting files to upload multiple at once.
     </div>
-    <div class="form-check form-switch">
-      <input class="form-check-input" type="checkbox" id="pin-file-toggle">
-      <label class="form-check-label" for="pin-file-toggle">Pin the uploaded files</label>
+    <div class="row">
+      <div class="col-md-6">
+        <label for="gateway-select" class="form-label">Select a gateway to view your uploaded files:</label>
+        <select id="gateway-select" class="form-select"></select>
+      </div>
+      <div class="col-md-6">
+        <label for="upload-gateway-select" class="form-label">Select a gateway to upload your files:</label>
+        <select id="upload-gateway-select" class="form-select"></select>
+      </div>
     </div>
-    <label for="gateway-select" class="form-label">Select a gateway to view your uploaded files:</label>
-    <select id="gateway-select" class="form-select"></select>
-    <label for="upload-gateway-select" class="form-label">Select a gateway to upload your files:</label>
-    <select id="upload-gateway-select" class="form-select"></select>
     <form id="addForm" class="form my-3" method="post" enctype="multipart/form-data">
       <div class="mb-3">
         <label for="file" class="form-label">Choose file(s):</label>
