@@ -6,9 +6,18 @@
   <title>Upload to IPFS</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="Upload files to the IPFS network using this simple tool.">
-  <!-- Bootstrap CSS -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
   <script type="text/javascript">
+    function addOptionIfNotExists(selectElem, value, text) {
+      var exists = Array.from(selectElem.options).some(option => option.value === value);
+      if (!exists) {
+        var option = document.createElement("option");
+        option.text = text;
+        option.value = value;
+        selectElem.add(option);
+      }
+    }
+
     window.addEventListener("load", function () {
       var gatewayMatchingList = {
         "https://ipfs.network.thegraph.com/ipfs/api/v0/cat?arg=": "https://ipfs.network.thegraph.com/ipfs/api/v0/add?pin=true",
@@ -21,22 +30,7 @@
         "https://ipfs.questbook.app:8080/api/v0/cat?arg=": "https://ipfs.questbook.app/api/v0/add?pin=true",
         "https://gw-seattle.crustcloud.io/ipfs/": "https://gw-seattle.crustcloud.io:443/api/v0/add",
       };
-      var gatewaysToCheck = [
-        "https://cloudflare-ipfs.com/ipfs/",
-        "https://ipfs.staging.cloudflare-ipfs.com/ipfs/",
-        "https://ipfs.eth.aragon.network/ipfs/",
-        "https://ipfs.treejer.com/ipfs/",
-        "https://ipfs.stardustxr.org/ipfs/",
-        "https://ipfs.oversas.org/ipfs/",
-        "https://ipfs.web3.party/ipfs/",
-        "https://gw-seattle.crustcloud.io/ipfs/",
-        "https://ipfs.dlux.io/ipfs/",
-        "https://cdn.ipfsscan.io/ipfs/",
-        "https://ipfs.flock.io/ipfs/",
-        "https://ipfs.omniflix.studio/ipfs/",
-        "https://ipfs-gateway.omniflix.studio/ipfs/",
-      ];
-      var gatewaysAlwaysAdd = [
+      var downloadGateways = [
         "https://ipfs.network.thegraph.com/ipfs/api/v0/cat?arg=",
         "https://api.thegraph.com/ipfs/api/v0/cat?arg=",
         "https://ipfs.gitcoin.co/api/v0/cat/",
@@ -50,98 +44,143 @@
         "https://lb-test.staging.cloudflare-ipfs.com/ipfs/",
         "https://chat.ipfs.io/api/v0/cat/",
         "https://gateway-int.ipfs.io/api/v0/cat/",
+        "https://cloudflare-ipfs.com/ipfs/",
+        "https://ipfs.staging.cloudflare-ipfs.com/ipfs/",
+        "https://ipfs.eth.aragon.network/ipfs/",
+        "https://ipfs.treejer.com/ipfs/",
+        "https://ipfs.stardustxr.org/ipfs/",
+        "https://ipfs.oversas.org/ipfs/",
+        "https://ipfs.web3.party/ipfs/",
+        "https://gw-seattle.crustcloud.io/ipfs/",
+        "https://ipfs.dlux.io/ipfs/",
+        "https://cdn.ipfsscan.io/ipfs/",
+        "https://ipfs.flock.io/ipfs/",
+        "https://ipfs.omniflix.studio/ipfs/",
+        "https://ipfs-gateway.omniflix.studio/ipfs/"
+      ];
+      var uploadGateways = [
+        "https://unauthipfs.subquery.network/ipfs/api/v0/add?pin=true",
+        "https://ipfs.gitcoin.co/api/v0/add?pin=true",
+        "https://ipfs-2.gitcoin.co/api/v0/add?pin=true",
+        "https://ipfs-3.gitcoin.co/api/v0/add?pin=true",
+        "https://demo.storj-ipfs.com/api/v0/add",
+        "https://ipfs.treejer.com/api/v0/add?pin=true",
+        "https://ipfs.oversas.org/api/v0/add?pin=true",
+        "https://api.thegraph.com/ipfs/api/v0/add?pin=true",
+        "https://ipfs.network.thegraph.com/ipfs/api/v0/add?pin=true",
+        "https://ipfs.questbook.app/api/v0/add?pin=true",
+        "https://gw-seattle.crustcloud.io:443/api/v0/add"
       ];
       var fileHash = "bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m";
       var selectElem = document.getElementById("gateway-select");
+      var uploadSelectElem = document.getElementById("upload-gateway-select");
 
-      gatewaysAlwaysAdd.forEach(gateway => {
-        var option = document.createElement("option");
-        option.text = gateway;
-        option.value = gateway;
-        selectElem.add(option);
+      // Populate the download gateway select element
+      downloadGateways.forEach(gateway => {
+        addOptionIfNotExists(selectElem, gateway, gateway);
       });
 
-      gatewaysToCheck.forEach(gateway => {
-        fetch(gateway + fileHash, { method: "HEAD" })
+      // Populate the upload gateway select element
+      uploadGateways.forEach(gateway => {
+        addOptionIfNotExists(uploadSelectElem, gateway, gateway);
+      });
+
+      document.getElementById("file").addEventListener("change", function () {
+        if (this.files.length > 0) {
+          document.getElementById("submit").style.display = 'block';
+        } else {
+          document.getElementById("submit").style.display = 'none';
+        }
+      });
+
+      // Functionality to check gateway status
+      document.getElementById("check-download-gateways").addEventListener("click", () => checkGateways(downloadGateways, selectElem, fileHash));
+      document.getElementById("check-upload-gateways").addEventListener("click", () => checkGateways(uploadGateways, uploadSelectElem, fileHash, true));
+
+      selectElem.onchange = () => {
+        if (gatewayMatchingList[selectElem.value]) {
+          uploadSelectElem.value = gatewayMatchingList[selectElem.value];
+        }
+      };
+      // Form submission handling
+      document.getElementById("submit").addEventListener("click", submitForm);
+    });
+    function checkGateways(gateways, selectElem, fileHash, isUpload = false) {
+      selectElem.innerHTML = ""; // Clear existing options
+      gateways.forEach(gateway => {
+        const url = isUpload ? gateway : `${gateway}${fileHash}`;
+        const method = isUpload ? "POST" : "HEAD";
+
+        const body = isUpload ? new FormData() : null;
+        if (isUpload) {
+          const blob = new Blob(["Hello, world!"], { type: 'text/plain' });
+          body.append('file', blob, 'hello.txt');
+        }
+
+        fetch(url, { method, body })
           .then(response => {
             if (response.ok) {
-              var option = document.createElement("option");
-              option.text = gateway;
-              option.value = gateway;
-              selectElem.add(option);
+              addOptionIfNotExists(selectElem, gateway, gateway);
+            } else {
+              console.error(`Error from ${gateway}: ${response.status} ${response.statusText}`);
+              response.text().then(text => console.error(text));
             }
           })
-          .catch(error => console.log('There was a problem with the fetch operation: ' + error.message));
+          .catch(error => console.error(`Network error on ${gateway}: ${error.message}`));
       });
+    }
 
-      selectElem.onchange = function () {
-        var selectedGateway = selectElem.value;
-        var uploadGatewaySelectElem = document.getElementById("upload-gateway-select");
-        if (gatewayMatchingList[selectedGateway]) {
-          uploadGatewaySelectElem.value = gatewayMatchingList[selectedGateway];
-        }
-      }
-      document.getElementById("submit").style.display = "block";
-      document.getElementById("submit").addEventListener("click", function (e) {
-        e.preventDefault();
-        var files = document.getElementById("file").files;
-        var uploadGatewaySelectElem = document.getElementById("upload-gateway-select");
-        if (files.length === 0) return;
-        var fd = new FormData();
-        document.getElementById("loading").style.display = "block";
-        document.getElementById("submit").disabled = true;
-        for (var i = 0; i < files.length; i++) {
-          var file = files[i];
-          fd.append("file", file);
-        }
-        var req = new XMLHttpRequest();
-        req.addEventListener("error", function () {
-          alert("There was an error uploading a file: " + file.name);
-          document.getElementById("loading").style.display = "none";
-          document.getElementById("submit").disabled = false;
-        });
-        req.addEventListener("load", function (e) {
-          var lines = req.responseText.split("\n");
-          lines.pop();
-          var json = lines.map(function (l) { return JSON.parse(l) });
-          document.getElementById("loading").style.display = "none";
-          document.getElementById("submit").disabled = false;
+    function submitForm(e) {
+      e.preventDefault();
+      var files = document.getElementById("file").files;
+      if (files.length === 0) return;
+      var uploadSelectElem = document.getElementById("upload-gateway-select");
+      var fd = new FormData();
+      Array.from(files).forEach(file => fd.append("file", file));
 
-          var hashesList = document.getElementById("hashes");
-          json.forEach(function (obj) {
-            var li = document.createElement("li");
-            var link = document.createElement("a");
-            link.setAttribute("target", "_blank");
-            var paramConnector = selectElem.value.includes("?") ? "&" : "?";
-            var urlWithFilename = selectElem.value + obj.Hash + paramConnector + "filename=" + encodeURIComponent(obj.Name);
-            link.setAttribute("href", urlWithFilename);
-            link.innerText = obj.Hash + " (" + obj.Name + ")";
-            li.appendChild(link);
-            hashesList.appendChild(li);
-          });
+      document.getElementById("loading").style.display = "block";
+      document.getElementById("submit").disabled = true;
 
-          hashesList.style.display = "block";
-          document.getElementById("pin-code").innerText = json
-            .map(obj => "ipfs pin add " + obj.Hash)
-            .join("; ")
-          document.getElementById("pin-div").style.display = "block";
+      var req = new XMLHttpRequest();
+      req.onerror = () => handleError();
+      req.onload = () => handleSuccess(req);
+      req.open("POST", uploadSelectElem.value);
+      req.send(fd);
+    }
 
-          // pin the file
-          if (document.getElementById("pin-file-toggle").checked) {
-            json.forEach(function (file) {
-              var req = new XMLHttpRequest();
-              var url = "https://api.thegraph.com/ipfs/api/v0/pin/add?arg=" + file.Hash;
-              req.open("POST", url);
-              req.send();
-            });
-          }
-        });
-        //req.open("POST", "https://api.thegraph.com/ipfs/api/v0/add?pin=true");
-        req.open("POST", uploadGatewaySelectElem.value);
-        req.send(fd);
-        document.getElementById("addForm").reset();
+    function handleSuccess(req) {
+      var lines = req.responseText.split("\n");
+      lines.pop();
+      var json = lines.map(line => JSON.parse(line));
+      var selectElem = document.getElementById("gateway-select");
+      updateUIAfterUpload(json, selectElem);
+    }
+
+    function handleError() {
+      alert("There was an error uploading the file.");
+      document.getElementById("loading").style.display = "none";
+      document.getElementById("submit").disabled = false;
+    }
+
+    function updateUIAfterUpload(json, selectElem) {
+      var hashesList = document.getElementById("hashes");
+      json.forEach(obj => {
+        var li = document.createElement("li");
+        var link = document.createElement("a");
+        link.setAttribute("target", "_blank");
+        var paramConnector = selectElem.value.includes("?") ? "&" : "?";
+        var urlWithFilename = selectElem.value + obj.Hash + paramConnector + "filename=" + encodeURIComponent(obj.Name);
+        link.setAttribute("href", urlWithFilename);
+        link.innerText = obj.Hash + " (" + obj.Name + ")";
+        li.appendChild(link);
+        hashesList.appendChild(li);
       });
-    });
+      document.getElementById("loading").style.display = "none";
+      document.getElementById("submit").disabled = false;
+      hashesList.style.display = "block";
+      document.getElementById("pin-code").innerText = json.map(obj => `ipfs pin add ${obj.Hash}`).join("\n");  // Changed ";" to "\n" for new line
+      document.getElementById("pin-div").style.display = "block";
+    }
   </script>
   <style>
     body {
@@ -169,13 +208,11 @@
 <body>
   <div class="container py-5">
     <h1>Upload files to IPFS</h1>
-    <div id="using-gateway" class="alert alert-warning" role="alert" style="display: none;">
-      It looks like you're accessing this via an IPFS gateway.
-      <a href="https://upload2ipfs.smitop.com">Visit the official site.</a>
-    </div>
+    <button id="check-download-gateways" class="btn btn-primary">Check download gateways</button>
+    <button id="check-upload-gateways" class="btn btn-primary">Check upload gateways</button>
     <div class="text-center my-4">
-      This will upload files to the <a href="https://ipfs.io">IPFS</a> network. You can hold <kbd>CTRL</kbd>
-      while selecting files to upload multiple at once.
+      This will upload files to the <a href="https://ipfs.io">IPFS</a> network. You can hold <kbd>CTRL</kbd> while
+      selecting files to upload multiple at once.
     </div>
     <div class="form-check form-switch">
       <input class="form-check-input" type="checkbox" id="pin-file-toggle">
@@ -184,39 +221,24 @@
     <label for="gateway-select" class="form-label">Select a gateway to view your uploaded files:</label>
     <select id="gateway-select" class="form-select"></select>
     <label for="upload-gateway-select" class="form-label">Select a gateway to upload your files:</label>
-    <select id="upload-gateway-select" class="form-select">
-      <option value="https://unauthipfs.subquery.network/ipfs/api/v0/add?pin=true">https://unauthipfs.subquery.network/ipfs/api/v0/add?pin=true</option>
-      <option value="https://ipfs.gitcoin.co/api/v0/add?pin=true">https://ipfs.gitcoin.co/api/v0/add?pin=true</option>
-      <option value="https://ipfs-2.gitcoin.co/api/v0/add?pin=true">https://ipfs-2.gitcoin.co/api/v0/add?pin=true
-      </option>
-      <option value="https://ipfs-3.gitcoin.co/api/v0/add?pin=true">https://ipfs-3.gitcoin.co/api/v0/add?pin=true
-      </option>
-      <option value="https://demo.storj-ipfs.com/api/v0/add">https://demo.storj-ipfs.com/api/v0/add</option>
-      <option value="https://ipfs.treejer.com/api/v0/add?pin=true">https://ipfs.treejer.com/api/v0/add?pin=true</option>
-      <option value="https://ipfs.oversas.org/api/v0/add?pin=true">https://ipfs.oversas.org/api/v0/add?pin=true</option>
-      <option value="https://api.thegraph.com/ipfs/api/v0/add?pin=true">https://api.thegraph.com/ipfs/api/v0/add?pin=true</option>
-      <option selected value="https://ipfs.network.thegraph.com/ipfs/api/v0/add?pin=true">https://ipfs.network.thegraph.com/ipfs/api/v0/add?pin=true</option>
-      <option value="https://ipfs.questbook.app/api/v0/add?pin=true">https://ipfs.questbook.app/api/v0/add?pin=true</option>
-      <option value="https://gw-seattle.crustcloud.io:443/api/v0/add">https://gw-seattle.crustcloud.io:443/api/v0/add</option>
-    </select>
+    <select id="upload-gateway-select" class="form-select"></select>
     <form id="addForm" class="form my-3" method="post" enctype="multipart/form-data">
       <div class="mb-3">
         <label for="file" class="form-label">Choose file(s):</label>
         <input type="file" class="form-control" name="file" id="file" multiple>
       </div>
-      <button class="btn btn-light" style="display: none;" id="submit">Upload</button>
+      <button class="btn btn-light" id="submit" style="display: none;">Upload</button>
     </form>
-    <div id="loading" class="alert alert-info" role="alert" style="display: none;">
-      Loading...
-    </div>
-    <ul id="hashes" class="list-group my-3" style="display: none;">
-    </ul>
+    <div id="loading" class="alert alert-info" role="alert" style="display: none;">Loading...</div>
+    <ul id="hashes" class="list-group my-3" style="display: none;"></ul>
     <div id="pin-div" class="alert alert-warning" role="warning" style="display: none;">
-      Despite being pinned, the file uploaded to the IPFS node might be deleted. To ensure its permanence, you can pin these files on your IPFS node:<br>
+      Despite being pinned, the file uploaded to the IPFS node might be deleted. To ensure its permanence, you can pin
+      these files on your IPFS node:<br>
       <code id="pin-code"></code>
     </div>
     <footer>
-      Created by <a href="https://smitop.com">Smitop</a>, modified by <a href="https://github.com/yusufgurdogan">Yusuf Gürdoğan</a>.
+      Created by <a href="https://smitop.com">Smitop</a>, modified by <a href="https://github.com/yusufgurdogan">Yusuf
+        Gürdoğan</a>.
     </footer>
   </div>
   <!-- Bootstrap JS -->
