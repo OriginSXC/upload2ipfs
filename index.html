@@ -7,6 +7,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="Upload files to the IPFS network using this simple tool.">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/ipfs/dist/index.min.js"></script>
   <script type="text/javascript">
     function addOptionIfNotExists(selectElem, value, text) {
       var exists = Array.from(selectElem.options).some(option => option.value === value);
@@ -201,12 +202,19 @@
       req.send(fd);
     }
 
-    function handleSuccess(req) {
+    async function generateCID(file) {
+      const ipfs = await Ipfs.create();
+      const { cid } = await ipfs.add(file);
+      await ipfs.stop();
+      return cid.toString();
+    }
+
+    async function handleSuccess(req) {
       var lines = req.responseText.split("\n");
       lines.pop();
       var json = lines.map(line => JSON.parse(line));
       var selectElem = document.getElementById("gateway-select");
-      updateUIAfterUpload(json, selectElem);
+      await updateUIAfterUpload(json, selectElem);
     }
 
     function handleError() {
@@ -215,23 +223,36 @@
       document.getElementById("submit").disabled = false;
     }
 
-    function updateUIAfterUpload(json, selectElem) {
+    async function updateUIAfterUpload(json, selectElem) {
       var hashesList = document.getElementById("hashes");
-      json.forEach(obj => {
+      const fileInput = document.getElementById("file");
+      const files = fileInput.files;
+
+      for (const [index, obj] of json.entries()) {
         var li = document.createElement("li");
         var link = document.createElement("a");
         link.setAttribute("target", "_blank");
+        var hash = obj.Hash;
+        var name = obj.Name;
+
+        if (!hash || !name) {
+          const file = files[index];
+          hash = await generateCID(file);
+          name = file.name;
+        }
+
         var paramConnector = selectElem.value.includes("?") ? "&" : "?";
-        var urlWithFilename = selectElem.value + obj.Hash + paramConnector + "filename=" + encodeURIComponent(obj.Name);
+        var urlWithFilename = selectElem.value + hash + paramConnector + "filename=" + encodeURIComponent(name);
         link.setAttribute("href", urlWithFilename);
-        link.innerText = obj.Hash + " (" + obj.Name + ")";
+        link.innerText = `${hash} (${name})`;
         li.appendChild(link);
         hashesList.appendChild(li);
-      });
+      }
+
       document.getElementById("loading").style.display = "none";
       document.getElementById("submit").disabled = false;
       hashesList.style.display = "block";
-      document.getElementById("pin-code").innerText = json.map(obj => `ipfs pin add ${obj.Hash}`).join("\n");  // Changed ";" to "\n" for new line
+      document.getElementById("pin-code").innerText = json.map(obj => `ipfs pin add ${obj.Hash}`).join("\n");
       document.getElementById("pin-div").style.display = "block";
     }
   </script>
