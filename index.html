@@ -211,8 +211,15 @@
 
     async function handleSuccess(req) {
       var lines = req.responseText.split("\n");
-      lines.pop();
-      var json = lines.map(line => JSON.parse(line));
+      lines = lines.filter(line => line.trim() !== ""); // Remove empty lines
+      var json = lines.map(line => {
+        try {
+          return JSON.parse(line);
+        } catch (e) {
+          console.error("Error parsing JSON:", e);
+          return null;
+        }
+      }).filter(item => item !== null);
       var selectElem = document.getElementById("gateway-select");
       await updateUIAfterUpload(json, selectElem);
     }
@@ -232,8 +239,11 @@
         var li = document.createElement("li");
         var link = document.createElement("a");
         link.setAttribute("target", "_blank");
-        var hash = obj.Hash;
-        var name = obj.Name;
+
+        // Handle both response formats
+        var hash = obj.Hash || obj.cid;
+        var name = obj.Name || obj.name;
+        var size = obj.Size || obj.size;
 
         if (!hash || !name) {
           const file = files[index];
@@ -244,7 +254,7 @@
         var paramConnector = selectElem.value.includes("?") ? "&" : "?";
         var urlWithFilename = selectElem.value + hash + paramConnector + "filename=" + encodeURIComponent(name);
         link.setAttribute("href", urlWithFilename);
-        link.innerText = `${hash} (${name})`;
+        link.innerText = `${hash} (${name}) - Size: ${size} bytes`;
         li.appendChild(link);
         hashesList.appendChild(li);
       }
@@ -252,7 +262,7 @@
       document.getElementById("loading").style.display = "none";
       document.getElementById("submit").disabled = false;
       hashesList.style.display = "block";
-      document.getElementById("pin-code").innerText = json.map(obj => `ipfs pin add ${obj.Hash}`).join("\n");
+      document.getElementById("pin-code").innerText = json.map(obj => `ipfs pin add ${obj.Hash || obj.cid}`).join("\n");
       document.getElementById("pin-div").style.display = "block";
     }
   </script>
