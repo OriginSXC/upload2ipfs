@@ -138,6 +138,7 @@
         <div class="d-flex gap-2">
           <button class="btn btn-light" id="submit" style="display: none">Upload</button>
           <button class="btn btn-info btn-copy" id="copy-all-urls" type="button" style="display:none">Copy All URLs</button>
+          <button class="btn btn-danger" id="cancel-upload" type="button" style="display:none">Cancel Upload</button>
         </div>
       </form>
 
@@ -162,7 +163,7 @@
 
         // ====== Configuration ======
         const TIMEOUT_MS = 5000; // Timeout for gateway probes
-        const CONCURRENCY = 8; // Maximum concurrent probes
+        const CONCURRENCY = 16; // Maximum concurrent probes
         const SHOW_LATENCY_IN_OPTIONS = true; // Append "(X ms)" after gateway text
 
         // A known public CID to test download availability
@@ -201,7 +202,9 @@
         const hashesList = document.getElementById("hashes");
         const loadingAlert = document.getElementById("loading");
         const copyAllUrlsBtn = document.getElementById("copy-all-urls");
-        let errorModalInstance = null; // To hold the bootstrap modal instance
+        const cancelUploadBtn = document.getElementById("cancel-upload");
+        let errorModalInstance = null;
+        let currentUploadRequest = null; // To hold the current XHR object
 
         // ====== Helper Functions ======
 
@@ -414,10 +417,15 @@
                 fd.append("file", file);
 
                 const req = new XMLHttpRequest();
+                currentUploadRequest = req; // Store the request object to be able to abort it
                 const uploadUrl = uploadSelect.value;
 
                 req.onerror = () => {
                     reject(new Error("Network error"));
+                };
+                
+                req.onabort = () => {
+                    reject(new Error("Upload aborted by user."));
                 };
 
                 req.onload = () => {
@@ -448,21 +456,32 @@
 
             loadingAlert.style.display = "block";
             submitBtn.disabled = true;
+            cancelUploadBtn.style.display = "inline-block"; // Show cancel button
             hashesList.style.display = "block";
 
-            for (const file of files) {
-                try {
-                    const response = await uploadSingleFile(file);
-                    await appendResultToUI(response, file);
-                } catch (error) {
-                    showError(`Upload failed for ${file.name}: ${error.message}`);
+            try {
+                for (const file of files) {
+                    try {
+                        const response = await uploadSingleFile(file);
+                        await appendResultToUI(response, file);
+                    } catch (error) {
+                        if (error.message.includes("aborted")) {
+                            showError("Upload has been cancelled.");
+                            break; // Exit the loop if cancelled
+                        } else {
+                            showError(`Upload failed for ${file.name}: ${error.message}`);
+                        }
+                    }
                 }
+            } finally {
+                // This block ensures the UI is cleaned up regardless of success, failure, or cancellation
+                loadingAlert.style.display = "none";
+                submitBtn.disabled = false;
+                cancelUploadBtn.style.display = "none"; // Hide cancel button
+                currentUploadRequest = null; // Clear the request object
+                fileInput.value = "";
+                submitBtn.style.display = 'none';
             }
-
-            loadingAlert.style.display = "none";
-            submitBtn.disabled = false;
-            fileInput.value = "";
-            submitBtn.style.display = 'none';
         }
 
         // ====== Init ======
@@ -513,6 +532,12 @@
             );
 
             document.getElementById("submit").addEventListener("click", submitForm);
+
+            cancelUploadBtn.addEventListener("click", () => {
+                if (currentUploadRequest) {
+                    currentUploadRequest.abort();
+                }
+            });
 
             copyAllUrlsBtn.addEventListener("click", () => {
                 const links = hashesList.querySelectorAll("a");
