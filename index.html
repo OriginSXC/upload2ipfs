@@ -1,17 +1,11 @@
 <!DOCTYPE html>
 <html lang="en" data-bs-theme="dark">
-  <head>
+<head>
     <meta charset="utf-8" />
-    <title>Upload to IPFS (Optimized)</title>
+    <title>Upload to IPFS (Fixed)</title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta
-      name="description"
-      content="Upload files to the IPFS network using this simple tool."
-    />
-    <link
-      rel="stylesheet"
-      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
-    />
+    <meta name="description" content="Upload files to the IPFS network using this simple tool." />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" />
     <!-- js-ipfs on CDN exposes global `Ipfs` in browsers; optional, used only for client-side CID fallback -->
     <script src="https://cdn.jsdelivr.net/npm/ipfs/dist/index.min.js"></script>
 
@@ -37,27 +31,22 @@
       .btn-copy {
         white-space: nowrap;
       }
+      /* Ensure progress bar text is visible */
+      .progress-bar {
+        color: #fff;
+        font-weight: bold;
+        text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+      }
     </style>
-  </head>
-  <body>
+</head>
+<body>
     <!-- Warning Modal -->
-    <div
-      class="modal fade"
-      id="warningModal"
-      tabindex="-1"
-      aria-labelledby="modalLabel"
-      aria-hidden="true"
-    >
+    <div class="modal fade" id="warningModal" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
       <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
           <div class="modal-header">
             <h5 class="modal-title" id="modalLabel">Terms of Use</h5>
-            <button
-              type="button"
-              class="btn-close"
-              data-bs-dismiss="modal"
-              aria-label="Close"
-            ></button>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           <div class="modal-body">
             Use for educational purposes only. Do not upload sensitive files, as
@@ -76,48 +65,48 @@
       </div>
     </div>
 
+    <!-- Error Modal -->
+    <div class="modal fade" id="errorModal" tabindex="-1" aria-labelledby="errorModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header bg-danger text-white">
+            <h5 class="modal-title" id="errorModalLabel">Error</h5>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body" id="errorModalBody">
+            <!-- Error message will be injected here -->
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <div class="container py-5">
       <h1>Upload files to IPFS</h1>
 
       <div class="row">
         <div class="col-md-6">
-          <div class="progress my-2">
-            <div
-              id="download-progress"
-              class="progress-bar bg-success"
-              role="progressbar"
-              aria-valuenow="0"
-              aria-valuemin="0"
-              aria-valuemax="100"
-              style="width: 0%"
-            >0/0 working</div>
+          <div class="progress my-2" style="height: 2rem;">
+            <div id="download-progress" class="progress-bar bg-success fs-6" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%">
+              Check download gateways
+            </div>
           </div>
           <div class="d-grid gap-2">
-            <button
-              id="check-download-gateways"
-              class="btn btn-primary btn-lg btn-block"
-            >
+            <button id="check-download-gateways" class="btn btn-primary btn-lg btn-block">
               Check & filter download gateways
             </button>
           </div>
         </div>
         <div class="col-md-6">
-          <div class="progress my-2">
-            <div
-              id="upload-progress"
-              class="progress-bar bg-success"
-              role="progressbar"
-              aria-valuenow="0"
-              aria-valuemin="0"
-              aria-valuemax="100"
-              style="width: 0%"
-            >0/0 working</div>
+          <div class="progress my-2" style="height: 2rem;">
+            <div id="upload-progress" class="progress-bar bg-success fs-6" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%">
+              Check upload gateways
+            </div>
           </div>
           <div class="d-grid gap-2">
-            <button
-              id="check-upload-gateways"
-              class="btn btn-primary btn-lg btn-block"
-            >
+            <button id="check-upload-gateways" class="btn btn-primary btn-lg btn-block">
               Check & filter upload gateways
             </button>
           </div>
@@ -132,15 +121,11 @@
 
       <div class="row">
         <div class="col-md-6">
-          <label for="gateway-select" class="form-label"
-            >Select a gateway to view your uploaded files:</label
-          >
+          <label for="gateway-select" class="form-label">Select a gateway to view your uploaded files:</label>
           <select id="gateway-select" class="form-select"></select>
         </div>
         <div class="col-md-6">
-          <label for="upload-gateway-select" class="form-label"
-            >Select a gateway to upload your files:</label
-          >
+          <label for="upload-gateway-select" class="form-label">Select a gateway to upload your files:</label>
           <select id="upload-gateway-select" class="form-select"></select>
         </div>
       </div>
@@ -183,172 +168,37 @@
         "use strict";
 
         // ====== Configuration ======
-        const TIMEOUT_MS = 5000; // a bit higher than 3000ms to reduce false negatives
-        const CONCURRENCY = 8; // maximum concurrent probes
-        const SHOW_LATENCY_IN_OPTIONS = true; // append "(X ms)" after gateway text when listing working gateways
+        const TIMEOUT_MS = 5000; // Timeout for gateway probes
+        const CONCURRENCY = 20; // Maximum concurrent probes
+        const SHOW_LATENCY_IN_OPTIONS = true; // Append "(X ms)" after gateway text
+
+        // A known public CID to test download availability
+        const TEST_CID = "bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m";
 
         // For endpoints with /api/v0/cat?arg= vs /ipfs/ we normalize per-gateway here
         const gatewayMatchingList = {
-          "https://ipfs.network.thegraph.com/ipfs/api/v0/cat?arg=":
-            "https://ipfs.network.thegraph.com/ipfs/api/v0/add?pin=true",
-          "https://ipfs.gitcoin.co/api/v0/cat?arg=":
-            "https://ipfs.gitcoin.co/api/v0/add?pin=true",
-          "https://ipfs-2.gitcoin.co/api/v0/cat?arg=":
-            "https://ipfs-2.gitcoin.co/api/v0/add?pin=true",
-          "https://ipfs-3.gitcoin.co/api/v0/cat?arg=":
-            "https://ipfs-3.gitcoin.co/api/v0/add?pin=true",
+          "https://ipfs.network.thegraph.com/ipfs/api/v0/cat?arg=": "https://ipfs.network.thegraph.com/ipfs/api/v0/add?pin=true",
+          "https://ipfs.gitcoin.co/api/v0/cat?arg=": "https://ipfs.gitcoin.co/api/v0/add?pin=true",
+          "https://ipfs-2.gitcoin.co/api/v0/cat?arg=": "https://ipfs-2.gitcoin.co/api/v0/add?pin=true",
+          "https://ipfs-3.gitcoin.co/api/v0/cat?arg=": "https://ipfs-3.gitcoin.co/api/v0/add?pin=true",
           "https://ipfs.treejer.com/ipfs/": "https://ipfs.treejer.com/api/v0/add?pin=true",
           "https://ipfs.oversas.org/ipfs/": "https://ipfs.oversas.org/api/v0/add?pin=true",
-          "https://api.thegraph.com/ipfs/api/v0/cat?arg=":
-            "https://api.thegraph.com/ipfs/api/v0/add?pin=true",
-          "https://ipfs.questbook.app:8080/api/v0/cat?arg=":
-            "https://ipfs.questbook.app/api/v0/add?pin=true",
+          "https://api.thegraph.com/ipfs/api/v0/cat?arg=": "https://api.thegraph.com/ipfs/api/v0/add?pin=true",
+          "https://ipfs.questbook.app:8080/api/v0/cat?arg=": "https://ipfs.questbook.app/api/v0/add?pin=true",
           "https://gw-seattle.crustcloud.io/ipfs/": "https://gw-seattle.crustcloud.io:443/api/v0/add",
           "https://magic.decentralized-content.com/ipfs/": "https://ipfs-uploader.zora.co/api/v0/add",
           "https://ipfs.decentralized-content.com/ipfs/": "https://ipfs-uploader.zora.co/api/v0/add",
         };
 
-        // Standardize /api/v0/cat/ entries so we can unify URL building
         const downloadGateways = [
-          "https://4everland.io/ipfs/",
-          "https://alexdav.id/ipfs/",
-          "https://api.thegraph.com/ipfs/api/v0/cat?arg=",
-          "https://api.universalprofile.cloud/ipfs/",
-          "https://aragon.ventures/ipfs/",
-          "https://astyanax.io/ipfs/",
-          "https://c4rex.co/ipfs/",
-          "https://cdn.cwinfo.net/ipfs/",
-          "https://cdn.ipfsscan.io/ipfs/",
-          "https://chat.ipfs.io/api/v0/cat?arg=", // FIX: ensure ?arg= form
-          "https://cloudflare-ipfs.com/ipfs/",
-          "https://crustwebsites.net/ipfs/",
-          "https://cthd.icu/ipfs/",
-          "https://dlunar.net/ipfs/",
-          "https://dweb.eu.org/ipfs/",
-          "https://dweb.link/ipfs/",
-          "https://fleek.cool/ipfs/",
-          "https://flk-ipfs.xyz/ipfs/",
-          "https://gateway-int.ipfs.io/api/v0/cat?arg=", // FIX: ensure ?arg= form
-          "https://gateway.ipfs.io/ipfs/",
-          "https://gateway.lighthouse.storage/ipfs/",
-          "https://gateway.originprotocol.com/ipfs/",
-          "https://gateway.pinata.cloud/ipfs/",
-          "https://gateway.serph.network/ipfs/",
-          "https://gravity.jup.io/ipfs/",
-          "https://gw-seattle.crustcloud.io/ipfs/",
-          "https://gw.crustapps.net/ipfs/",
-          "https://gw.ipfs-lens.dev/ipfs/",
-          "https://hardbin.com/ipfs/",
-          "https://hashnews.k1ic.com/ipfs/",
-          "https://hub.textile.io/ipfs/",
-          "https://infura-ipfs.io/ipfs/",
-          "https://ipfs.1-2.dev/ipfs/",
-          "https://ipfs.alloyxuast.tk/ipfs/",
-          "https://ipfs.algonode.dev/ipfs/",
-          "https://ipfs.algonode.xyz/ipfs/",
-          "https://ipfs.anonymize.com/ipfs/",
-          "https://ipfs.arching-kaos.com/ipfs/",
-          "https://ipfs.best-practice.se/ipfs/",
-          "https://ipfs.busy.org/ipfs/",
-          "https://ipfs.chisdealhd.co.uk/ipfs/",
-          "https://ipfs.cyou/ipfs/",
-          "https://ipfs.decentralized-content.com/ipfs/",
-          "https://ipfs.decoo.io/ipfs/",
-          "https://ipfs.denarius.io/ipfs/",
-          "https://ipfs.dlux.io/ipfs/",
-          "https://ipfs.drink.cafe/ipfs/",
-          "https://ipfs.eth.aragon.network/ipfs/",
-          "https://ipfs.filebase.io/ipfs/",
-          "https://ipfs.fleek.co/ipfs/",
-          "https://ipfs.flock.io/ipfs/",
-          "https://ipfs.fooock.com/ipfs/",
-          "https://ipfs.funnychain.co/ipfs/",
-          "https://ipfs.genenetwork.org/ipfs/",
-          "https://ipfs.gitcoin.co/api/v0/cat?arg=",
-          "https://ipfs-2.gitcoin.co/api/v0/cat?arg=",
-          "https://ipfs-3.gitcoin.co/api/v0/cat?arg=",
-          "https://ipfs-gateway.cloud/ipfs/",
-          "https://ipfs-gateway.omniflix.studio/ipfs/",
-          "https://ipfs.greyh.at/ipfs/",
-          "https://ipfs.ink/ipfs/",
-          "https://ipfs.io/ipfs/",
-          "https://ipfs.jbb.one/ipfs/",
-          "https://ipfs.joaoleitao.org/ipfs/",
-          "https://ipfs.kaleido.art/ipfs/",
-          "https://ipfs.kavin.rocks/ipfs/",
-          "https://ipfs.kinematiks.com/ipfs/",
-          "https://ipfs.lain.la/ipfs/",
-          "https://ipfs.litnet.work/ipfs/",
-          "https://ipfs.mttk.net/ipfs/",
-          "https://ipfs.namebase.io/ipfs/",
-          "https://ipfs.network.thegraph.com/ipfs/api/v0/cat?arg=",
-          "https://ipfs.omniflix.studio/ipfs/",
-          "https://ipfs.oversas.org/ipfs/",
-          "https://ipfs.overpi.com/ipfs/",
-          "https://ipfs.questbook.app:8080/api/v0/cat?arg=",
-          "https://ipfs.runfission.com/ipfs/",
-          "https://ipfs.scalaproject.io/ipfs/",
-          "https://ipfs.slang.cx/ipfs/",
-          "https://ipfs.sloppyta.co/ipfs/",
-          "https://ipfs.smartholdem.io/ipfs/",
-          "https://ipfs.staging.cloudflare-ipfs.com/ipfs/",
-          "https://ipfs.stardustxr.org/ipfs/",
-          "https://ipfs.tayfundogdas.me/ipfs/",
-          "https://ipfs.telos.miami/ipfs/",
-          "https://ipfs.treejer.com/ipfs/",
-          "https://ipfs.tribecap.co/ipfs/",
-          "https://ipfs.trusti.id/ipfs/",
-          "https://ipfs.tubby.cloud/ipfs/",
-          "https://ipfs.uploads.nu/ipfs/",
-          "https://ipfs.web3.party/ipfs/",
-          "https://ipfs.xoqq.ch/ipfs/",
-          "https://ipfs.yt/ipfs/",
-          "https://ipfs0.sjc.cloudsigma.com/ipfs/",
-          "https://ipfs1.pixura.io/ipfs/",
-          "https://ipfsgateway.makersplace.com/ipfs/",
-          "https://ipns.co/ipfs/",
-          "https://jorropo.net/ipfs/",
-          "https://konubinix.eu/ipfs/",
-          "https://lb-test.staging.cloudflare-ipfs.com/ipfs/",
-          "https://magic.decentralized-content.com/ipfs/",
-          "https://natoboram.mynetgear.com/ipfs/",
-          "https://nftstorage.link/ipfs/",
-          "https://ninetailed.ninja/ipfs/",
-          "https://permaweb.eu.org/ipfs/",
-          "https://permaweb.io/ipfs/",
-          "https://ravencoinipfs-gateway.com/ipfs/",
-          "https://search.ipfsgate.com/ipfs/",
-          "https://storry.tv/ipfs/",
-          "https://storjipfs-gateway.com/ipfs/",
-          "https://test.cf-ipfs.com/ipfs/",
-          "https://trustless-gateway.link/ipfs/",
-          "https://tth-ipfs.com/ipfs/",
-          "https://via0.com/ipfs/",
-          "https://video.oneloveipfs.com/ipfs/",
-          "https://w3s.link/ipfs/",
+            "https://4everland.io/ipfs/", "https://alexdav.id/ipfs/", "https://api.thegraph.com/ipfs/api/v0/cat?arg=", "https://api.universalprofile.cloud/ipfs/", "https://aragon.ventures/ipfs/", "https://astyanax.io/ipfs/", "https://c4rex.co/ipfs/", "https://cdn.cwinfo.net/ipfs/", "https://cdn.ipfsscan.io/ipfs/", "https://cloudflare-ipfs.com/ipfs/", "https://crustwebsites.net/ipfs/", "https://cthd.icu/ipfs/", "https://dlunar.net/ipfs/", "https://dweb.eu.org/ipfs/", "https://dweb.link/ipfs/", "https://fleek.cool/ipfs/", "https://flk-ipfs.xyz/ipfs/", "https://gateway.ipfs.io/ipfs/", "https://gateway.lighthouse.storage/ipfs/", "https://gateway.originprotocol.com/ipfs/", "https://gateway.pinata.cloud/ipfs/", "https://gateway.serph.network/ipfs/", "https://gravity.jup.io/ipfs/", "https://gw-seattle.crustcloud.io/ipfs/", "https://gw.crustapps.net/ipfs/", "https://gw.ipfs-lens.dev/ipfs/", "https://hardbin.com/ipfs/", "https://hashnews.k1ic.com/ipfs/", "https://hub.textile.io/ipfs/", "https://infura-ipfs.io/ipfs/", "https://ipfs.1-2.dev/ipfs/", "https://ipfs.alloyxuast.tk/ipfs/", "https://ipfs.algonode.dev/ipfs/", "https://ipfs.algonode.xyz/ipfs/", "https://ipfs.anonymize.com/ipfs/", "https://ipfs.arching-kaos.com/ipfs/", "https://ipfs.best-practice.se/ipfs/", "https://ipfs.busy.org/ipfs/", "https://ipfs.chisdealhd.co.uk/ipfs/", "https://ipfs.cyou/ipfs/", "https://ipfs.decentralized-content.com/ipfs/", "https://ipfs.decoo.io/ipfs/", "https://ipfs.denarius.io/ipfs/", "https://ipfs.dlux.io/ipfs/", "https://ipfs.drink.cafe/ipfs/", "https://ipfs.eth.aragon.network/ipfs/", "https://ipfs.filebase.io/ipfs/", "https://ipfs.fleek.co/ipfs/", "https://ipfs.flock.io/ipfs/", "https://ipfs.fooock.com/ipfs/", "https://ipfs.funnychain.co/ipfs/", "https://ipfs.genenetwork.org/ipfs/", "https://ipfs.gitcoin.co/api/v0/cat?arg=", "https://ipfs-2.gitcoin.co/api/v0/cat?arg=", "https://ipfs-3.gitcoin.co/api/v0/cat?arg=", "https://ipfs-gateway.cloud/ipfs/", "https://ipfs-gateway.omniflix.studio/ipfs/", "https://ipfs.greyh.at/ipfs/", "https://ipfs.ink/ipfs/", "https://ipfs.io/ipfs/", "https://ipfs.jbb.one/ipfs/", "https://ipfs.joaoleitao.org/ipfs/", "https://ipfs.kaleido.art/ipfs/", "https://ipfs.kavin.rocks/ipfs/", "https://ipfs.kinematiks.com/ipfs/", "https://ipfs.lain.la/ipfs/", "https://ipfs.litnet.work/ipfs/", "https://ipfs.mttk.net/ipfs/", "https://ipfs.namebase.io/ipfs/", "https://ipfs.network.thegraph.com/ipfs/api/v0/cat?arg=", "https://ipfs.omniflix.studio/ipfs/", "https://ipfs.oversas.org/ipfs/", "https://ipfs.overpi.com/ipfs/", "https://ipfs.questbook.app:8080/api/v0/cat?arg=", "https://ipfs.runfission.com/ipfs/", "https://ipfs.scalaproject.io/ipfs/", "https://ipfs.slang.cx/ipfs/", "https://ipfs.sloppyta.co/ipfs/", "https://ipfs.smartholdem.io/ipfs/", "https://ipfs.staging.cloudflare-ipfs.com/ipfs/", "https://ipfs.stardustxr.org/ipfs/", "https://ipfs.tayfundogdas.me/ipfs/", "https://ipfs.telos.miami/ipfs/", "https://ipfs.treejer.com/ipfs/", "https://ipfs.tribecap.co/ipfs/", "https://ipfs.trusti.id/ipfs/", "https://ipfs.tubby.cloud/ipfs/", "https://ipfs.uploads.nu/ipfs/", "https://ipfs.web3.party/ipfs/", "https://ipfs.xoqq.ch/ipfs/", "https://ipfs.yt/ipfs/", "https://ipfs0.sjc.cloudsigma.com/ipfs/", "https://ipfs1.pixura.io/ipfs/", "https://ipfsgateway.makersplace.com/ipfs/", "https://ipns.co/ipfs/", "https://jorropo.net/ipfs/", "https://konubinix.eu/ipfs/", "https://magic.decentralized-content.com/ipfs/", "https://natoboram.mynetgear.com/ipfs/", "https://nftstorage.link/ipfs/", "https://ninetailed.ninja/ipfs/", "https://permaweb.eu.org/ipfs/", "https://permaweb.io/ipfs/", "https://ravencoinipfs-gateway.com/ipfs/", "https://search.ipfsgate.com/ipfs/", "https://storry.tv/ipfs/", "https://storjipfs-gateway.com/ipfs/", "https://trustless-gateway.link/ipfs/", "https://tth-ipfs.com/ipfs/", "https://via0.com/ipfs/", "https://video.oneloveipfs.com/ipfs/", "https://w3s.link/ipfs/"
         ];
 
         const uploadGateways = [
-          "https://ipfs-uploader.zora.co/api/v0/add",
-          "https://upload.ipfs.zora.co/api/v0/add",
-          "https://ipfs.effect.ai/api/v0/add?pin=true",
-          "https://unauthipfs.subquery.network/ipfs/api/v0/add?pin=true",
-          "https://ipfs.gitcoin.co/api/v0/add?pin=true",
-          "https://ipfs-2.gitcoin.co/api/v0/add?pin=true",
-          "https://ipfs-3.gitcoin.co/api/v0/add?pin=true",
-          "https://demo.storj-ipfs.com/api/v0/add",
-          "https://ipfs.treejer.com/api/v0/add?pin=true",
-          "https://ipfs.oversas.org/api/v0/add?pin=true",
-          "https://api.thegraph.com/ipfs/api/v0/add?pin=true",
-          "https://ipfs.network.thegraph.com/ipfs/api/v0/add?pin=true",
-          "https://ipfs.questbook.app/api/v0/add?pin=true",
-          "https://gw-seattle.crustcloud.io:443/api/v0/add",
+            "https://ipfs-uploader.zora.co/api/v0/add", "https://upload.ipfs.zora.co/api/v0/add", "https://ipfs.effect.ai/api/v0/add?pin=true", "https://unauthipfs.subquery.network/ipfs/api/v0/add?pin=true", "https://ipfs.gitcoin.co/api/v0/add?pin=true", "https://ipfs-2.gitcoin.co/api/v0/add?pin=true", "https://ipfs-3.gitcoin.co/api/v0/add?pin=true", "https://demo.storj-ipfs.com/api/v0/add", "https://ipfs.treejer.com/api/v0/add?pin=true", "https://ipfs.oversas.org/api/v0/add?pin=true", "https://api.thegraph.com/ipfs/api/v0/add?pin=true", "https://ipfs.network.thegraph.com/ipfs/api/v0/add?pin=true", "https://ipfs.questbook.app/api/v0/add?pin=true", "https://gw-seattle.crustcloud.io:443/api/v0/add"
         ];
 
-        // A known public CID to test download availability
-        const TEST_CID = "bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m";
-
-        // ====== DOM ======
+        // ====== DOM Elements ======
         const downloadSelect = document.getElementById("gateway-select");
         const uploadSelect = document.getElementById("upload-gateway-select");
         const downloadProgress = document.getElementById("download-progress");
@@ -360,324 +210,360 @@
         const pinDiv = document.getElementById("pin-div");
         const pinCode = document.getElementById("pin-code");
         const copyPinsBtn = document.getElementById("copy-pins");
+        let errorModalInstance = null; // To hold the bootstrap modal instance
 
-        function addOptionIfNotExists(selectElem, value, text) {
-          const exists = Array.from(selectElem.options).some((o) => o.value === value);
-          if (!exists) {
-            const option = document.createElement("option");
-            option.text = text;
-            option.value = value;
-            selectElem.add(option);
-          }
+        // ====== Helper Functions ======
+
+        function showError(message) {
+            document.getElementById('errorModalBody').textContent = message;
+            if (errorModalInstance) {
+                errorModalInstance.show();
+            }
+        }
+        
+        function fallbackCopy(text, buttonElement) {
+            const textArea = document.createElement("textarea");
+            textArea.value = text;
+            // Make it invisible
+            textArea.style.position = "fixed";
+            textArea.style.top = 0;
+            textArea.style.left = 0;
+            textArea.style.width = "2em";
+            textArea.style.height = "2em";
+            textArea.style.padding = 0;
+            textArea.style.border = "none";
+            textArea.style.outline = "none";
+            textArea.style.boxShadow = "none";
+            textArea.style.background = "transparent";
+            document.body.appendChild(textArea);
+            textArea.focus();
+            textArea.select();
+            try {
+                const successful = document.execCommand('copy');
+                const originalText = buttonElement.textContent;
+                if (successful) {
+                    buttonElement.textContent = "Copied!";
+                    setTimeout(() => { buttonElement.textContent = originalText; }, 1500);
+                } else {
+                    showError("Could not copy text. Please copy it manually.");
+                }
+            } catch (err) {
+                showError("Could not copy text due to an error. Please copy it manually.");
+                console.error('Fallback copy failed:', err);
+            }
+            document.body.removeChild(textArea);
         }
 
-        function updateProgressBar(el, workingCount, total) {
-          const pct = total === 0 ? 0 : Math.round((workingCount / total) * 100);
-          el.style.width = pct + "%";
-          el.setAttribute("aria-valuenow", String(pct));
-          el.textContent = `${workingCount}/${total} working`;
+        function copyToClipboard(text, buttonElement) {
+            if (navigator.clipboard && window.isSecureContext) {
+                navigator.clipboard.writeText(text).then(() => {
+                    const originalText = buttonElement.textContent;
+                    buttonElement.textContent = "Copied!";
+                    setTimeout(() => { buttonElement.textContent = originalText; }, 1500);
+                }).catch(err => {
+                    console.error('Async clipboard copy failed:', err);
+                    fallbackCopy(text, buttonElement); // Fallback on permission error
+                });
+            } else {
+                fallbackCopy(text, buttonElement); // Fallback for older browsers
+            }
+        }
+
+        function addOptionIfNotExists(selectElem, value, text) {
+            const exists = Array.from(selectElem.options).some((o) => o.value === value);
+            if (!exists) {
+                const option = document.createElement("option");
+                option.text = text;
+                option.value = value;
+                selectElem.add(option);
+            }
+        }
+
+        function updateProgressBar(el, completed, working, total) {
+            const pct = total === 0 ? 0 : Math.round((completed / total) * 100);
+            el.style.width = pct + "%";
+            el.setAttribute("aria-valuenow", String(pct));
+            el.textContent = `${working} working / ${completed} tested / ${total} total`;
         }
 
         function normalizeDownloadUrl(base, cid) {
-          // Accepts base that ends with /ipfs/  OR /api/v0/cat?arg=
-          if (base.includes("/api/v0/cat?")) return base + encodeURIComponent(cid);
-          if (base.endsWith("/api/v0/cat/"))
-            return base.replace(/\/api\/v0\/cat\/?$/, "/api/v0/cat?arg=") + encodeURIComponent(cid);
-          // Default: treat as /ipfs/
-          return base + cid;
+            if (base.includes("/api/v0/cat?")) return base + encodeURIComponent(cid);
+            return base + cid;
         }
 
         function withTimeout(promise, ms, controller) {
-          const t = setTimeout(() => controller.abort(), ms);
-          return promise.finally(() => clearTimeout(t));
+            const t = setTimeout(() => controller.abort(), ms);
+            return promise.finally(() => clearTimeout(t));
         }
 
         async function probeDownloadGateway(base, cid) {
-          // Try HEAD first (cheap), then GET with Range fallback for servers that don't support HEAD
-          const controller = new AbortController();
-          const urlHead = normalizeDownloadUrl(base, cid);
-          try {
-            const res = await withTimeout(
-              fetch(urlHead, { method: "HEAD", signal: controller.signal }),
-              TIMEOUT_MS,
-              controller
-            );
-            if (res.ok) return true;
-            // Some gateways return 405 for HEAD
-            if (res.status === 405) throw new Error("HEAD not allowed");
-          } catch (_) {
-            // Fallback: GET 1 byte
-            const controller2 = new AbortController();
-            const res2 = await withTimeout(
-              fetch(urlHead, {
-                method: "GET",
-                headers: { Range: "bytes=0-0", Accept: "application/octet-stream" },
-                signal: controller2.signal,
-              }),
-              TIMEOUT_MS,
-              controller2
-            ).catch(() => null);
-            if (res2 && (res2.ok || res2.status === 206)) return true;
-          }
-          return false;
+            const controller = new AbortController();
+            const url = normalizeDownloadUrl(base, cid);
+            try {
+                const res = await withTimeout(
+                    fetch(url, { method: "HEAD", signal: controller.signal }),
+                    TIMEOUT_MS,
+                    controller
+                );
+                if (res.ok) return true;
+                if (res.status === 405) throw new Error("HEAD not allowed, falling back to GET");
+            } catch (_) {
+                const controller2 = new AbortController();
+                const res2 = await withTimeout(
+                    fetch(url, { headers: { Range: "bytes=0-0" }, signal: controller2.signal }),
+                    TIMEOUT_MS,
+                    controller2
+                ).catch(() => null);
+                if (res2 && (res2.ok || res2.status === 206)) return true;
+            }
+            return false;
         }
 
         async function probeUploadGateway(url) {
-          // POST a tiny test file
-          const fd = new FormData();
-          const blob = new Blob(["h"], { type: "text/plain" });
-          fd.append("file", blob, "hello.txt");
-          const controller = new AbortController();
-          try {
-            const res = await withTimeout(
-              fetch(url, { method: "POST", body: fd, signal: controller.signal }),
-              TIMEOUT_MS,
-              controller
-            );
-            return res.ok;
-          } catch (_) {
-            return false;
-          }
+            const fd = new FormData();
+            const blob = new Blob(["test"], { type: "text/plain" });
+            fd.append("file", blob, "test.txt");
+            const controller = new AbortController();
+            try {
+                const res = await withTimeout(
+                    fetch(url, { method: "POST", body: fd, signal: controller.signal }),
+                    TIMEOUT_MS,
+                    controller
+                );
+                return res.ok;
+            } catch (_) {
+                return false;
+            }
         }
 
         async function checkGateways(gateways, selectElem, progressEl, isUpload = false) {
-          selectElem.innerHTML = ""; // Clear existing options
-          const total = gateways.length;
-          let working = 0;
-          updateProgressBar(progressEl, 0, total);
+            const btn = progressEl.closest('.row').querySelector('button');
+            btn.disabled = true;
+            selectElem.innerHTML = "";
+            const total = gateways.length;
+            let completed = 0;
+            let workingCount = 0;
+            updateProgressBar(progressEl, 0, 0, total);
 
-          const results = []; // { gw, ok, ms }
+            const results = [];
 
-          async function testOne(gw) {
-            const start = performance.now();
-            const ok = isUpload ? await probeUploadGateway(gw) : await probeDownloadGateway(gw, TEST_CID);
-            const ms = Math.round(performance.now() - start);
-            results.push({ gw, ok, ms });
-            if (ok) {
-              const label = SHOW_LATENCY_IN_OPTIONS ? `${gw} (${ms} ms)` : gw;
-              addOptionIfNotExists(selectElem, gw, label);
-              working++;
+            async function testOne(gw) {
+                const start = performance.now();
+                let ok = false;
+                try {
+                    ok = isUpload ? await probeUploadGateway(gw) : await probeDownloadGateway(gw, TEST_CID);
+                } catch (e) {
+                    // console.error(`Probe failed for ${gw}`, e);
+                }
+                const ms = Math.round(performance.now() - start);
+                completed++;
+                if (ok) {
+                    workingCount++;
+                    results.push({ gw, ms });
+                }
+                updateProgressBar(progressEl, completed, workingCount, total);
             }
-            updateProgressBar(progressEl, working, total);
-          }
 
-          // Limit concurrency by processing in chunks
-          for (let i = 0; i < gateways.length; i += CONCURRENCY) {
-            const slice = gateways.slice(i, i + CONCURRENCY);
-            await Promise.all(slice.map(testOne));
-          }
+            for (let i = 0; i < gateways.length; i += CONCURRENCY) {
+                const chunk = gateways.slice(i, i + CONCURRENCY);
+                await Promise.all(chunk.map(testOne));
+            }
 
-          // Auto-sort working gateways by latency ascending
-          const workingSorted = results.filter((r) => r.ok).sort((a, b) => a.ms - b.ms);
+            results.sort((a, b) => a.ms - b.ms);
 
-          // Rebuild select in sorted order
-          selectElem.innerHTML = "";
-          for (const r of workingSorted) {
-            const label = SHOW_LATENCY_IN_OPTIONS ? `${r.gw} (${r.ms} ms)` : r.gw;
-            addOptionIfNotExists(selectElem, r.gw, label);
-          }
+            selectElem.innerHTML = "";
+            results.forEach(r => {
+                const label = SHOW_LATENCY_IN_OPTIONS ? `${r.gw} (${r.ms} ms)` : r.gw;
+                const option = document.createElement("option");
+                option.value = r.gw;
+                option.text = label;
+                selectElem.add(option);
+            });
 
-          // Persist only the values (not the labels) for future loads
-          const key = isUpload ? "uploadGateways.filtered" : "downloadGateways.filtered";
-          localStorage.setItem(key, JSON.stringify(workingSorted.map((r) => r.gw)));
-        } catch (_) {
-                // ignore individual errors
-              } finally {
-                updateProgressBar(progressEl, working, total);
-              }
-            })
-          );
-
-          // Persist the last filtered set to localStorage for convenience
-          const key = isUpload ? "uploadGateways.filtered" : "downloadGateways.filtered";
-          localStorage.setItem(key, JSON.stringify(Array.from(selectElem.options).map((o) => o.value)));
+            const key = isUpload ? "uploadGateways.filtered" : "downloadGateways.filtered";
+            localStorage.setItem(key, JSON.stringify(results.map(r => r.gw)));
+            btn.disabled = false;
         }
 
         function restoreSelectFromLocalStorage(selectElem, key, fallbackList) {
-          const raw = localStorage.getItem(key);
-          const list = raw ? JSON.parse(raw) : fallbackList;
-          list.forEach((gw) => addOptionIfNotExists(selectElem, gw, gw));
+            try {
+                const raw = localStorage.getItem(key);
+                const list = raw ? JSON.parse(raw) : fallbackList;
+                list.forEach((gw) => addOptionIfNotExists(selectElem, gw, gw));
+            } catch (e) {
+                console.error("Failed to restore from localStorage:", e);
+                fallbackList.forEach((gw) => addOptionIfNotExists(selectElem, gw, gw));
+            }
         }
 
         async function generateCID(file) {
-          // Optional: compute CID locally if the response lacks Hash/cid
-          if (!window.Ipfs || typeof Ipfs.create !== "function") return null;
-          try {
-            const ipfs = await Ipfs.create();
-            const { cid } = await ipfs.add(file);
-            await ipfs.stop();
-            return cid.toString();
-          } catch (err) {
-            console.error("Local CID generation failed:", err);
-            return null;
-          }
-        }
-
-        async function handleSuccess(req) {
-          let lines = String(req.responseText || "").split("\n").filter((l) => l.trim() !== "");
-          let json = [];
-          for (const l of lines) {
+            if (!window.Ipfs || typeof Ipfs.create !== "function") return null;
             try {
-              json.push(JSON.parse(l));
-            } catch (e) {
-              console.error("Error parsing JSON:", e, l);
+                const ipfs = await Ipfs.create();
+                const { cid } = await ipfs.add(file);
+                await ipfs.stop();
+                return cid.toString();
+            } catch (err) {
+                console.error("Local CID generation failed:", err);
+                return null;
             }
-          }
-          await updateUIAfterUpload(json);
         }
 
-        function handleError() {
-          alert("There was an error uploading the file.");
-          loadingAlert.style.display = "none";
-          submitBtn.disabled = false;
-        }
+        async function updateUIAfterUpload(jsonResponses) {
+            hashesList.innerHTML = "";
+            const files = Array.from(fileInput.files);
+            const pinCmds = [];
 
-        async function updateUIAfterUpload(json) {
-          hashesList.innerHTML = "";
-          const files = Array.from(fileInput.files);
-          const pinCmds = [];
+            for (let i = 0; i < jsonResponses.length; i++) {
+                const obj = jsonResponses[i] || {};
+                const file = files[i];
 
-          for (let i = 0; i < Math.max(json.length, files.length); i++) {
-            const obj = json[i] || {};
-            const file = files[i];
+                let hash = obj.Hash || obj.cid || null;
+                let name = obj.Name || obj.name || (file ? file.name : "file" + i);
+                const size = obj.Size || obj.size || (file ? file.size : "");
 
-            let hash = obj.Hash || obj.cid || null;
-            let name = obj.Name || obj.name || (file ? file.name : "file" + i);
-            const size = obj.Size || obj.size || (file ? file.size : "");
+                if (!hash && file) {
+                    hash = await generateCID(file); // Fallback to local CID generation
+                }
 
-            if (!hash && file) {
-              // Fallback: try compute CID locally (best-effort)
-              hash = await generateCID(file);
+                if (!hash) continue;
+
+                const base = downloadSelect.value || downloadGateways[0];
+                const url = normalizeDownloadUrl(base, hash);
+                const paramConnector = url.includes("?") ? "&" : "?";
+                const urlWithFilename = url + paramConnector + "filename=" + encodeURIComponent(name);
+
+                const li = document.createElement("li");
+                li.className = "list-group-item d-flex justify-content-between align-items-center";
+
+                const a = document.createElement("a");
+                a.href = urlWithFilename;
+                a.target = "_blank";
+                a.rel = "noopener noreferrer";
+                a.textContent = `${hash} (${name}) - Size: ${size} bytes`;
+
+                const copyBtn = document.createElement("button");
+                copyBtn.className = "btn btn-sm btn-outline-secondary btn-copy";
+                copyBtn.textContent = "Copy URL";
+                copyBtn.addEventListener("click", () => copyToClipboard(urlWithFilename, copyBtn));
+
+                li.appendChild(a);
+                li.appendChild(copyBtn);
+                hashesList.appendChild(li);
+
+                pinCmds.push(`ipfs pin add ${hash}`);
             }
 
-            if (!hash) continue; // nothing to show
-
-            // Build gateway link with filename hint when supported
-            const base = downloadSelect.value || downloadGateways[0] || "https://ipfs.io/ipfs/";
-            const url = normalizeDownloadUrl(base, hash);
-            const paramConnector = url.includes("?") ? "&" : "?";
-            const urlWithFilename = url + paramConnector + "filename=" + encodeURIComponent(name);
-
-            const li = document.createElement("li");
-            li.className = "list-group-item d-flex justify-content-between align-items-center";
-
-            const a = document.createElement("a");
-            a.href = urlWithFilename;
-            a.target = "_blank";
-            a.rel = "noopener noreferrer";
-            a.textContent = `${hash} (${name}) - Size: ${size} bytes`;
-
-            const copyBtn = document.createElement("button");
-            copyBtn.className = "btn btn-sm btn-outline-secondary";
-            copyBtn.textContent = "Copy URL";
-            copyBtn.addEventListener("click", async () => {
-              try {
-                await navigator.clipboard.writeText(urlWithFilename);
-                copyBtn.textContent = "Copied!";
-                setTimeout(() => (copyBtn.textContent = "Copy URL"), 1200);
-              } catch (_) {}
-            });
-
-            li.appendChild(a);
-            li.appendChild(copyBtn);
-            hashesList.appendChild(li);
-
-            pinCmds.push(`ipfs pin add ${hash}`);
-          }
-
-          loadingAlert.style.display = "none";
-          submitBtn.disabled = false;
-          hashesList.style.display = "block";
-          pinCode.textContent = pinCmds.join("\n");
-          pinDiv.style.display = pinCmds.length ? "block" : "none";
-          copyPinsBtn.style.display = pinCmds.length ? "inline-block" : "none";
+            loadingAlert.style.display = "none";
+            submitBtn.disabled = false;
+            hashesList.style.display = "block";
+            pinCode.textContent = pinCmds.join("\n");
+            pinDiv.style.display = pinCmds.length ? "block" : "none";
+            copyPinsBtn.style.display = pinCmds.length ? "inline-block" : "none";
         }
 
         function submitForm(e) {
-          e.preventDefault();
-          const files = fileInput.files;
-          if (!files || files.length === 0) return;
+            e.preventDefault();
+            const files = fileInput.files;
+            if (!files || files.length === 0) {
+                showError("Please select at least one file to upload.");
+                return;
+            }
 
-          const fd = new FormData();
-          for (const f of files) fd.append("file", f);
+            const fd = new FormData();
+            for (const f of files) fd.append("file", f);
 
-          loadingAlert.style.display = "block";
-          submitBtn.disabled = true;
+            loadingAlert.style.display = "block";
+            submitBtn.disabled = true;
 
-          const req = new XMLHttpRequest();
-          req.onerror = handleError;
-          req.onload = () => handleSuccess(req);
-          req.open("POST", uploadSelect.value);
-          req.send(fd);
+            const req = new XMLHttpRequest();
+            req.onerror = () => {
+                showError("A network error occurred. Please check your connection and the gateway status.");
+                loadingAlert.style.display = "none";
+                submitBtn.disabled = false;
+            };
+            req.onload = async () => {
+                if (req.status >= 200 && req.status < 300) {
+                    let lines = String(req.responseText || "").split("\n").filter((l) => l.trim() !== "");
+                    let jsonResponses = [];
+                    for (const l of lines) {
+                        try {
+                            jsonResponses.push(JSON.parse(l));
+                        } catch (e) {
+                            console.error("Error parsing JSON line:", l, e);
+                        }
+                    }
+                    if (jsonResponses.length === 0) {
+                         showError("The gateway returned an empty or invalid response.");
+                         loadingAlert.style.display = "none";
+                         submitBtn.disabled = false;
+                         return;
+                    }
+                    await updateUIAfterUpload(jsonResponses);
+                } else {
+                    showError(`Upload failed. The gateway returned status ${req.status}: ${req.statusText}`);
+                    loadingAlert.style.display = "none";
+                    submitBtn.disabled = false;
+                }
+            };
+            req.open("POST", uploadSelect.value);
+            req.send(fd);
         }
 
         // ====== Init ======
         window.addEventListener("load", function () {
-          // Terms modal
-          if (!localStorage.getItem("termsAccepted")) {
-            const warningModal = new bootstrap.Modal(
-              document.getElementById("warningModal"),
-              { backdrop: "static", keyboard: false }
-            );
-            warningModal.show();
-            document.getElementById("acceptBtn").addEventListener("click", function () {
-              localStorage.setItem("termsAccepted", "true");
-              warningModal.hide();
+            errorModalInstance = new bootstrap.Modal(document.getElementById('errorModal'));
+            
+            if (!localStorage.getItem("termsAccepted")) {
+                const warningModal = new bootstrap.Modal(document.getElementById("warningModal"), {
+                    backdrop: "static",
+                    keyboard: false
+                });
+                warningModal.show();
+                document.getElementById("acceptBtn").addEventListener("click", function () {
+                    localStorage.setItem("termsAccepted", "true");
+                    warningModal.hide();
+                });
+                document.getElementById("declineBtn").addEventListener("click", function () {
+                    window.location.href = "about:blank";
+                });
+            }
+
+            restoreSelectFromLocalStorage(downloadSelect, "downloadGateways.filtered", downloadGateways);
+            restoreSelectFromLocalStorage(uploadSelect, "uploadGateways.filtered", uploadGateways);
+
+            downloadSelect.addEventListener("change", () => {
+                localStorage.setItem("downloadGateways.last", downloadSelect.value);
+                const match = gatewayMatchingList[downloadSelect.value];
+                if (match) uploadSelect.value = match;
             });
-            document.getElementById("declineBtn").addEventListener("click", function () {
-              window.location.href = "https://google.com";
+            uploadSelect.addEventListener("change", () => {
+                localStorage.setItem("uploadGateways.last", uploadSelect.value);
             });
-          }
 
-          // Populate selects (avoid duplicate loops)
-          restoreSelectFromLocalStorage(downloadSelect, "downloadGateways.filtered", downloadGateways);
-          restoreSelectFromLocalStorage(uploadSelect, "uploadGateways.filtered", uploadGateways);
+            const lastDL = localStorage.getItem("downloadGateways.last");
+            if (lastDL) downloadSelect.value = lastDL;
+            const lastUL = localStorage.getItem("uploadGateways.last");
+            if (lastUL) uploadSelect.value = lastUL;
 
-          // Persist selection
-          downloadSelect.addEventListener("change", () => {
-            localStorage.setItem("downloadGateways.last", downloadSelect.value);
-            const match = gatewayMatchingList[downloadSelect.value];
-            if (match) uploadSelect.value = match;
-          });
-          uploadSelect.addEventListener("change", () => {
-            localStorage.setItem("uploadGateways.last", uploadSelect.value);
-          });
+            fileInput.addEventListener("change", function () {
+                submitBtn.style.display = this.files && this.files.length > 0 ? "inline-block" : "none";
+            });
 
-          // Restore last selected gateways
-          const lastDL = localStorage.getItem("downloadGateways.last");
-          if (lastDL) downloadSelect.value = lastDL;
-          const lastUL = localStorage.getItem("uploadGateways.last");
-          if (lastUL) uploadSelect.value = lastUL;
-
-          // File input toggles the Upload button
-          fileInput.addEventListener("change", function () {
-            submitBtn.style.display = this.files && this.files.length > 0 ? "inline-block" : "none";
-          });
-
-          // Attach actions
-          document
-            .getElementById("check-download-gateways")
-            .addEventListener("click", () =>
-              checkGateways(downloadGateways, downloadSelect, downloadProgress, false)
+            document.getElementById("check-download-gateways").addEventListener("click", () =>
+                checkGateways(downloadGateways, downloadSelect, downloadProgress, false)
             );
-          document
-            .getElementById("check-upload-gateways")
-            .addEventListener("click", () =>
-              checkGateways(uploadGateways, uploadSelect, uploadProgress, true)
+            document.getElementById("check-upload-gateways").addEventListener("click", () =>
+                checkGateways(uploadGateways, uploadSelect, uploadProgress, true)
             );
 
-          document.getElementById("submit").addEventListener("click", submitForm);
+            document.getElementById("submit").addEventListener("click", submitForm);
 
-          // Copy pins
-          copyPinsBtn.addEventListener("click", async () => {
-            try {
-              await navigator.clipboard.writeText(pinCode.textContent);
-              copyPinsBtn.textContent = "Copied!";
-              setTimeout(() => (copyPinsBtn.textContent = "Copy pin commands"), 1200);
-            } catch (_) {}
-          });
+            copyPinsBtn.addEventListener("click", () => {
+                copyToClipboard(pinCode.textContent, copyPinsBtn);
+            });
         });
       })();
     </script>
-  </body>
+</body>
 </html>
