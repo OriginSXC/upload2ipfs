@@ -12,7 +12,7 @@ on:
         required: false
         default: "bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m"
   push:
-    branches: [ master, main ]  # 你的默认分支是哪个就会触发
+    branches: [ master, main ]  # 改成你的默认分支
     paths:
       - 'index.html'
       - 'gateways.js'
@@ -49,96 +49,99 @@ jobs:
       - name: Install Python deps
         run: pip install requests
 
-      # --- Ensure gateways.js exists (no heredoc; robust) ---
+      # --- Ensure gateways.js exists (robust; no heredoc conflicts) ---
       - name: Ensure gateways.js (robust)
         shell: bash
         run: |
           set -euo pipefail
-          # 1) 如果已有 gateways.js 且包含数组，保留
           if [[ -f gateways.js ]] && grep -qE 'downloadGateways\s*=\s*\[' gateways.js; then
-            echo "Using existing gateways.js with downloadGateways array"
-            exit 0
+            echo "Using existing gateways.js with downloadGateways array";
+          elif [[ -f gateways.txt ]]; then
+            node <<'NODE'
+            const fs = require('fs');
+            const arr = fs.readFileSync('gateways.txt','utf8').split(/\r?\n/).map(s=>s.trim()).filter(Boolean);
+            const js = "const downloadGateways = [\n  " + arr.map(u=>JSON.stringify(u)).join(",\n  ") + "\n];\n";
+            fs.writeFileSync('gateways.js', js);
+            console.log('gateways.js built from gateways.txt');
+            NODE
+          elif [[ -f index.html ]]; then
+            node <<'NODE'
+            const fs = require('fs');
+            const s = fs.readFileSync('index.html','utf8');
+            const m = s.match(/\bdownloadGateways\s*=\s*(\[[\s\S]*?\])\s*;?/m);
+            if (m) {
+              fs.writeFileSync('gateways.js', "const downloadGateways = " + m[1] + "\n");
+              console.log('gateways.js extracted from index.html');
+            } else {
+              const list = ["https://ipfs.io/ipfs/","https://cloudflare-ipfs.com/ipfs/","https://w3s.link/ipfs/","https://nftstorage.link/ipfs/"];
+              const js = "const downloadGateways = [\n  " + list.map(u=>JSON.stringify(u)).join(",\n  ") + "\n];\n";
+              fs.writeFileSync('gateways.js', js);
+              console.log('gateways.js created with fallback list (no array in index.html)');
+            }
+            NODE
+          else
+            node <<'NODE'
+            const fs = require('fs');
+            const list = ["https://ipfs.io/ipfs/","https://cloudflare-ipfs.com/ipfs/","https://w3s.link/ipfs/","https://nftstorage.link/ipfs/"];
+            const js = "const downloadGateways = [\n  " + list.map(u=>JSON.stringify(u)).join(",\n  ") + "\n];\n";
+            fs.writeFileSync('gateways.js', js);
+            console.log('gateways.js created with fallback list (no index.html)');
+            NODE
           fi
-
-          # 2) 若有 gateways.txt，用它生成 gateways.js
-          if [[ -f gateways.txt ]]; then
-            node -e 'const fs=require("fs");const arr=fs.readFileSync("gateways.txt","utf8").split(/\r?\n/).map(s=>s.trim()).filter(Boolean);const js="const downloadGateways = [\n  "+arr.map(u=>JSON.stringify(u)).join(",\n  ")+"\n];\n";fs.writeFileSync("gateways.js",js);console.log("gateways.js built from gateways.txt");'
-            exit 0
-          fi
-
-          # 3) 若有 index.html，从里面提取（若存在）
-          if [[ -f index.html ]]; then
-            node -e 'const fs=require("fs");const s=fs.readFileSync("index.html","utf8");const m=s.match(/\bdownloadGateways\s*=\s*(\[[\s\S]*?\])\s*;?/m);if(m){fs.writeFileSync("gateways.js","const downloadGateways = "+m[1]+"\n");console.log("gateways.js extracted from index.html");process.exit(0);}process.exit(1);' || true
-            if [[ -f gateways.js ]]; then exit 0; fi
-          fi
-
-          # 4) 最后兜底：写入简短可用列表
-          node -e 'const fs=require("fs");const list=["https://ipfs.io/ipfs/","https://cloudflare-ipfs.com/ipfs/","https://w3s.link/ipfs/","https://nftstorage.link/ipfs/"];const js="const downloadGateways = [\n  "+list.map(u=>JSON.stringify(u)).join(",\n  ")+"\n];\n";fs.writeFileSync("gateways.js",js);console.log("gateways.js created with fallback list");'
 
       # --- Patch index.html: ONLY replace downloadGateways; do not touch CID ---
       - name: Patch index.html (downloadGateways only; robust)
+        if: ${{ hashFiles('index.html') != '' }}
         shell: bash
         run: |
           set -euo pipefail
-          if [[ ! -f index.html ]]; then
-            echo "index.html not found; skip patch."
-            exit 0
-          fi
+          node <<'NODE'
+          const fs = require('fs');
+          if (!fs.existsSync('index.html')) { process.exit(0); }
+          let gwList = null;
+          if (fs.existsSync('gateways.js')) {
+            const t = fs.readFileSync('gateways.js','utf8');
+            const m = t.match(/downloadGateways\s*=\s*(\[[\s\S]*?\])\s*;?/m);
+            if (m) gwList = m[1];
+          }
+          if (!gwList && fs.existsSync('gateways.txt')) {
+            const arr = fs.readFileSync('gateways.txt','utf8').split(/\r?\n/).map(s=>s.trim()).filter(Boolean);
+            if (arr.length) gwList = "[\n  " + arr.map(u=>JSON.stringify(u)).join(",\n  ") + "\n]";
+          }
+          if (!gwList) {
+            console.error('No gateways list available; will inject fallback');
+            const list = ["https://ipfs.io/ipfs/","https://cloudflare-ipfs.com/ipfs/","https://w3s.link/ipfs/","https://nftstorage.link/ipfs/"];
+            gwList = "[\n  " + list.map(u=>JSON.stringify(u)).join(",\n  ") + "\n]";
+          }
+          let html = fs.readFileSync('index.html','utf8');
+          const patterns = [
+            /\bdownloadGateways\s*=\s*\[[\s\S]*?\]\s*;?/m,
+            /\b(?:const|let|var)\s+downloadGateways\s*=\s*\[[\s\S]*?\]\s*;?/m
+          ];
+          let replaced = false;
+          for (const re of patterns) {
+            if (re.test(html)) { html = html.replace(re, `downloadGateways = ${gwList};`); replaced = true; break; }
+          }
+          if (!replaced) {
+            if (/<\/body>/i.test(html)) {
+              html = html.replace(/<\/body>/i, `<script>const downloadGateways = ${gwList};<\/script>\n</body>`);
+              replaced = true;
+            } else if (/<\/head>/i.test(html)) {
+              html = html.replace(/<\/head>/i, `<script>const downloadGateways = ${gwList};<\/script>\n</head>`);
+              replaced = true;
+            }
+          }
+          fs.writeFileSync('index.html', html);
+          console.log(replaced ? 'downloadGateways written/replaced.' : 'WARN: still not written.');
+          NODE
 
-          node -e '
-            const fs=require("fs");
-            const has=p=>fs.existsSync(p);
-            const read=p=>fs.readFileSync(p,"utf8");
-            // 读取 gateways 列表（优先 gateways.js -> gateways.txt）
-            let gwList=null;
-            if(has("gateways.js")){
-              const txt=read("gateways.js");
-              const m=txt.match(/downloadGateways\s*=\s*(\[[\s\S]*?\])\s*;?/m);
-              if(m) gwList=m[1];
-            }
-            if(!gwList && has("gateways.txt")){
-              const arr=read("gateways.txt").split(/\r?\n/).map(s=>s.trim()).filter(Boolean);
-              if(arr.length) gwList="[\n  "+arr.map(u=>JSON.stringify(u)).join(",\n  ")+"\n]";
-            }
-            if(!gwList){
-              // 兜底：内置完整列表（与你当前页面一致）
-              const arr=[
-                "https://4everland.io/ipfs/","https://alexdav.id/ipfs/","https://api.thegraph.com/ipfs/api/v0/cat?arg=","https://api.universalprofile.cloud/ipfs/","https://aragon.ventures/ipfs/","https://astyanax.io/ipfs/","https://c4rex.co/ipfs/","https://cdn.cwinfo.net/ipfs/","https://cdn.ipfsscan.io/ipfs/","https://cloudflare-ipfs.com/ipfs/","https://crustwebsites.net/ipfs/","https://cthd.icu/ipfs/","https://dlunar.net/ipfs/","https://dweb.eu.org/ipfs/","https://dweb.link/ipfs/","https://fleek.cool/ipfs/","https://flk-ipfs.xyz/ipfs/","https://gateway.ipfs.io/ipfs/","https://gateway.lighthouse.storage/ipfs/","https://gateway.originprotocol.com/ipfs/","https://gateway.pinata.cloud/ipfs/","https://gateway.serph.network/ipfs/","https://gravity.jup.io/ipfs/","https://gw-seattle.crustcloud.io/ipfs/","https://gw.crustapps.net/ipfs/","https://gw.ipfs-lens.dev/ipfs/","https://hardbin.com/ipfs/","https://hashnews.k1ic.com/ipfs/","https://hub.textile.io/ipfs/","https://infura-ipfs.io/ipfs/","https://ipfs.1-2.dev/ipfs/","https://ipfs.alloyxuast.tk/ipfs/","https://ipfs.algonode.dev/ipfs/","https://ipfs.algonode.xyz/ipfs/","https://ipfs.anonymize.com/ipfs/","https://ipfs.arching-kaos.com/ipfs/","https://ipfs.best-practice.se/ipfs/","https://ipfs.busy.org/ipfs/","https://ipfs.chisdealhd.co.uk/ipfs/","https://ipfs.cyou/ipfs/","https://ipfs.decentralized-content.com/ipfs/","https://ipfs.decoo.io/ipfs/","https://ipfs.denarius.io/ipfs/","https://ipfs.dlux.io/ipfs/","https://ipfs.drink.cafe/ipfs/","https://ipfs.eth.aragon.network/ipfs/","https://ipfs.filebase.io/ipfs/","https://ipfs.fleek.co/ipfs/","https://ipfs.flock.io/ipfs/","https://ipfs.fooock.com/ipfs/","https://ipfs.funnychain.co/ipfs/","https://ipfs.genenetwork.org/ipfs/","https://ipfs.gitcoin.co/api/v0/cat?arg=","https://ipfs-2.gitcoin.co/api/v0/cat?arg=","https://ipfs-3.gitcoin.co/api/v0/cat?arg=","https://ipfs-gateway.cloud/ipfs/","https://ipfs-gateway.omniflix.studio/ipfs/","https://ipfs.greyh.at/ipfs/","https://ipfs.ink/ipfs/","https://ipfs.io/ipfs/","https://ipfs.jbb.one/ipfs/","https://ipfs.joaoleitao.org/ipfs/","https://ipfs.kaleido.art/ipfs/","https://ipfs.kavin.rocks/ipfs/","https://ipfs.kinematiks.com/ipfs/","https://ipfs.lain.la/ipfs/","https://ipfs.litnet.work/ipfs/","https://ipfs.mttk.net/ipfs/","https://ipfs.namebase.io/ipfs/","https://ipfs.network.thegraph.com/ipfs/api/v0/cat?arg=","https://ipfs.omniflix.studio/ipfs/","https://ipfs.oversas.org/ipfs/","https://ipfs.overpi.com/ipfs/","https://ipfs.questbook.app:8080/api/v0/cat?arg=","https://ipfs.runfission.com/ipfs/","https://ipfs.scalaproject.io/ipfs/","https://ipfs.slang.cx/ipfs/","https://ipfs.sloppyta.co/ipfs/","https://ipfs.smartholdem.io/ipfs/","https://ipfs.staging.cloudflare-ipfs.com/ipfs/","https://ipfs.stardustxr.org/ipfs/","https://ipfs.tayfundogdas.me/ipfs/","https://ipfs.telos.miami/ipfs/","https://ipfs.treejer.com/ipfs/","https://ipfs.tribecap.co/ipfs/","https://ipfs.trusti.id/ipfs/","https://ipfs.tubby.cloud/ipfs/","https://ipfs.uploads.nu/ipfs/","https://ipfs.web3.party/ipfs/","https://ipfs.xoqq.ch/ipfs/","https://ipfs.yt/ipfs/","https://ipfs0.sjc.cloudsigma.com/ipfs/","https://ipfs1.pixura.io/ipfs/","https://ipfsgateway.makersplace.com/ipfs/","https://ipns.co/ipfs/","https://jorropo.net/ipfs/","https://konubinix.eu/ipfs/","https://magic.decentralized-content.com/ipfs/","https://natoboram.mynetgear.com/ipfs/","https://nftstorage.link/ipfs/","https://ninetailed.ninja/ipfs/","https://permaweb.eu.org/ipfs/","https://permaweb.io/ipfs/","https://ravencoinipfs-gateway.com/ipfs/","https://search.ipfsgate.com/ipfs/","https://storry.tv/ipfs/","https://storjipfs-gateway.com/ipfs/","https://trustless-gateway.link/ipfs/","https://tth-ipfs.com/ipfs/","https://via0.com/ipfs/","https://video.oneloveipfs.com/ipfs/","https://w3s.link/ipfs/"
-              ];
-              gwList="[\n  "+arr.map(u=>JSON.stringify(u)).join(",\n  ")+"\n]";
-            }
-            let html=fs.readFileSync("index.html","utf8");
-            // 宽松匹配：允许无分号/不同声明方式
-            const patterns=[
-              /\bdownloadGateways\s*=\s*\[[\s\S]*?\]\s*;?/m,
-              /\b(?:const|let|var)\s+downloadGateways\s*=\s*\[[\s\S]*?\]\s*;?/m
-            ];
-            let replaced=false;
-            for(const re of patterns){
-              if(re.test(html)){ html=html.replace(re,`downloadGateways = ${gwList};`); replaced=true; break; }
-            }
-            if(!replaced){
-              // 找不到就注入一个 <script>，但不改其他逻辑
-              if(/<\/body>/i.test(html)){
-                html=html.replace(/<\/body>/i, `<script>const downloadGateways = ${gwList};</script>\n</body>`);
-                replaced=true;
-              }else if(/<\/head>/i.test(html)){
-                html=html.replace(/<\/head>/i, `<script>const downloadGateways = ${gwList};</script>\n</head>`);
-                replaced=true;
-              }
-            }
-            fs.writeFileSync("index.html",html);
-            console.log(replaced ? "downloadGateways written/replaced." : "WARN: still not written.");
-          '
-
-      # --- Write remote_probe_checkhost.py (no heredoc; via Node) ---
+      # --- Create remote_probe_checkhost.py (heredoc; safe) ---
       - name: Create remote_probe_checkhost.py
         shell: bash
         run: |
           set -euo pipefail
-          node -e '
-            const fs=require("fs");
-            const code=`#!/usr/bin/env python3
+          cat > remote_probe_checkhost.py <<'PY'
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 import argparse, csv, re, time, requests
 
@@ -147,7 +150,7 @@ CHECK_RESULT = "https://check-host.net/check-result/{rid}"
 
 def parse_urls(path: str):
     text = open(path, "r", encoding="utf-8", errors="ignore").read()
-    urls = re.findall(r"https?://[^\"\\s]+", text)
+    urls = re.findall(r"https?://[^\"\s]+", text)
     clean, seen = [], set()
     for u in urls:
         u = u.strip().rstrip(",")
@@ -226,23 +229,19 @@ def main():
                 node_results = poll_result(rid)
                 summary = summarize(node_results)
                 w.writerow([base, method, test_url, summary["exists"], summary["nodes_total"], summary["nodes_ready"], summary["nodes_ok"], summary["codes"], summary["fastest_s"], perm, rid])
-                print(f"[{'ONLINE' if summary['exists'] else 'OFFLINE'}] {base} ok={summary['nodes_ok']}/{summary['nodes_total']} codes={summary['codes']}")
+                print(f"[{ 'ONLINE' if summary['exists'] else 'OFFLINE' }] {base} ok={summary['nodes_ok']}/{summary['nodes_total']} codes={summary['codes']}")
             except Exception as e:
-                w.writerow([base, method, test_url, 0, "", "", "", "", "", "", ""])
+                w.writerow([base, method, test_url, 0, "", "", "", "", "", "", ""]) 
                 print(f"[ERROR] {base} -> {e}")
             time.sleep(args.sleep)
     print(f"Done. CSV saved to: {args.csv}")
 
 if __name__ == "__main__":
     main()
-`;
-            fs.writeFileSync("remote_probe_checkhost.py", code);
-            fs.chmodSync("remote_probe_checkhost.py", 0o755);
-            console.log("remote_probe_checkhost.py created.");
-          '
-          ls -l remote_probe_checkhost.py
+PY
+          chmod +x remote_probe_checkhost.py
 
-      # --- Run probe ---
+      # --- Run probe (multi-region) ---
       - name: Run probe (multi-region)
         env:
           NODES: ${{ github.event.inputs.nodes }}
@@ -263,6 +262,7 @@ if __name__ == "__main__":
           cp reports/results_checkhost.csv "reports/latest_ipfs_gateways.csv"
 
       - name: Commit changes (CSV + patched index.html)
+        shell: bash
         run: |
           set -e
           git config user.name "github-actions[bot]"
