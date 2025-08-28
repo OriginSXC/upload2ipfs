@@ -53,7 +53,7 @@ jobs:
         shell: bash
         run: |
           python - <<'PY'
-          import textwrap, pathlib
+          import textwrap, pathlib, re
           code = r'''
           #!/usr/bin/env python3
           # -*- coding: utf-8 -*-
@@ -64,14 +64,24 @@ jobs:
           DEFAULT_CID = "bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m"
 
           def parse_urls(path: str):
-              text = open(path, "r", encoding="utf-8", errors="ignore").read()
-              urls = re.findall(r'https?://[^"\\s]+', text)
+              # This regex is designed to extract URLs from either plain text lines
+              # or from within quotes in a JS file.
+              url_regex = re.compile(r'https?://[^\s"\'`]+')
+              found_urls = []
+              with open(path, "r", encoding="utf-8", errors="ignore") as f:
+                  text = f.read()
+                  found_urls = url_regex.findall(text)
+
               clean, seen = [], set()
-              for u in urls:
-                  u = u.strip().rstrip(",")
-                  if u and u not in seen and (u.startswith("http://") or u.startswith("https://")):
-                      seen.add(u); clean.append(u)
-              if not clean: raise RuntimeError("No http(s) URLs found in input file.")
+              for u in found_urls:
+                  # Clean up trailing characters that might be part of JS syntax
+                  u = u.strip().rstrip(',').rstrip(']').rstrip(';')
+                  if u and u not in seen:
+                      seen.add(u)
+                      clean.append(u)
+              
+              if not clean:
+                  raise RuntimeError(f"No http(s) URLs found in input file: {path}")
               return clean
 
           def build_test_url(base: str, cid: str):
