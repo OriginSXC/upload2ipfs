@@ -46,7 +46,7 @@ jobs:
           import argparse, csv, re, time, requests
           CHECK_HTTP = "https://check-host.net/check-http"
           CHECK_RESULT = "https://check-host.net/check-result/{rid}"
-          DEFAULT_CID = "QmYwAPJzv5CZsnAzt8auVTLzkJZC2q4anDyxTve5zvD4Zz"
+          DEFAULT_CID = "QmesMDnH9dy3Unxj9Du7S6bvG197XcGSrBwLPeKt7fkDSR"
 
           def parse_urls(path: str):
             text = open(path, "r", encoding="utf-8", errors="ignore").read()
