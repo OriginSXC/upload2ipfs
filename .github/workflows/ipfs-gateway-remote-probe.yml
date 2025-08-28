@@ -11,9 +11,16 @@ on:
         description: "IPFS CID to test (only for probing; index.html 不改CID)"
         required: false
         default: "QmesMDnH9dy3Unxj9Du7S6bvG197XcGSrBwLPeKt7fkDSR"
+  push:
+    branches: [ master ]   # 你的仓库默认分支是 master；若是 main 就改成 main
+    paths:
+      - 'index.html'
+      - 'gateways.js'
+      - 'gateways.txt'
+      - '.github/workflows/ipfs-gateway-remote-probe.yml'
   schedule:
-    - cron: "23 2 * * *"   # 每天 02:23 UTC 运行
-
+    - cron: "23 2 * * *"
+    
 permissions:
   contents: write
 
