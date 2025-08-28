@@ -2,4 +2,4 @@
 
 Upload files to the IPFS network easily with [this tool](https://upload2ipfs.ipfs.qzz.io/).
 
-The Download gateways would refresh everyday in gateways.txt, and I would be happy if you can provide available gateways.
+The **Download Gateways** would refresh everyday in gateways.txt, and I would be happy if you can provide available gateways.
