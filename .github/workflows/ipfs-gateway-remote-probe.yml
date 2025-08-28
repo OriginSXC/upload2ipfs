@@ -19,7 +19,7 @@ on:
       - 'gateways.txt'
       - '.github/workflows/ipfs-gateway-remote-probe.yml'
   schedule:
-    - cron: "23 2 * * *"   # 每天 02:23 UTC 运行
+    - cron: "23 2 * * *"  # 每天 02:23 UTC 运行
 
 permissions:
   contents: write
@@ -146,7 +146,7 @@ jobs:
                           w.writerow([base, method, test_url, summary["exists"], summary["nodes_total"], summary["nodes_ready"], summary["nodes_ok"], summary["codes"], summary["fastest_s"], perm, rid])
                           print(f"[{ 'ONLINE' if summary['exists'] else 'OFFLINE' }] {base} ok={summary['nodes_ok']}/{summary['nodes_total']} codes={summary['codes']}")
                       except Exception as e:
-                          w.writerow([base, method, test_url, 0, "", "", "", "", "", "", ""]) 
+                          w.writerow([base, method, test_url, 0, "", "", "", "", "", "", ""])
                           print(f"[ERROR] {base} -> {e}")
                       time.sleep(args.sleep)
               print(f"Done. CSV saved to: {args.csv}")
@@ -257,7 +257,7 @@ jobs:
             let replaced = false;
             for (const re of patterns){
               if (re.test(html)){
-                html = html.replace(re, `downloadGateways = ${gwList};`);
+                html = html.replace(re, 'downloadGateways = ' + gwList + ';');
                 replaced = true;
                 break;
               }
@@ -265,14 +265,14 @@ jobs:
 
             if (!replaced){
               if (/<\/body>/i.test(html)){
-                html = html.replace(/<\/body>/i, `<script>const downloadGateways = ${gwList};<\/script>\n</body>`);
+                html = html.replace(/<\/body>/i, '<script>const downloadGateways = ' + gwList + ';<\/script>\\n</body>');
                 replaced = true;
               } else if (/<\/head>/i.test(html)){
-                html = html.replace(/<\/head>/i, `<script>const downloadGateways = ${gwList};<\/script>\n</head>`);
+                html = html.replace(/<\/head>/i, '<script>const downloadGateways = ' + gwList + ';<\/script>\\n</head>');
                 replaced = true;
               } else {
                 // append at end
-                html += `\n<script>const downloadGateways = ${gwList};<\/script>\n`;
+                html += '\\n<script>const downloadGateways = ' + gwList + ';<\/script>\\n';
                 replaced = true;
               }
             }
@@ -291,12 +291,16 @@ jobs:
         run: |
           set -euo pipefail
           LIST_FILE="gateways.js"
+          # If gateways.txt exists, prefer it as the source, as it's simpler for users.
           [[ -f gateways.txt ]] && LIST_FILE="gateways.txt"
 
           mkdir -p reports
-          EXTRA=""
-          if [[ -n "${CID:-}" ]]; then EXTRA="--cid ${CID}"; fi
-          python remote_probe_checkhost.py "$LIST_FILE" --nodes "${NODES:-5}" --csv reports/results_checkhost.csv $EXTRA
+          EXTRA_ARGS=""
+          # Only add --cid if the CID input is not empty
+          if [[ -n "${CID:-}" ]]; then
+            EXTRA_ARGS="--cid ${CID}"
+          fi
+          python remote_probe_checkhost.py "$LIST_FILE" --nodes "${NODES:-5}" --csv reports/results_checkhost.csv $EXTRA_ARGS
 
           TS=$(date -u +"%Y-%m-%dT%H-%M-%SZ")
           cp reports/results_checkhost.csv "reports/ipfs_gateways_${TS}.csv"
@@ -311,7 +315,12 @@ jobs:
           git add reports/*.csv || true
           git add index.html || true
           git add gateways.js || true
-          git commit -m "Probe & patch: gateways list updated; probe CID=${{ github.event.inputs.cid }} @ $(date -u +'%Y-%m-%dT%H:%M:%SZ')" || echo "Nothing to commit"
+          # Use a default value for the CID in the commit message if it's not provided
+          COMMIT_CID="${{ github.event.inputs.cid }}"
+          if [[ -z "$COMMIT_CID" ]]; then
+            COMMIT_CID="default"
+          fi
+          git commit -m "Probe & patch: gateways list updated; probe CID=${COMMIT_CID} @ $(date -u +'%Y-%m-%dT%H:%M:%SZ')" || echo "Nothing to commit"
           git push
 
       - name: Upload artifact (CSV)
