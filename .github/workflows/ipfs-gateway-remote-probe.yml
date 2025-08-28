@@ -12,14 +12,14 @@ on:
         required: false
         default: "bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m"
   push:
-    branches: [ master, main ]  # 改成你的默认分支
+    branches: [ "master", "main" ]
     paths:
       - 'index.html'
       - 'gateways.js'
       - 'gateways.txt'
       - '.github/workflows/ipfs-gateway-remote-probe.yml'
   schedule:
-    - cron: "23 2 * * *"   # 每天 02:23 UTC
+    - cron: "23 2 * * *"   # 每天 02:23 UTC 运行
 
 permissions:
   contents: write
@@ -49,108 +49,23 @@ jobs:
       - name: Install Python deps
         run: pip install requests
 
-      # --- Ensure gateways.js exists (robust; no heredoc conflicts) ---
-      - name: Ensure gateways.js (robust)
+      - name: Write remote_probe_checkhost.py (DEFAULT_CID updated)
         shell: bash
         run: |
-          set -euo pipefail
-          if [[ -f gateways.js ]] && grep -qE 'downloadGateways\s*=\s*\[' gateways.js; then
-            echo "Using existing gateways.js with downloadGateways array";
-          elif [[ -f gateways.txt ]]; then
-            node <<'NODE'
-            const fs = require('fs');
-            const arr = fs.readFileSync('gateways.txt','utf8').split(/\r?\n/).map(s=>s.trim()).filter(Boolean);
-            const js = "const downloadGateways = [\n  " + arr.map(u=>JSON.stringify(u)).join(",\n  ") + "\n];\n";
-            fs.writeFileSync('gateways.js', js);
-            console.log('gateways.js built from gateways.txt');
-            NODE
-          elif [[ -f index.html ]]; then
-            node <<'NODE'
-            const fs = require('fs');
-            const s = fs.readFileSync('index.html','utf8');
-            const m = s.match(/\bdownloadGateways\s*=\s*(\[[\s\S]*?\])\s*;?/m);
-            if (m) {
-              fs.writeFileSync('gateways.js', "const downloadGateways = " + m[1] + "\n");
-              console.log('gateways.js extracted from index.html');
-            } else {
-              const list = ["https://ipfs.io/ipfs/","https://cloudflare-ipfs.com/ipfs/","https://w3s.link/ipfs/","https://nftstorage.link/ipfs/"];
-              const js = "const downloadGateways = [\n  " + list.map(u=>JSON.stringify(u)).join(",\n  ") + "\n];\n";
-              fs.writeFileSync('gateways.js', js);
-              console.log('gateways.js created with fallback list (no array in index.html)');
-            }
-            NODE
-          else
-            node <<'NODE'
-            const fs = require('fs');
-            const list = ["https://ipfs.io/ipfs/","https://cloudflare-ipfs.com/ipfs/","https://w3s.link/ipfs/","https://nftstorage.link/ipfs/"];
-            const js = "const downloadGateways = [\n  " + list.map(u=>JSON.stringify(u)).join(",\n  ") + "\n];\n";
-            fs.writeFileSync('gateways.js', js);
-            console.log('gateways.js created with fallback list (no index.html)');
-            NODE
-          fi
-
-      # --- Patch index.html: ONLY replace downloadGateways; do not touch CID ---
-      - name: Patch index.html (downloadGateways only; robust)
-        if: ${{ hashFiles('index.html') != '' }}
-        shell: bash
-        run: |
-          set -euo pipefail
-          node <<'NODE'
-          const fs = require('fs');
-          if (!fs.existsSync('index.html')) { process.exit(0); }
-          let gwList = null;
-          if (fs.existsSync('gateways.js')) {
-            const t = fs.readFileSync('gateways.js','utf8');
-            const m = t.match(/downloadGateways\s*=\s*(\[[\s\S]*?\])\s*;?/m);
-            if (m) gwList = m[1];
-          }
-          if (!gwList && fs.existsSync('gateways.txt')) {
-            const arr = fs.readFileSync('gateways.txt','utf8').split(/\r?\n/).map(s=>s.trim()).filter(Boolean);
-            if (arr.length) gwList = "[\n  " + arr.map(u=>JSON.stringify(u)).join(",\n  ") + "\n]";
-          }
-          if (!gwList) {
-            console.error('No gateways list available; will inject fallback');
-            const list = ["https://ipfs.io/ipfs/","https://cloudflare-ipfs.com/ipfs/","https://w3s.link/ipfs/","https://nftstorage.link/ipfs/"];
-            gwList = "[\n  " + list.map(u=>JSON.stringify(u)).join(",\n  ") + "\n]";
-          }
-          let html = fs.readFileSync('index.html','utf8');
-          const patterns = [
-            /\bdownloadGateways\s*=\s*\[[\s\S]*?\]\s*;?/m,
-            /\b(?:const|let|var)\s+downloadGateways\s*=\s*\[[\s\S]*?\]\s*;?/m
-          ];
-          let replaced = false;
-          for (const re of patterns) {
-            if (re.test(html)) { html = html.replace(re, `downloadGateways = ${gwList};`); replaced = true; break; }
-          }
-          if (!replaced) {
-            if (/<\/body>/i.test(html)) {
-              html = html.replace(/<\/body>/i, `<script>const downloadGateways = ${gwList};<\/script>\n</body>`);
-              replaced = true;
-            } else if (/<\/head>/i.test(html)) {
-              html = html.replace(/<\/head>/i, `<script>const downloadGateways = ${gwList};<\/script>\n</head>`);
-              replaced = true;
-            }
-          }
-          fs.writeFileSync('index.html', html);
-          console.log(replaced ? 'downloadGateways written/replaced.' : 'WARN: still not written.');
-          NODE
-
-      # --- Create remote_probe_checkhost.py (heredoc; safe) ---
-      - name: Create remote_probe_checkhost.py
-        shell: bash
-        run: |
-          set -euo pipefail
-          cat > remote_probe_checkhost.py <<'PY'
+          python - <<'PY'
+          import textwrap, pathlib
+          code = r'''
           #!/usr/bin/env python3
           # -*- coding: utf-8 -*-
           import argparse, csv, re, time, requests
-          
           CHECK_HTTP = "https://check-host.net/check-http"
           CHECK_RESULT = "https://check-host.net/check-result/{rid}"
-          
+          # 默认探测CID（可在 workflow_dispatch 输入覆盖）
+          DEFAULT_CID = "bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m"
+
           def parse_urls(path: str):
               text = open(path, "r", encoding="utf-8", errors="ignore").read()
-              urls = re.findall(r"https?://[^\"\s]+", text)
+              urls = re.findall(r'https?://[^"\\s]+', text)
               clean, seen = [], set()
               for u in urls:
                   u = u.strip().rstrip(",")
@@ -158,16 +73,16 @@ jobs:
                       seen.add(u); clean.append(u)
               if not clean: raise RuntimeError("No http(s) URLs found in input file.")
               return clean
-          
+
           def build_test_url(base: str, cid: str):
               return ("POST", f"{base}{cid}") if "/api/v0/cat" in base else ("GET", f"{base}{cid}")
-          
+
           def start_check(url: str, max_nodes: int) -> dict:
               r = requests.get(CHECK_HTTP, params={"host": url, "max_nodes": max_nodes},
                                headers={"Accept": "application/json"}, timeout=15)
               r.raise_for_status()
               return r.json()
-          
+
           def poll_result(request_id: str, timeout_s: float = 25.0, interval_s: float = 0.8) -> dict:
               t0 = time.time()
               while True:
@@ -180,7 +95,7 @@ jobs:
                   if time.time() - t0 > timeout_s:
                       return data or {}
                   time.sleep(interval_s)
-          
+
           def summarize(node_results: dict):
               total = ready = ok_nodes = 0
               codes, fastest = [], None
@@ -206,16 +121,16 @@ jobs:
                   "fastest_s": "" if fastest is None else f"{fastest:.3f}",
                   "exists": 1 if ok_nodes > 0 else 0,
               }
-          
+
           def main():
               ap = argparse.ArgumentParser()
               ap.add_argument("input")
-              ap.add_argument("--cid", default="bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m")
+              ap.add_argument("--cid", default=DEFAULT_CID)
               ap.add_argument("--nodes", type=int, default=5)
               ap.add_argument("--csv", default="reports/results_checkhost.csv")
               ap.add_argument("--sleep", type=float, default=0.6)
               args = ap.parse_args()
-          
+
               urls = parse_urls(args.input)
               print(f"Found {len(urls)} URLs; probing with {args.nodes} nodes each...")
               with open(args.csv, "w", newline="", encoding="utf-8") as f:
@@ -235,14 +150,141 @@ jobs:
                           print(f"[ERROR] {base} -> {e}")
                       time.sleep(args.sleep)
               print(f"Done. CSV saved to: {args.csv}")
-          
+
           if __name__ == "__main__":
               main()
+          '''
+          pathlib.Path("remote_probe_checkhost.py").write_text(textwrap.dedent(code), encoding="utf-8")
+          pathlib.Path("remote_probe_checkhost.py").chmod(0o755)
           PY
-                    chmod +x remote_probe_checkhost.py
 
-      # --- Run probe (multi-region) ---
+      # === Build gateways.js (robust, no heredoc). Prefer existing valid sources; otherwise fallback ===
+      - name: Build gateways.js from existing sources or embedded list (robust)
+        shell: bash
+        run: |
+          set -euo pipefail
+          node - <<'NODE'
+          const fs = require('fs');
+          const has = p => fs.existsSync(p);
+          const read = p => fs.readFileSync(p,'utf8');
+
+          function writeFromArray(arr, reason){
+            const js = "const downloadGateways = [\n  " + arr.map(u=>JSON.stringify(u)).join(",\n  ") + "\n];\n";
+            fs.writeFileSync('gateways.js', js);
+            console.log('gateways.js written from', reason, `(count=${arr.length})`);
+          }
+
+          // 1) If gateways.js exists AND contains array, keep it as source-of-truth
+          if (has('gateways.js')){
+            const txt = read('gateways.js');
+            if (/downloadGateways\s*=\s*\[[\s\S]*?\]/m.test(txt)){
+              console.log('Existing gateways.js contains downloadGateways; keep as-is.');
+              process.exit(0);
+            } else {
+              console.warn('gateways.js exists but no downloadGateways array; will try other sources.');
+            }
+          }
+
+          // 2) If gateways.txt exists, build from it
+          if (has('gateways.txt')){
+            const arr = read('gateways.txt').split(/\r?\n/).map(s=>s.trim()).filter(Boolean);
+            if (arr.length){ writeFromArray(arr, 'gateways.txt'); process.exit(0); }
+          }
+
+          // 3) Try parse index.html for an existing array
+          if (has('index.html')){
+            const html = read('index.html');
+            const m = html.match(/downloadGateways\s*=\s*(\[[\s\S]*?\])\s*;?/m) ||
+                      html.match(/(?:const|let|var)\s+downloadGateways\s*=\s*(\[[\s\S]*?\])\s*;?/m);
+            if (m){
+              try {
+                // Try to eval the JSON-ish array to a JS array safely
+                const arr = Function('return ' + m[1])();
+                if (Array.isArray(arr) && arr.length){ writeFromArray(arr, 'index.html'); process.exit(0); }
+              } catch (e) {
+                console.warn('Failed to parse array from index.html, will fallback.');
+              }
+            }
+          }
+
+          // 4) Fallback minimal list
+          writeFromArray([
+            'https://ipfs.io/ipfs/',
+            'https://cloudflare-ipfs.com/ipfs/',
+            'https://w3s.link/ipfs/',
+            'https://nftstorage.link/ipfs/'
+          ], 'fallback');
+          NODE
+
+      # === Patch index.html: ONLY update downloadGateways; DO NOT change any CID ===
+      - name: Patch index.html (downloadGateways only; robust)
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [[ ! -f index.html ]]; then
+            echo "index.html not found at repo root; skip patch."
+          else
+            node - <<'NODE'
+            const fs = require('fs');
+            const has = p => fs.existsSync(p);
+            const read = p => fs.readFileSync(p,'utf8');
+
+            function buildGwList(){
+              if (has('gateways.js')){
+                const txt = read('gateways.js');
+                const m = txt.match(/downloadGateways\s*=\s*(\[[\s\S]*?\])\s*;?/m);
+                if (m) return m[1];
+              }
+              if (has('gateways.txt')){
+                const arr = read('gateways.txt').split(/\r?\n/).map(s=>s.trim()).filter(Boolean);
+                if (arr.length) return "[\n  " + arr.map(u=>JSON.stringify(u)).join(",\n  ") + "\n]";
+              }
+              // hard fallback
+              const arr = [
+                'https://ipfs.io/ipfs/','https://cloudflare-ipfs.com/ipfs/','https://w3s.link/ipfs/','https://nftstorage.link/ipfs/'
+              ];
+              return "[\n  " + arr.map(u=>JSON.stringify(u)).join(",\n  ") + "\n]";
+            }
+
+            let html = read('index.html');
+            const gwList = buildGwList();
+
+            const patterns = [
+              /\bdownloadGateways\s*=\s*\[[\s\S]*?\]\s*;?/m,
+              /\b(?:const|let|var)\s+downloadGateways\s*=\s*\[[\s\S]*?\]\s*;?/m
+            ];
+
+            let replaced = false;
+            for (const re of patterns){
+              if (re.test(html)){
+                html = html.replace(re, `downloadGateways = ${gwList};`);
+                replaced = true;
+                break;
+              }
+            }
+
+            if (!replaced){
+              if (/<\/body>/i.test(html)){
+                html = html.replace(/<\/body>/i, `<script>const downloadGateways = ${gwList};<\/script>\n</body>`);
+                replaced = true;
+              } else if (/<\/head>/i.test(html)){
+                html = html.replace(/<\/head>/i, `<script>const downloadGateways = ${gwList};<\/script>\n</head>`);
+                replaced = true;
+              } else {
+                // append at end
+                html += `\n<script>const downloadGateways = ${gwList};<\/script>\n`;
+                replaced = true;
+              }
+            }
+
+            fs.writeFileSync('index.html', html);
+            console.log(replaced ? 'downloadGateways written/replaced.' : 'WARN: still not written.');
+            NODE
+          fi
+
       - name: Run probe (multi-region)
+        id: runprobe
+        shell: bash
         env:
           NODES: ${{ github.event.inputs.nodes }}
           CID: ${{ github.event.inputs.cid }}
@@ -254,8 +296,7 @@ jobs:
           mkdir -p reports
           EXTRA=""
           if [[ -n "${CID:-}" ]]; then EXTRA="--cid ${CID}"; fi
-
-          python3 remote_probe_checkhost.py "$LIST_FILE" --nodes "${NODES:-5}" --csv reports/results_checkhost.csv $EXTRA
+          python remote_probe_checkhost.py "$LIST_FILE" --nodes "${NODES:-5}" --csv reports/results_checkhost.csv $EXTRA
 
           TS=$(date -u +"%Y-%m-%dT%H-%M-%SZ")
           cp reports/results_checkhost.csv "reports/ipfs_gateways_${TS}.csv"
