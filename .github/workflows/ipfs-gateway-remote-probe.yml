@@ -49,7 +49,7 @@ jobs:
       - name: Install Python deps
         run: pip install requests
 
-      - name: Write remote_probe_checkhost.py (DEFAULT_CID updated)
+      - name: Write remote_probe_checkhost.py (URL parsing fixed)
         shell: bash
         run: |
           python - <<'PY'
@@ -60,28 +60,21 @@ jobs:
           import argparse, csv, re, time, requests
           CHECK_HTTP = "https://check-host.net/check-http"
           CHECK_RESULT = "https://check-host.net/check-result/{rid}"
-          # 默认探测CID（可在 workflow_dispatch 输入覆盖）
           DEFAULT_CID = "bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m"
 
           def parse_urls(path: str):
-              # This regex is designed to extract URLs from either plain text lines
-              # or from within quotes in a JS file.
               url_regex = re.compile(r'https?://[^\s"\'`]+')
               found_urls = []
               with open(path, "r", encoding="utf-8", errors="ignore") as f:
                   text = f.read()
                   found_urls = url_regex.findall(text)
-
               clean, seen = [], set()
               for u in found_urls:
-                  # Clean up trailing characters that might be part of JS syntax
                   u = u.strip().rstrip(',').rstrip(']').rstrip(';')
                   if u and u not in seen:
                       seen.add(u)
                       clean.append(u)
-              
-              if not clean:
-                  raise RuntimeError(f"No http(s) URLs found in input file: {path}")
+              if not clean: raise RuntimeError(f"No http(s) URLs found in input file: {path}")
               return clean
 
           def build_test_url(base: str, cid: str):
@@ -100,10 +93,8 @@ jobs:
                                    headers={"Accept": "application/json"}, timeout=15)
                   r.raise_for_status()
                   data = r.json()
-                  if data and all(v is not None for v in data.values()):
-                      return data
-                  if time.time() - t0 > timeout_s:
-                      return data or {}
+                  if data and all(v is not None for v in data.values()): return data
+                  if time.time() - t0 > timeout_s: return data or {}
                   time.sleep(interval_s)
 
           def summarize(node_results: dict):
@@ -124,9 +115,7 @@ jobs:
                       ok_nodes += 1
                       if t is not None: fastest = t if fastest is None else min(fastest, t)
               return {
-                  "nodes_total": total,
-                  "nodes_ready": ready,
-                  "nodes_ok": ok_nodes,
+                  "nodes_total": total, "nodes_ready": ready, "nodes_ok": ok_nodes,
                   "codes": "|".join(sorted(set(codes))),
                   "fastest_s": "" if fastest is None else f"{fastest:.3f}",
                   "exists": 1 if ok_nodes > 0 else 0,
@@ -139,26 +128,40 @@ jobs:
               ap.add_argument("--nodes", type=int, default=5)
               ap.add_argument("--csv", default="reports/results_checkhost.csv")
               ap.add_argument("--sleep", type=float, default=0.6)
+              ap.add_argument("--online-list", help="Output file for online gateways")
               args = ap.parse_args()
 
               urls = parse_urls(args.input)
               print(f"Found {len(urls)} URLs; probing with {args.nodes} nodes each...")
+              
+              results = []
               with open(args.csv, "w", newline="", encoding="utf-8") as f:
                   w = csv.writer(f)
                   w.writerow(["base","method","test_url","exists","nodes_total","nodes_ready","nodes_ok","codes","fastest_s","permanent_link","request_id"])
                   for base in urls:
                       method, test_url = build_test_url(base, args.cid)
+                      summary = {}
                       try:
                           kickoff = start_check(test_url, args.nodes)
                           rid = kickoff.get("request_id", ""); perm = kickoff.get("permanent_link", "")
                           node_results = poll_result(rid)
                           summary = summarize(node_results)
                           w.writerow([base, method, test_url, summary["exists"], summary["nodes_total"], summary["nodes_ready"], summary["nodes_ok"], summary["codes"], summary["fastest_s"], perm, rid])
-                          print(f"[{ 'ONLINE' if summary['exists'] else 'OFFLINE' }] {base} ok={summary['nodes_ok']}/{summary['nodes_total']} codes={summary['codes']}")
+                          print(f"[{ 'ONLINE' if summary.get('exists') else 'OFFLINE' }] {base} ok={summary.get('nodes_ok',0)}/{summary.get('nodes_total',0)} codes={summary.get('codes','')}")
                       except Exception as e:
+                          summary = {"exists": 0}
                           w.writerow([base, method, test_url, 0, "", "", "", "", "", "", ""])
                           print(f"[ERROR] {base} -> {e}")
+                      results.append((base, summary))
                       time.sleep(args.sleep)
+              
+              if args.online_list:
+                  online_gateways = [base for base, summary in results if summary.get("exists") == 1]
+                  with open(args.online_list, "w", encoding="utf-8") as f:
+                      for url in online_gateways:
+                          f.write(f"{url}\n")
+                  print(f"Saved {len(online_gateways)} online gateways to {args.online_list}")
+
               print(f"Done. CSV saved to: {args.csv}")
 
           if __name__ == "__main__":
@@ -168,68 +171,72 @@ jobs:
           pathlib.Path("remote_probe_checkhost.py").chmod(0o755)
           PY
 
-      # === Build gateways.js (robust, no heredoc). Prefer existing valid sources; otherwise fallback ===
-      - name: Build gateways.js from existing sources or embedded list (robust)
+      - name: Prepare initial gateway list for probe
         shell: bash
         run: |
           set -euo pipefail
-          cat > build-gateways.js <<'JAVASCRIPT'
-          const fs = require('fs');
-          const has = p => fs.existsSync(p);
-          const read = p => fs.readFileSync(p,'utf8');
+          # This step ensures a gateway list exists for the probe to use.
+          # It prioritizes gateways.txt, then an existing gateways.js, then falls back.
+          if [[ -f "gateways.txt" ]] && [[ -s "gateways.txt" ]]; then
+            echo "Using gateways.txt for probe."
+            exit 0
+          elif [[ -f "gateways.js" ]] && grep -qE 'downloadGateways\s*=\s*\[' gateways.js; then
+            echo "Using existing gateways.js for probe."
+            exit 0
+          else
+            echo "Creating fallback gateways.js for probe."
+            node -e 'const fs=require("fs");const list=["https://ipfs.io/ipfs/","https://cloudflare-ipfs.com/ipfs/"];const js="const downloadGateways = [\n  "+list.map(u=>JSON.stringify(u)).join(",\n  ")+"\n];\n";fs.writeFileSync("gateways.js",js);'
+          fi
 
-          function writeFromArray(arr, reason){
-            const js = "const downloadGateways = [\n  " + arr.map(u=>JSON.stringify(u)).join(",\n  ") + "\n];\n";
-            fs.writeFileSync('gateways.js', js);
-            console.log('gateways.js written from', reason, `(count=${arr.length})`);
-          }
+      - name: Run probe and generate online list
+        id: runprobe
+        shell: bash
+        env:
+          NODES: ${{ github.event.inputs.nodes }}
+          CID: ${{ github.event.inputs.cid }}
+        run: |
+          set -euo pipefail
+          # Prefer gateways.txt if it exists, otherwise use gateways.js
+          LIST_FILE="gateways.js"
+          if [[ -f gateways.txt ]] && [[ -s gateways.txt ]]; then
+            LIST_FILE="gateways.txt"
+          fi
 
-          // 1) If gateways.js exists AND contains array, keep it as source-of-truth
-          if (has('gateways.js')){
-            const txt = read('gateways.js');
-            if (/downloadGateways\s*=\s*\[[\s\S]*?\]/m.test(txt)){
-              console.log('Existing gateways.js contains downloadGateways; keep as-is.');
-              process.exit(0);
-            } else {
-              console.warn('gateways.js exists but no downloadGateways array; will try other sources.');
-            }
-          }
-
-          // 2) If gateways.txt exists, build from it
-          if (has('gateways.txt')){
-            const arr = read('gateways.txt').split(/\r?\n/).map(s=>s.trim()).filter(Boolean);
-            if (arr.length){ writeFromArray(arr, 'gateways.txt'); process.exit(0); }
-          }
-
-          // 3) Try parse index.html for an existing array
-          if (has('index.html')){
-            const html = read('index.html');
-            const m = html.match(/downloadGateways\s*=\s*(\[[\s\S]*?\])\s*;?/m) ||
-                      html.match(/(?:const|let|var)\s+downloadGateways\s*=\s*(\[[\s\S]*?\])\s*;?/m);
-            if (m){
-              try {
-                // Try to eval the JSON-ish array to a JS array safely
-                const arr = Function('return ' + m[1])();
-                if (Array.isArray(arr) && arr.length){ writeFromArray(arr, 'index.html'); process.exit(0); }
-              } catch (e) {
-                console.warn('Failed to parse array from index.html, will fallback.');
-              }
-            }
-          }
-
-          // 4) Fallback minimal list
-          writeFromArray([
-            'https://ipfs.io/ipfs/',
-            'https://cloudflare-ipfs.com/ipfs/',
-            'https://w3s.link/ipfs/',
-            'https://nftstorage.link/ipfs/'
-          ], 'fallback');
-          JAVASCRIPT
+          mkdir -p reports
+          EXTRA_ARGS=""
+          if [[ -n "${CID:-}" ]]; then
+            EXTRA_ARGS="--cid ${CID}"
+          fi
           
-          node build-gateways.js
+          # Run the probe and create online_gateways.txt
+          python remote_probe_checkhost.py "$LIST_FILE" --nodes "${NODES:-5}" --csv reports/results_checkhost.csv --online-list online_gateways.txt $EXTRA_ARGS
 
-      # === Patch index.html: ONLY update downloadGateways; DO NOT change any CID ===
-      - name: Patch index.html (downloadGateways only; robust)
+          TS=$(date -u +"%Y-%m-%dT%H-%M-%SZ")
+          cp reports/results_checkhost.csv "reports/ipfs_gateways_${TS}.csv"
+          cp reports/results_checkhost.csv "reports/latest_ipfs_gateways.csv"
+
+      - name: Build gateways.js from online list
+        shell: bash
+        run: |
+          set -euo pipefail
+          # Create a new gateways.js using only the online gateways
+          if [[ ! -f "online_gateways.txt" ]]; then
+            echo "online_gateways.txt not found, skipping build."
+            exit 0
+          fi
+          node -e '
+            const fs = require("fs");
+            const arr = fs.readFileSync("online_gateways.txt", "utf8").split(/\r?\n/).map(s => s.trim()).filter(Boolean);
+            if (arr.length > 0) {
+              const js = "const downloadGateways = [\n  " + arr.map(u => JSON.stringify(u)).join(",\n  ") + "\n];\n";
+              fs.writeFileSync("gateways.js", js);
+              console.log(`gateways.js rebuilt from online_gateways.txt (count=${arr.length})`);
+            } else {
+              console.warn("No online gateways found. gateways.js was not updated.");
+            }
+          '
+
+      - name: Patch index.html with online gateways
         shell: bash
         run: |
           set -euo pipefail
@@ -244,20 +251,14 @@ jobs:
           const read = p => fs.readFileSync(p,'utf8');
 
           function buildGwList(){
+            // This function now reads the gateways.js that was rebuilt from the online list
             if (has('gateways.js')){
               const txt = read('gateways.js');
               const m = txt.match(/downloadGateways\s*=\s*(\[[\s\S]*?\])\s*;?/m);
               if (m) return m[1];
             }
-            if (has('gateways.txt')){
-              const arr = read('gateways.txt').split(/\r?\n/).map(s=>s.trim()).filter(Boolean);
-              if (arr.length) return "[\n  " + arr.map(u=>JSON.stringify(u)).join(",\n  ") + "\n]";
-            }
-            // hard fallback
-            const arr = [
-              'https://ipfs.io/ipfs/','https://cloudflare-ipfs.com/ipfs/','https://w3s.link/ipfs/','https://nftstorage.link/ipfs/'
-            ];
-            return "[\n  " + arr.map(u=>JSON.stringify(u)).join(",\n  ") + "\n]";
+            // Fallback if gateways.js is missing for some reason
+            return "[]";
           }
 
           let html = read('index.html');
@@ -280,48 +281,21 @@ jobs:
           if (!replaced){
             if (/<\/body>/i.test(html)){
               html = html.replace(/<\/body>/i, '<script>const downloadGateways = ' + gwList + ';<\/script>\\n</body>');
-              replaced = true;
             } else if (/<\/head>/i.test(html)){
               html = html.replace(/<\/head>/i, '<script>const downloadGateways = ' + gwList + ';<\/script>\\n</head>');
-              replaced = true;
             } else {
-              // append at end
               html += '\\n<script>const downloadGateways = ' + gwList + ';<\/script>\\n';
-              replaced = true;
             }
+            replaced = true;
           }
 
           fs.writeFileSync('index.html', html);
-          console.log(replaced ? 'downloadGateways written/replaced.' : 'WARN: still not written.');
+          console.log(replaced ? 'downloadGateways in index.html updated with online list.' : 'WARN: downloadGateways in index.html was not updated.');
           JAVASCRIPT
           
           node patch-script.js
 
-      - name: Run probe (multi-region)
-        id: runprobe
-        shell: bash
-        env:
-          NODES: ${{ github.event.inputs.nodes }}
-          CID: ${{ github.event.inputs.cid }}
-        run: |
-          set -euo pipefail
-          LIST_FILE="gateways.js"
-          # If gateways.txt exists, prefer it as the source, as it's simpler for users.
-          [[ -f gateways.txt ]] && LIST_FILE="gateways.txt"
-
-          mkdir -p reports
-          EXTRA_ARGS=""
-          # Only add --cid if the CID input is not empty
-          if [[ -n "${CID:-}" ]]; then
-            EXTRA_ARGS="--cid ${CID}"
-          fi
-          python remote_probe_checkhost.py "$LIST_FILE" --nodes "${NODES:-5}" --csv reports/results_checkhost.csv $EXTRA_ARGS
-
-          TS=$(date -u +"%Y-%m-%dT%H-%M-%SZ")
-          cp reports/results_checkhost.csv "reports/ipfs_gateways_${TS}.csv"
-          cp reports/results_checkhost.csv "reports/latest_ipfs_gateways.csv"
-
-      - name: Commit changes (CSV + patched index.html)
+      - name: Commit changes (CSV + patched files)
         shell: bash
         run: |
           set -e
@@ -330,13 +304,17 @@ jobs:
           git add reports/*.csv || true
           git add index.html || true
           git add gateways.js || true
-          # Use a default value for the CID in the commit message if it's not provided
           COMMIT_CID="${{ github.event.inputs.cid }}"
           if [[ -z "$COMMIT_CID" ]]; then
             COMMIT_CID="default"
           fi
-          git commit -m "Probe & patch: gateways list updated; probe CID=${COMMIT_CID} @ $(date -u +'%Y-%m-%dT%H:%M:%SZ')" || echo "Nothing to commit"
-          git push
+          # Check if there are changes to commit
+          if git diff --staged --quiet; then
+            echo "Nothing to commit"
+          else
+            git commit -m "Probe & patch: Update with online gateways; probe CID=${COMMIT_CID} @ $(date -u +'%Y-%m-%dT%H:%M:%SZ')"
+            git push
+          fi
 
       - name: Upload artifact (CSV)
         uses: actions/upload-artifact@v4
