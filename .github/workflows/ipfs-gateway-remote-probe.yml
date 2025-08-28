@@ -163,7 +163,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          node - <<'NODE'
+          cat > build-gateways.js <<'JAVASCRIPT'
           const fs = require('fs');
           const has = p => fs.existsSync(p);
           const read = p => fs.readFileSync(p,'utf8');
@@ -214,7 +214,9 @@ jobs:
             'https://w3s.link/ipfs/',
             'https://nftstorage.link/ipfs/'
           ], 'fallback');
-          NODE
+          JAVASCRIPT
+          
+          node build-gateways.js
 
       # === Patch index.html: ONLY update downloadGateways; DO NOT change any CID ===
       - name: Patch index.html (downloadGateways only; robust)
@@ -223,64 +225,67 @@ jobs:
           set -euo pipefail
           if [[ ! -f index.html ]]; then
             echo "index.html not found at repo root; skip patch."
-          else
-            node - <<'NODE'
-            const fs = require('fs');
-            const has = p => fs.existsSync(p);
-            const read = p => fs.readFileSync(p,'utf8');
-
-            function buildGwList(){
-              if (has('gateways.js')){
-                const txt = read('gateways.js');
-                const m = txt.match(/downloadGateways\s*=\s*(\[[\s\S]*?\])\s*;?/m);
-                if (m) return m[1];
-              }
-              if (has('gateways.txt')){
-                const arr = read('gateways.txt').split(/\r?\n/).map(s=>s.trim()).filter(Boolean);
-                if (arr.length) return "[\n  " + arr.map(u=>JSON.stringify(u)).join(",\n  ") + "\n]";
-              }
-              // hard fallback
-              const arr = [
-                'https://ipfs.io/ipfs/','https://cloudflare-ipfs.com/ipfs/','https://w3s.link/ipfs/','https://nftstorage.link/ipfs/'
-              ];
-              return "[\n  " + arr.map(u=>JSON.stringify(u)).join(",\n  ") + "\n]";
-            }
-
-            let html = read('index.html');
-            const gwList = buildGwList();
-
-            const patterns = [
-              /\bdownloadGateways\s*=\s*\[[\s\S]*?\]\s*;?/m,
-              /\b(?:const|let|var)\s+downloadGateways\s*=\s*\[[\s\S]*?\]\s*;?/m
-            ];
-
-            let replaced = false;
-            for (const re of patterns){
-              if (re.test(html)){
-                html = html.replace(re, 'downloadGateways = ' + gwList + ';');
-                replaced = true;
-                break;
-              }
-            }
-
-            if (!replaced){
-              if (/<\/body>/i.test(html)){
-                html = html.replace(/<\/body>/i, '<script>const downloadGateways = ' + gwList + ';<\/script>\\n</body>');
-                replaced = true;
-              } else if (/<\/head>/i.test(html)){
-                html = html.replace(/<\/head>/i, '<script>const downloadGateways = ' + gwList + ';<\/script>\\n</head>');
-                replaced = true;
-              } else {
-                // append at end
-                html += '\\n<script>const downloadGateways = ' + gwList + ';<\/script>\\n';
-                replaced = true;
-              }
-            }
-
-            fs.writeFileSync('index.html', html);
-            console.log(replaced ? 'downloadGateways written/replaced.' : 'WARN: still not written.');
-            NODE
+            exit 0
           fi
+
+          cat > patch-script.js <<'JAVASCRIPT'
+          const fs = require('fs');
+          const has = p => fs.existsSync(p);
+          const read = p => fs.readFileSync(p,'utf8');
+
+          function buildGwList(){
+            if (has('gateways.js')){
+              const txt = read('gateways.js');
+              const m = txt.match(/downloadGateways\s*=\s*(\[[\s\S]*?\])\s*;?/m);
+              if (m) return m[1];
+            }
+            if (has('gateways.txt')){
+              const arr = read('gateways.txt').split(/\r?\n/).map(s=>s.trim()).filter(Boolean);
+              if (arr.length) return "[\n  " + arr.map(u=>JSON.stringify(u)).join(",\n  ") + "\n]";
+            }
+            // hard fallback
+            const arr = [
+              'https://ipfs.io/ipfs/','https://cloudflare-ipfs.com/ipfs/','https://w3s.link/ipfs/','https://nftstorage.link/ipfs/'
+            ];
+            return "[\n  " + arr.map(u=>JSON.stringify(u)).join(",\n  ") + "\n]";
+          }
+
+          let html = read('index.html');
+          const gwList = buildGwList();
+
+          const patterns = [
+            /\bdownloadGateways\s*=\s*\[[\s\S]*?\]\s*;?/m,
+            /\b(?:const|let|var)\s+downloadGateways\s*=\s*\[[\s\S]*?\]\s*;?/m
+          ];
+
+          let replaced = false;
+          for (const re of patterns){
+            if (re.test(html)){
+              html = html.replace(re, 'downloadGateways = ' + gwList + ';');
+              replaced = true;
+              break;
+            }
+          }
+
+          if (!replaced){
+            if (/<\/body>/i.test(html)){
+              html = html.replace(/<\/body>/i, '<script>const downloadGateways = ' + gwList + ';<\/script>\\n</body>');
+              replaced = true;
+            } else if (/<\/head>/i.test(html)){
+              html = html.replace(/<\/head>/i, '<script>const downloadGateways = ' + gwList + ';<\/script>\\n</head>');
+              replaced = true;
+            } else {
+              // append at end
+              html += '\\n<script>const downloadGateways = ' + gwList + ';<\/script>\\n';
+              replaced = true;
+            }
+          }
+
+          fs.writeFileSync('index.html', html);
+          console.log(replaced ? 'downloadGateways written/replaced.' : 'WARN: still not written.');
+          JAVASCRIPT
+          
+          node patch-script.js
 
       - name: Run probe (multi-region)
         id: runprobe
