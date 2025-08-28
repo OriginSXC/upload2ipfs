@@ -1,0 +1,157 @@
+name: IPFS Gateway Remote Probe (multi-region) + Patch index.html
+
+on:
+  workflow_dispatch:
+    inputs:
+      nodes:
+        description: "Check-Host nodes per URL (3-7 recommended)"
+        required: false
+        default: "5"
+      cid:
+        description: "IPFS CID to test (only for probing; index.html 不改CID)"
+        required: false
+        default: "bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m"
+  push:
+    branches: [ master ]   # 如果默认分支是 main，请改这里
+    paths:
+      - 'index.html'
+      - 'gateways.js'
+      - 'gateways.txt'
+      - '.github/workflows/ipfs-gateway-remote-probe.yml'
+  schedule:
+    - cron: "23 2 * * *"   # 每天 02:23 UTC 运行
+
+permissions:
+  contents: write
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install Python deps
+        run: pip install requests
+
+      # === Build gateways.js if missing ===
+      - name: Build gateways.js (robust)
+        shell: bash
+        run: |
+          set -euo pipefail
+          need_gen=true
+          if [[ -f gateways.js ]]; then
+            if grep -qE 'downloadGateways\s*=\s*\[' gateways.js; then
+              echo "Found downloadGateways in gateways.js"; need_gen=false
+            else
+              echo "gateways.js exists but no downloadGateways array, will re-generate."
+            fi
+          elif [[ -f gateways.txt ]]; then
+            need_gen=false
+            node -e '
+              const fs = require("fs");
+              const arr = fs.readFileSync("gateways.txt","utf8").split(/\r?\n/).map(s=>s.trim()).filter(Boolean);
+              const js = "const downloadGateways = [\n  " + arr.map(u=>JSON.stringify(u)).join(",\n  ") + "\n];\n";
+              fs.writeFileSync("gateways.js", js);
+              console.log("gateways.js built from gateways.txt");
+            '
+          fi
+
+          if [[ "$need_gen" == true ]]; then
+            node -e '
+              const fs = require("fs");
+              const list = ["https://ipfs.io/ipfs/","https://cloudflare-ipfs.com/ipfs/","https://w3s.link/ipfs/","https://nftstorage.link/ipfs/"];
+              const js = "const downloadGateways = [\n  " + list.map(u=>JSON.stringify(u)).join(",\n  ") + "\n];\n";
+              fs.writeFileSync("gateways.js", js);
+              console.log("gateways.js created with fallback list");
+            '
+          fi
+
+      # === Patch index.html downloadGateways ===
+      - name: Patch index.html (downloadGateways only)
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [[ ! -f index.html ]]; then
+            echo "index.html not found at repo root; skip patch."
+            exit 0
+          fi
+
+          node -e '
+            const fs = require("fs");
+            const has = p => fs.existsSync(p);
+            const read = p => fs.readFileSync(p, "utf8");
+
+            let gwList = null;
+            if (has("gateways.js")) {
+              const txt = read("gateways.js");
+              const m = txt.match(/downloadGateways\s*=\s*(\[[\s\S]*?\])\s*;?/m);
+              if (m) gwList = m[1];
+            }
+            if (!gwList && has("gateways.txt")) {
+              const arr = read("gateways.txt").split(/\r?\n/).map(s=>s.trim()).filter(Boolean);
+              if (arr.length) gwList = "[\n  " + arr.map(u=>JSON.stringify(u)).join(",\n  ") + "\n]";
+            }
+            if (!gwList) {
+              console.error("No gateways list available; abort patch.");
+              process.exit(1);
+            }
+
+            let html = read("index.html");
+            const re = /downloadGateways\s*=\s*\[[\s\S]*?\]\s*;?/m;
+            if (re.test(html)) {
+              html = html.replace(re, `downloadGateways = ${gwList};`);
+              fs.writeFileSync("index.html", html);
+              console.log("downloadGateways replaced in index.html");
+            } else {
+              console.error("downloadGateways array not found in index.html; abort.");
+              process.exit(1);
+            }
+          '
+
+      - name: Run probe (multi-region)
+        env:
+          NODES: ${{ github.event.inputs.nodes }}
+          CID: ${{ github.event.inputs.cid }}
+        run: |
+          set -euo pipefail
+          LIST_FILE="gateways.js"
+          [[ -f gateways.txt ]] && LIST_FILE="gateways.txt"
+
+          mkdir -p reports
+          EXTRA=""
+          if [[ -n "${CID:-}" ]]; then EXTRA="--cid ${CID}"; fi
+
+          python remote_probe_checkhost.py "$LIST_FILE" --nodes "${NODES:-5}" --csv reports/results_checkhost.csv $EXTRA
+
+          TS=$(date -u +"%Y-%m-%dT%H-%M-%SZ")
+          cp reports/results_checkhost.csv "reports/ipfs_gateways_${TS}.csv"
+          cp reports/results_checkhost.csv "reports/latest_ipfs_gateways.csv"
+
+      - name: Commit changes (CSV + patched index.html)
+        run: |
+          set -e
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add reports/*.csv || true
+          git add index.html || true
+          git add gateways.js || true
+          git commit -m "Probe & patch: gateways list updated; probe CID=${{ github.event.inputs.cid }} @ $(date -u +'%Y-%m-%dT%H:%M:%SZ')" || echo "Nothing to commit"
+          git push
+
+      - name: Upload artifact (CSV)
+        uses: actions/upload-artifact@v4
+        with:
+          name: ipfs-gateway-probe-${{ github.run_id }}
+          path: reports/*.csv
