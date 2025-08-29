@@ -6,7 +6,6 @@ const downloadGateways = [
   "https://aragon.ventures/ipfs/",
   "https://c4rex.co/ipfs/",
   "https://cdn.cwinfo.net/ipfs/",
-  "https://cdn.ipfsscan.io/ipfs/",
   "https://crustwebsites.net/ipfs/",
   "https://dweb.eu.org/ipfs/",
   "https://dweb.link/ipfs/",
@@ -32,7 +31,6 @@ const downloadGateways = [
   "https://ipfs.denarius.io/ipfs/",
   "https://ipfs.dlux.io/ipfs/",
   "https://ipfs.filebase.io/ipfs/",
-  "https://ipfs.fleek.co/ipfs/",
   "https://ipfs.fooock.com/ipfs/",
   "https://ipfs.funnychain.co/ipfs/",
   "https://ipfs.genenetwork.org/ipfs/",
@@ -45,7 +43,6 @@ const downloadGateways = [
   "https://ipfs.kaleido.art/ipfs/",
   "https://ipfs.kavin.rocks/ipfs/",
   "https://ipfs.litnet.work/ipfs/",
-  "https://ipfs.mttk.net/ipfs/",
   "https://ipfs.network.thegraph.com/ipfs/api/v0/cat?arg=",
   "https://ipfs.omniflix.studio/ipfs/",
   "https://ipfs.oversas.org/ipfs/",
@@ -55,7 +52,6 @@ const downloadGateways = [
   "https://ipfs.treejer.com/ipfs/",
   "https://ipfs.trusti.id/ipfs/",
   "https://ipfsgateway.makersplace.com/ipfs/",
-  "https://konubinix.eu/ipfs/",
   "https://magic.decentralized-content.com/ipfs/",
   "https://nftstorage.link/ipfs/",
   "https://ninetailed.ninja/ipfs/",
@@ -64,6 +60,5 @@ const downloadGateways = [
   "https://storry.tv/ipfs/",
   "https://storjipfs-gateway.com/ipfs/",
   "https://trustless-gateway.link/ipfs/",
-  "https://via0.com/ipfs/",
   "https://w3s.link/ipfs/"
 ];
