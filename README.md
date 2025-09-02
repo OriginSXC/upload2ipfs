@@ -5,7 +5,7 @@
 
 A simple tool to easily upload files to the IPFS network.
 
-You can use the tool by visiting [this link](https://upload2ipfs.ipfs.qzz.io/).
+You can use the tool by visiting [this link](https://ipfs.qzz.io/).
 
 The **Download Gateways** are refreshed daily in `gateways.txt`. I would be grateful if you could provide any available gateways.
 
@@ -27,7 +27,7 @@ The **Download Gateways** are refreshed daily in `gateways.txt`. I would be grat
 
 ## How to Use
 
-1.  Visit [Upload2IPFS](https://upload2ipfs.ipfs.qzz.io/).
+1.  Visit [Upload2IPFS](https://ipfs.qzz.io/).
 2.  Upload a file to get an IPFS hash.
 3.  Use the IPFS hash to download the file.
 
