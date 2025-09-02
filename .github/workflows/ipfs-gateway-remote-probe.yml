@@ -246,57 +246,54 @@ jobs:
             echo "index.html not found at repo root; skip patch."
             exit 0
           fi
-
+      
           cat > patch-script.js <<'JAVASCRIPT'
           const fs = require('fs');
           const has = p => fs.existsSync(p);
           const read = p => fs.readFileSync(p,'utf8');
-
-          function buildGwList(){
-            // This function now reads the gateways.js that was rebuilt from the online list
-            if (has('gateways.js')){
-              const txt = read('gateways.js');
-              const m = txt.match(/downloadGateways\s*=\s*(\[[\s\S]*?\])\s*;?/m);
-              if (m) return m[1];
-            }
-            // Fallback if gateways.js is missing for some reason
-            return "[]";
+      
+          function getGwList(){
+            if (!has('gateways.js')) return '[]';
+            const txt = read('gateways.js');
+            const m = txt.match(/downloadGateways\s*=\s*(\[[\s\S]*?\])\s*;?/m);
+            return m ? m[1] : '[]';
           }
-
+      
           let html = read('index.html');
-          const gwList = buildGwList();
-
-          const patterns = [
-            /\bdownloadGateways\s*=\s*$begin:math:display$[\\s\\S]*?$end:math:display$\s*;?/m,
-            /\b(?:const|let|var)\s+downloadGateways\s*=\s*$begin:math:display$[\\s\\S]*?$end:math:display$\s*;?/m
-          ];
-
-          let replaced = false;
-          for (const re of patterns){
-            if (re.test(html)){
-              html = html.replace(re, 'downloadGateways = ' + gwList + ';');
-              replaced = true;
-              break;
-            }
+      
+          // 0) 清理历史上可能追加的“只含 downloadGateways 的小脚本块”
+          // （不会误删你的主大脚本，因为主脚本里不止这一行）
+          html = html.replace(
+            /<script>\s*(?:const|let|var)\s+downloadGateways\s*=\s*\[[\s\S]*?\]\s*;?\s*<\/script>\s*/g,
+            ''
+          );
+      
+          const gwList = getGwList();
+      
+          // 1) 优先替换“声明+赋值”形式：const/let/var downloadGateways = [...]
+          const reDecl = /\b(const|let|var)\s+downloadGateways\s*=\s*\[[\s\S]*?\]\s*;?/;
+          if (reDecl.test(html)) {
+            html = html.replace(reDecl, (_m, kw) => `${kw} downloadGateways = ${gwList};`);
+            fs.writeFileSync('index.html', html);
+            console.log('Replaced inline declaration of downloadGateways.');
+            process.exit(0);
           }
-
-          if (!replaced){
-            if (/<\/body>/i.test(html)){
-              html = html.replace(/<\/body>/i, '<script>const downloadGateways = ' + gwList + ';<\/script>\\n</body>');
-            } else if (/<\/head>/i.test(html)){
-              html = html.replace(/<\/head>/i, '<script>const downloadGateways = ' + gwList + ';<\/script>\\n</head>');
-            } else {
-              html += '\\n<script>const downloadGateways = ' + gwList + ';<\/script>\\n';
-            }
-            replaced = true;
+      
+          // 2) 其次替换“仅赋值”形式：downloadGateways = [...]
+          const reAssign = /\bdownloadGateways\s*=\s*\[[\s\S]*?\]\s*;?/;
+          if (reAssign.test(html)) {
+            html = html.replace(reAssign, `downloadGateways = ${gwList};`);
+            fs.writeFileSync('index.html', html);
+            console.log('Replaced inline assignment of downloadGateways.');
+            process.exit(0);
           }
-
-          fs.writeFileSync('index.html', html);
-          console.log(replaced ? 'downloadGateways in index.html updated with online list.' : 'WARN: downloadGateways in index.html was not updated.');
+      
+          // 3) 找不到就报错（不再追加新 <script>），避免重复声明
+          console.error('ERROR: Could not locate downloadGateways array in index.html. Aborting.');
+          process.exit(2);
           JAVASCRIPT
-          
+      
           node patch-script.js
-
       - name: Commit changes (CSV + patched files)
         shell: bash
         run: |
