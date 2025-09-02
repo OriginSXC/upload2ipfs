@@ -1,0 +1,11 @@
+/*
+  Referrer-Policy: strict-origin-when-cross-origin
+  X-Content-Type-Options: nosniff
+
+# 如果有静态资源目录，给长缓存（以后有就生效）
+/assets/*
+  Cache-Control: public, max-age=31536000, immutable
+
+# 避免把 HTML 长时间缓存
+/index.html
+  Cache-Control: no-cache
