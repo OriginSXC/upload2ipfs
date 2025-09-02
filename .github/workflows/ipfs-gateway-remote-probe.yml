@@ -25,7 +25,7 @@ permissions:
   contents: write
 
 concurrency:
-  group: ipfs-gateway-remote-probe
+  group: ipfs-gateway-remote-probe-${{ github.ref }}
   cancel-in-progress: false
 
 jobs:
@@ -35,6 +35,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -265,8 +267,8 @@ jobs:
           const gwList = buildGwList();
 
           const patterns = [
-            /\bdownloadGateways\s*=\s*\[[\s\S]*?\]\s*;?/m,
-            /\b(?:const|let|var)\s+downloadGateways\s*=\s*\[[\s\S]*?\]\s*;?/m
+            /\bdownloadGateways\s*=\s*$begin:math:display$[\\s\\S]*?$end:math:display$\s*;?/m,
+            /\b(?:const|let|var)\s+downloadGateways\s*=\s*$begin:math:display$[\\s\\S]*?$end:math:display$\s*;?/m
           ];
 
           let replaced = false;
@@ -298,23 +300,57 @@ jobs:
       - name: Commit changes (CSV + patched files)
         shell: bash
         run: |
-          set -e
-          git config user.name "github-actions[bot]"
+          set -euo pipefail
+
+          git config user.name  "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add reports/*.csv || true
-          git add index.html || true
-          git add gateways.js || true
-          COMMIT_CID="${{ github.event.inputs.cid }}"
-          if [[ -z "$COMMIT_CID" ]]; then
-            COMMIT_CID="default"
-          fi
-          # Check if there are changes to commit
+
+          # 允许空匹配不报错
+          git add reports/*.csv 2>/dev/null || true
+          git add index.html     2>/dev/null || true
+          git add gateways.js    2>/dev/null || true
+
+          # 仅当有变更才提交
           if git diff --staged --quiet; then
             echo "Nothing to commit"
-          else
-            git commit -m "Probe & patch: Update with online gateways; probe CID=${COMMIT_CID} @ $(date -u +'%Y-%m-%dT%H:%M:%SZ')"
-            git push
+            exit 0
           fi
+
+          # 提交信息里的 CID 仍沿用 inputs（为空时显示 default）
+          COMMIT_CID="${{ github.event.inputs.cid }}"
+          if [[ -z "${COMMIT_CID}" ]]; then COMMIT_CID="default"; fi
+
+          git commit -m "Probe & patch: Update with online gateways; probe CID=${COMMIT_CID} @ $(date -u +'%Y-%m-%dT%H:%M:%SZ')"
+
+          # 动态识别要推送到的分支
+          BRANCH="${GITHUB_REF_NAME:-$(git rev-parse --abbrev-ref HEAD)}"
+          echo "Target branch: ${BRANCH}"
+
+          # 重试 3 次：rebase → push；失败再 ours-merge 兜底
+          for attempt in 1 2 3; do
+            echo "Rebase & push attempt ${attempt}..."
+
+            git fetch origin "${BRANCH}"
+
+            if git pull --rebase origin "${BRANCH}" && git push origin HEAD:"${BRANCH}"; then
+              echo "Push succeeded."
+              exit 0
+            fi
+
+            git rebase --abort || true
+            echo "Rebase failed; trying merge -X ours fallback..."
+            git merge -X ours --no-edit "origin/${BRANCH}" || true
+
+            if git push origin HEAD:"${BRANCH}"; then
+              echo "Push succeeded via merge fallback."
+              exit 0
+            fi
+
+            sleep $((attempt*2))
+          done
+
+          echo "ERROR: Failed to push after retries."
+          exit 1
 
       - name: Upload artifact (CSV)
         uses: actions/upload-artifact@v4
