@@ -37,7 +37,6 @@ const downloadGateways = [
   "https://ipfs.filebase.io/ipfs/",
   "https://ipfs.fleek.co/ipfs/",
   "https://ipfs.fooock.com/ipfs/",
-  "https://ipfs.funnychain.co/ipfs/",
   "https://ipfs.genenetwork.org/ipfs/",
   "https://ipfs-gateway.cloud/ipfs/",
   "https://ipfs.greyh.at/ipfs/",
