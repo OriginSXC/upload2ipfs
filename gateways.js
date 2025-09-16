@@ -1,7 +1,6 @@
 const downloadGateways = [
   "https://ipfs.eternum.io/ipfs/",
   "http://gateway.ipfs.io/ipfs/",
-  "https://nas-ipfs.4ce.cn/ipfs/",
   "https://4everland.io/ipfs/",
   "https://alexdav.id/ipfs/",
   "https://api.thegraph.com/ipfs/api/v0/cat?arg=",
@@ -28,7 +27,6 @@ const downloadGateways = [
   "https://ipfs.algonode.dev/ipfs/",
   "https://ipfs.algonode.xyz/ipfs/",
   "https://ipfs.best-practice.se/ipfs/",
-  "https://ipfs.chisdealhd.co.uk/ipfs/",
   "https://ipfs.cyou/ipfs/",
   "https://ipfs.decentralized-content.com/ipfs/",
   "https://ipfs.decoo.io/ipfs/",
@@ -37,6 +35,7 @@ const downloadGateways = [
   "https://ipfs.filebase.io/ipfs/",
   "https://ipfs.fleek.co/ipfs/",
   "https://ipfs.fooock.com/ipfs/",
+  "https://ipfs.funnychain.co/ipfs/",
   "https://ipfs.genenetwork.org/ipfs/",
   "https://ipfs-gateway.cloud/ipfs/",
   "https://ipfs.greyh.at/ipfs/",
