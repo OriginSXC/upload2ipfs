@@ -68,7 +68,7 @@ Contributions are welcome, whether it's code or providing available IPFS gateway
 
 ## 使用方法
 
-1.  访问[Upload2IPFS](https://upload2ipfs.ipfs.qzz.io/)。
+1.  访问[Upload2IPFS](https://ipfs.qzz.io/)。
 2.  上传文件，获取IPFS哈希。
 3.  使用IPFS哈希下载文件。
 
