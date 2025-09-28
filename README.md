@@ -46,7 +46,7 @@ Contributions are welcome, whether it's code or providing available IPFS gateway
 
 一个简单的工具，用于将文件轻松上传到IPFS网络。
 
-您可以访问[此链接](https://upload2ipfs.ipfs.qzz.io/)使用该工具。
+您可以访问[此链接](https://ipfs.qzz.io/)使用该工具。
 
 我们每天都会在`gateways.txt`中刷新**下载网关**，如果您能提供可用的网关，我将非常感激。
 
