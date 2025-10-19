@@ -1,6 +1,5 @@
 const downloadGateways = [
   "https://siderus.io/ipfs/",
-  "https://ipfs.eternum.io/ipfs/",
   "http://gateway.ipfs.io/ipfs/",
   "https://4everland.io/ipfs/",
   "https://alexdav.id/ipfs/",
@@ -54,7 +53,6 @@ const downloadGateways = [
   "https://ipfs.overpi.com/ipfs/",
   "https://ipfs.questbook.app:8080/api/v0/cat?arg=",
   "https://ipfs.runfission.com/ipfs/",
-  "https://ipfs.stardustxr.org/ipfs/",
   "https://ipfs.treejer.com/ipfs/",
   "https://ipfsgateway.makersplace.com/ipfs/",
   "https://konubinix.eu/ipfs/",
