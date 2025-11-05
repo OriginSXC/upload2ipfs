@@ -54,7 +54,6 @@ const downloadGateways = [
   "https://ipfs.runfission.com/ipfs/",
   "https://ipfs.stardustxr.org/ipfs/",
   "https://ipfs.treejer.com/ipfs/",
-  "https://ipfs.web3.party/ipfs/",
   "https://ipfsgateway.makersplace.com/ipfs/",
   "https://konubinix.eu/ipfs/",
   "https://magic.decentralized-content.com/ipfs/",
@@ -63,7 +62,6 @@ const downloadGateways = [
   "https://permaweb.eu.org/ipfs/",
   "https://permaweb.io/ipfs/",
   "https://storry.tv/ipfs/",
-  "https://storjipfs-gateway.com/ipfs/",
   "https://trustless-gateway.link/ipfs/",
   "https://via0.com/ipfs/",
   "https://w3s.link/ipfs/"
