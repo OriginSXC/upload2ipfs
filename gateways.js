@@ -1,4 +1,5 @@
 const downloadGateways = [
+  "https://siderus.io/ipfs/",
   "https://ipfs.eternum.io/ipfs/",
   "http://gateway.ipfs.io/ipfs/",
   "https://4everland.io/ipfs/",
