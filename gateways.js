@@ -38,6 +38,8 @@ const downloadGateways = [
   "https://ipfs.fooock.com/ipfs/",
   "https://ipfs.funnychain.co/ipfs/",
   "https://ipfs.genenetwork.org/ipfs/",
+  "https://ipfs.gitcoin.co/api/v0/cat?arg=",
+  "https://ipfs-2.gitcoin.co/api/v0/cat?arg=",
   "https://ipfs-gateway.omniflix.studio/ipfs/",
   "https://ipfs.greyh.at/ipfs/",
   "https://ipfs.ink/ipfs/",
