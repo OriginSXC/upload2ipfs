@@ -5,7 +5,6 @@ const downloadGateways = [
   "https://4everland.io/ipfs/",
   "https://alexdav.id/ipfs/",
   "https://api.thegraph.com/ipfs/api/v0/cat?arg=",
-  "https://api.universalprofile.cloud/ipfs/",
   "https://aragon.ventures/ipfs/",
   "https://c4rex.co/ipfs/",
   "https://cdn.cwinfo.net/ipfs/",
@@ -64,6 +63,7 @@ const downloadGateways = [
   "https://permaweb.io/ipfs/",
   "https://storry.tv/ipfs/",
   "https://storjipfs-gateway.com/ipfs/",
+  "https://trustless-gateway.link/ipfs/",
   "https://via0.com/ipfs/",
   "https://w3s.link/ipfs/"
 ];
