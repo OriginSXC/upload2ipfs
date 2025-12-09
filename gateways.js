@@ -61,7 +61,6 @@ const downloadGateways = [
   "https://konubinix.eu/ipfs/",
   "https://magic.decentralized-content.com/ipfs/",
   "https://nftstorage.link/ipfs/",
-  "https://ninetailed.ninja/ipfs/",
   "https://permaweb.eu.org/ipfs/",
   "https://permaweb.io/ipfs/",
   "https://storry.tv/ipfs/",
