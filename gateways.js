@@ -59,7 +59,6 @@ const downloadGateways = [
   "https://ipfs.treejer.com/ipfs/",
   "https://ipfs.web3.party/ipfs/",
   "https://ipfsgateway.makersplace.com/ipfs/",
-  "https://magic.decentralized-content.com/ipfs/",
   "https://nftstorage.link/ipfs/",
   "https://ninetailed.ninja/ipfs/",
   "https://permaweb.eu.org/ipfs/",
