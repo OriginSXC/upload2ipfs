@@ -1,6 +1,5 @@
 const downloadGateways = [
   "https://siderus.io/ipfs/",
-  "https://ipfs.eternum.io/ipfs/",
   "http://gateway.ipfs.io/ipfs/",
   "https://4everland.io/ipfs/",
   "https://alexdav.id/ipfs/",
@@ -9,7 +8,6 @@ const downloadGateways = [
   "https://aragon.ventures/ipfs/",
   "https://c4rex.co/ipfs/",
   "https://cdn.cwinfo.net/ipfs/",
-  "https://cdn.ipfsscan.io/ipfs/",
   "https://crustwebsites.net/ipfs/",
   "https://dweb.eu.org/ipfs/",
   "https://dweb.link/ipfs/",
@@ -29,7 +27,6 @@ const downloadGateways = [
   "https://ipfs.best-practice.se/ipfs/",
   "https://ipfs.chisdealhd.co.uk/ipfs/",
   "https://ipfs.cyou/ipfs/",
-  "https://ipfs.decentralized-content.com/ipfs/",
   "https://ipfs.decoo.io/ipfs/",
   "https://ipfs.denarius.io/ipfs/",
   "https://ipfs.dlux.io/ipfs/",
