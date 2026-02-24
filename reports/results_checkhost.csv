@@ -1,7 +1,7 @@
 base,method,test_url,exists,nodes_total,nodes_ready,nodes_ok,codes,fastest_s,permanent_link,request_id
 https://siderus.io/ipfs/,GET,https://siderus.io/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,,,,,,,
 https://ipfs.jes.xxx/ipfs/,GET,https://ipfs.jes.xxx/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,,,,,,,
-https://eu.siderus.io/ipfs/,GET,https://eu.siderus.io/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,,,,,,,
+https://eu.siderus.io/ipfs/,GET,https://eu.siderus.io/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,5,5,0,,,https://check-host.net/check-report/3a4cb645k6aa,3a4cb645k6aa
 https://ipfs.eternum.io/ipfs/,GET,https://ipfs.eternum.io/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,,,,,,,
 https://gateway.temporal.cloud/ipfs/,GET,https://gateway.temporal.cloud/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,,,,,,,
 https://jorropo.ovh/ipfs/,GET,https://jorropo.ovh/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,,,,,,,
@@ -70,7 +70,7 @@ https://ipfs.greyh.at/ipfs/,GET,https://ipfs.greyh.at/ipfs/bafybeifx7yeb55armcsx
 https://ipfs.ink/ipfs/,GET,https://ipfs.ink/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,,,,,,,
 https://ipfs.io/ipfs/,GET,https://ipfs.io/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,,,,,,,
 https://ipfs.jbb.one/ipfs/,GET,https://ipfs.jbb.one/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,,,,,,,
-https://ipfs.joaoleitao.org/ipfs/,GET,https://ipfs.joaoleitao.org/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,1,5,5,5,502,0.426,https://check-host.net/check-report/3a3698a2k7b3,3a3698a2k7b3
+https://ipfs.joaoleitao.org/ipfs/,GET,https://ipfs.joaoleitao.org/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,,,,,,,
 https://ipfs.kaleido.art/ipfs/,GET,https://ipfs.kaleido.art/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,,,,,,,
 https://ipfs.kavin.rocks/ipfs/,GET,https://ipfs.kavin.rocks/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,,,,,,,
 https://ipfs.kinematiks.com/ipfs/,GET,https://ipfs.kinematiks.com/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,,,,,,,
