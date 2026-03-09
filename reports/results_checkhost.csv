@@ -25,7 +25,7 @@ https://dlunar.net/ipfs/,GET,https://dlunar.net/ipfs/bafybeifx7yeb55armcsxwwitky
 https://dweb.eu.org/ipfs/,GET,https://dweb.eu.org/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,,,,,,,
 https://dweb.link/ipfs/,GET,https://dweb.link/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,,,,,,,
 https://fleek.cool/ipfs/,GET,https://fleek.cool/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,,,,,,,
-https://flk-ipfs.xyz/ipfs/,GET,https://flk-ipfs.xyz/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,,,,,,,
+https://flk-ipfs.xyz/ipfs/,GET,https://flk-ipfs.xyz/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,5,5,0,,,https://check-host.net/check-report/3b50f432k784,3b50f432k784
 https://gateway.ipfs.io/ipfs/,GET,https://gateway.ipfs.io/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,,,,,,,
 https://gateway.lighthouse.storage/ipfs/,GET,https://gateway.lighthouse.storage/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,,,,,,,
 https://gateway.originprotocol.com/ipfs/,GET,https://gateway.originprotocol.com/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,,,,,,,
@@ -69,7 +69,7 @@ https://ipfs-gateway.omniflix.studio/ipfs/,GET,https://ipfs-gateway.omniflix.stu
 https://ipfs.greyh.at/ipfs/,GET,https://ipfs.greyh.at/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,,,,,,,
 https://ipfs.ink/ipfs/,GET,https://ipfs.ink/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,,,,,,,
 https://ipfs.io/ipfs/,GET,https://ipfs.io/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,,,,,,,
-https://ipfs.jbb.one/ipfs/,GET,https://ipfs.jbb.one/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,,,,,,,
+https://ipfs.jbb.one/ipfs/,GET,https://ipfs.jbb.one/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,1,5,5,5,502,1.152,https://check-host.net/check-report/3b50f810k53b,3b50f810k53b
 https://ipfs.joaoleitao.org/ipfs/,GET,https://ipfs.joaoleitao.org/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,,,,,,,
 https://ipfs.kaleido.art/ipfs/,GET,https://ipfs.kaleido.art/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,,,,,,,
 https://ipfs.kavin.rocks/ipfs/,GET,https://ipfs.kavin.rocks/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,,,,,,,
