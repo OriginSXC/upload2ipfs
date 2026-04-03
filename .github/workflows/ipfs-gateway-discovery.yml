@@ -41,6 +41,8 @@ jobs:
           import requests
 
           OUTPUT = Path("gateways.txt")
+          API_SUFFIX = "/api/v0/cat?arg="
+          IPFS_SUFFIX = "/ipfs/"
           SOURCES = [
               "https://raw.githubusercontent.com/ipfs/public-gateway-checker/main/gateways.json",
               "https://raw.githubusercontent.com/ipfs/public-gateway-checker/master/gateways.json",
@@ -57,13 +59,13 @@ jobs:
               if not parsed.netloc:
                   return None
 
-              api_idx = u.find("/api/v0/cat?arg=")
+              api_idx = u.find(API_SUFFIX)
               if api_idx != -1:
-                  return u[: api_idx + len("/api/v0/cat?arg=")]
+                  return u[: api_idx + len(API_SUFFIX)]
 
-              ipfs_idx = u.find("/ipfs/")
+              ipfs_idx = u.find(IPFS_SUFFIX)
               if ipfs_idx != -1:
-                  return u[: ipfs_idx + len("/ipfs/")]
+                  return u[: ipfs_idx + len(IPFS_SUFFIX)]
 
               if u.endswith("/ipfs"):
                   return f"{u}/"
