@@ -45,7 +45,6 @@ jobs:
           IPFS_SUFFIX = "/ipfs/"
           SOURCES = [
               "https://raw.githubusercontent.com/ipfs/public-gateway-checker/main/gateways.json",
-              "https://raw.githubusercontent.com/ipfs/public-gateway-checker/master/gateways.json",
               "https://ipfs.github.io/public-gateway-checker/gateways.json",
               "https://raw.githubusercontent.com/ipfs/awesome-ipfs/main/README.md",
               "https://docs.ipfs.tech/concepts/ipfs-gateway/",
@@ -101,7 +100,7 @@ jobs:
                   else:
                       print(f"[WARN] {source} -> HTTP {resp.status_code}")
               except Exception as exc:
-                  print(f"[WARN] {source} -> {exc}")
+                  print(f"[WARN] {source} -> {type(exc).__name__}: {exc}")
 
           merged = sorted(existing | discovered)
           OUTPUT.write_text("\n".join(merged) + ("\n" if merged else ""), encoding="utf-8")
