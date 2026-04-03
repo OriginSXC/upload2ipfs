@@ -206,13 +206,13 @@ jobs:
           fi
 
           mkdir -p reports
-          EXTRA_ARGS=()
+          CMD=(python remote_probe_checkhost.py "$LIST_FILE" --nodes "${NODES:-5}" --csv reports/results_checkhost.csv --online-list online_gateways.txt)
           if [[ -n "${CID:-}" ]]; then
-            EXTRA_ARGS+=(--cid "$CID")
+            CMD+=(--cid "$CID")
           fi
           
           # Run the probe and create online_gateways.txt
-          python remote_probe_checkhost.py "$LIST_FILE" --nodes "${NODES:-5}" --csv reports/results_checkhost.csv --online-list online_gateways.txt "${EXTRA_ARGS[@]}"
+          "${CMD[@]}"
 
           TS=$(date -u +"%Y-%m-%dT%H-%M-%SZ")
           cp reports/results_checkhost.csv "reports/ipfs_gateways_${TS}.csv"
