@@ -8,7 +8,14 @@ on:
     paths:
       - 'index.html'
       - 'assets/**'
-      - '.github/workflows/pages.yml'
+      - '.github/workflows/static_pages.yml'
+
+  # Auto-deploy after the probe workflow updates index.html via GITHUB_TOKEN
+  # (GITHUB_TOKEN commits cannot trigger push events, so we use workflow_run)
+  workflow_run:
+    workflows: ["IPFS Gateway Remote Probe (multi-region) + Patch index.html"]
+    types: [completed]
+    branches: [master]
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
@@ -28,10 +35,14 @@ concurrency:
 jobs:
   # Single deploy job since we're just deploying
   deploy:
+    # Only deploy if triggered by push/dispatch, or if the probe workflow succeeded
+    if: ${{ github.event_name == 'push' || github.event_name == 'workflow_dispatch' || (github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'success') }}
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
+    env:
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
     steps:
       - name: Checkout
         uses: actions/checkout@v4
