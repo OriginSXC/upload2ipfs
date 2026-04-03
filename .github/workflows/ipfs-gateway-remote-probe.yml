@@ -30,6 +30,7 @@ concurrency:
 
 jobs:
   probe:
+    if: ${{ github.event_name != 'push' || github.actor != 'github-actions[bot]' }}
     runs-on: ubuntu-latest
     timeout-minutes: 120
     steps:
@@ -205,13 +206,13 @@ jobs:
           fi
 
           mkdir -p reports
-          EXTRA_ARGS=""
+          EXTRA_ARGS=()
           if [[ -n "${CID:-}" ]]; then
-            EXTRA_ARGS="--cid ${CID}"
+            EXTRA_ARGS+=(--cid "$CID")
           fi
           
           # Run the probe and create online_gateways.txt
-          python remote_probe_checkhost.py "$LIST_FILE" --nodes "${NODES:-5}" --csv reports/results_checkhost.csv --online-list online_gateways.txt $EXTRA_ARGS
+          python remote_probe_checkhost.py "$LIST_FILE" --nodes "${NODES:-5}" --csv reports/results_checkhost.csv --online-list online_gateways.txt "${EXTRA_ARGS[@]}"
 
           TS=$(date -u +"%Y-%m-%dT%H-%M-%SZ")
           cp reports/results_checkhost.csv "reports/ipfs_gateways_${TS}.csv"
