@@ -3,7 +3,7 @@ name: Discover IPFS Gateways
 on:
   workflow_dispatch:
   schedule:
-    - cron: "5 1 * * *"
+    - cron: "5 1 * * *" # 每天 01:05 UTC 运行
 
 permissions:
   contents: write
@@ -28,7 +28,7 @@ jobs:
           python-version: "3.11"
 
       - name: Install Python deps
-        run: pip install requests
+        run: pip install requests==2.32.3
 
       - name: Discover and merge gateway list
         shell: bash
@@ -43,6 +43,7 @@ jobs:
           OUTPUT = Path("gateways.txt")
           API_SUFFIX = "/api/v0/cat?arg="
           IPFS_SUFFIX = "/ipfs/"
+          USER_AGENT = "upload2ipfs-gateway-discovery"
           SOURCES = [
               "https://raw.githubusercontent.com/ipfs/public-gateway-checker/main/gateways.json",
               "https://ipfs.github.io/public-gateway-checker/gateways.json",
@@ -91,7 +92,7 @@ jobs:
 
           discovered = set()
           session = requests.Session()
-          session.headers.update({"User-Agent": "upload2ipfs-gateway-discovery/1.0"})
+          session.headers.update({"User-Agent": USER_AGENT})
           for source in SOURCES:
               try:
                   resp = session.get(source, timeout=20)
