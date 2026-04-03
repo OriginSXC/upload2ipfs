@@ -228,6 +228,121 @@ jobs:
           pathlib.Path("remote_probe_checkhost.py").chmod(0o755)
           PY
 
+      - name: Write direct_probe.py
+        shell: bash
+        run: |
+          python - <<'PY'
+          import textwrap, pathlib
+          code = r'''
+          #!/usr/bin/env python3
+          # -*- coding: utf-8 -*-
+          """Direct HTTP probe from the runner to supplement remote multi-region results.
+
+          Usage:
+            python direct_probe.py gateways.txt [--cid CID] [--timeout 10] [--workers 10]
+                                                [--online-list online_gateways.txt]
+                                                [--speeds-json gateway_speeds.json]
+                                                [--merge]
+          """
+          import argparse, json, re, time
+          from concurrent.futures import ThreadPoolExecutor, as_completed
+          import requests
+
+          DEFAULT_CID = "bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m"
+
+          def parse_urls(path):
+              url_re = re.compile(r"https?://[^\s\"'`]+")
+              with open(path, "r", encoding="utf-8", errors="ignore") as f:
+                  text = f.read()
+              clean, seen = [], set()
+              for u in url_re.findall(text):
+                  u = u.strip().rstrip(",];")
+                  if u and u not in seen:
+                      seen.add(u)
+                      clean.append(u)
+              return clean
+
+          def probe_one(base, cid, timeout):
+              url = f"{base}{cid}"
+              method = "POST" if "/api/v0/cat" in base else "GET"
+              try:
+                  t0 = time.time()
+                  if method == "POST":
+                      r = requests.post(url, timeout=timeout)
+                  else:
+                      r = requests.get(url, timeout=timeout, allow_redirects=True, stream=True)
+                      r.close()
+                  elapsed = round(time.time() - t0, 3)
+                  ok = (r.status_code < 500)
+                  return base, ok, elapsed if ok else None
+              except Exception:
+                  return base, False, None
+
+          def main():
+              ap = argparse.ArgumentParser()
+              ap.add_argument("input")
+              ap.add_argument("--cid", default=DEFAULT_CID)
+              ap.add_argument("--timeout", type=float, default=10.0)
+              ap.add_argument("--workers", type=int, default=10)
+              ap.add_argument("--online-list", default="online_gateways.txt")
+              ap.add_argument("--speeds-json", default="gateway_speeds.json")
+              ap.add_argument("--merge", action="store_true",
+                              help="Merge with existing online list instead of replacing it")
+              args = ap.parse_args()
+
+              all_gws = parse_urls(args.input)
+              print(f"Direct probing {len(all_gws)} gateways "
+                    f"(timeout={args.timeout}s, workers={args.workers})...")
+
+              if args.merge:
+                  try:
+                      with open(args.online_list, "r", encoding="utf-8") as f:
+                          existing = set(l.strip() for l in f if l.strip())
+                  except FileNotFoundError:
+                      existing = set()
+              else:
+                  existing = set()
+
+              to_probe = [g for g in all_gws if g not in existing]
+              print(f"  Already online (from prior step): {len(existing)}, probing now: {len(to_probe)}")
+
+              new_online, speeds = [], {}
+              with ThreadPoolExecutor(max_workers=args.workers) as ex:
+                  futures = {ex.submit(probe_one, g, args.cid, args.timeout): g for g in to_probe}
+                  for fut in as_completed(futures):
+                      base, ok, t = fut.result()
+                      tag = "ONLINE" if ok else "OFFLINE"
+                      print(f"[{tag}] {base}" + (f"  {t:.3f}s" if t else ""))
+                      if ok:
+                          new_online.append(base)
+                          if t is not None:
+                              speeds[base] = t
+
+              # Persist speed data (merge with any existing file)
+              try:
+                  with open(args.speeds_json, "r", encoding="utf-8") as f:
+                      all_speeds = json.load(f)
+              except (FileNotFoundError, ValueError):
+                  all_speeds = {}
+              all_speeds.update(speeds)
+              with open(args.speeds_json, "w", encoding="utf-8") as f:
+                  json.dump(all_speeds, f)
+
+              # Merge, sort by latency (fastest first), write back
+              merged = list(existing) + new_online
+              merged = sorted(merged, key=lambda u: all_speeds.get(u, 9999))
+              with open(args.online_list, "w", encoding="utf-8") as f:
+                  for g in merged:
+                      f.write(g + "\n")
+              print(f"Direct probe done: +{len(new_online)} new (total {len(merged)})")
+
+          if __name__ == "__main__":
+              main()
+          '''
+          pathlib.Path("direct_probe.py").write_text(textwrap.dedent(code), encoding="utf-8")
+          pathlib.Path("direct_probe.py").chmod(0o755)
+          PY
+
       - name: Prepare initial gateway list for probe
         shell: bash
         run: |
@@ -272,22 +387,49 @@ jobs:
           cp reports/results_checkhost.csv "reports/ipfs_gateways_${TS}.csv"
           cp reports/results_checkhost.csv "reports/latest_ipfs_gateways.csv"
 
+      - name: Run direct probe (supplement Check-Host results)
+        shell: bash
+        env:
+          CID: ${{ github.event.inputs.cid }}
+        run: |
+          set -euo pipefail
+          # Probe each gateway directly from the runner and merge with Check-Host results.
+          # A gateway is considered online if it passes EITHER Check-Host OR this direct check.
+          LIST_FILE="gateways.txt"
+          if [[ ! -f "${LIST_FILE}" ]] || [[ ! -s "${LIST_FILE}" ]]; then
+            LIST_FILE="gateways.js"
+          fi
+          PROBE_ARGS=("${LIST_FILE}" --timeout 10 --workers 10 --online-list online_gateways.txt --speeds-json gateway_speeds.json --merge)
+          if [[ -n "${CID:-}" ]]; then PROBE_ARGS+=(--cid "${CID}"); fi
+          python direct_probe.py "${PROBE_ARGS[@]}" \
+            || echo "Direct probe failed (non-fatal); continuing with existing online list."
+
       - name: Build gateways.js from online list
         shell: bash
         run: |
           set -euo pipefail
-          # Create a new gateways.js using only the online gateways
+          # Create a new gateways.js using only the online gateways, sorted by latency.
           if [[ ! -f "online_gateways.txt" ]]; then
             echo "online_gateways.txt not found, skipping build."
             exit 0
           fi
           node -e '
             const fs = require("fs");
-            const arr = fs.readFileSync("online_gateways.txt", "utf8").split(/\r?\n/).map(s => s.trim()).filter(Boolean);
+            const arr = fs.readFileSync("online_gateways.txt", "utf8")
+              .split(/\r?\n/).map(s => s.trim()).filter(Boolean);
+
+            // Sort in-place by direct-probe latency when available (fastest gateway first)
+            let speeds = {};
+            try { speeds = JSON.parse(fs.readFileSync("gateway_speeds.json", "utf8")); } catch(_) {}
+            arr.sort((a, b) => (speeds[a] || 9999) - (speeds[b] || 9999));
+
             if (arr.length > 0) {
               const js = "const downloadGateways = [\n  " + arr.map(u => JSON.stringify(u)).join(",\n  ") + "\n];\n";
               fs.writeFileSync("gateways.js", js);
-              console.log(`gateways.js rebuilt from online_gateways.txt (count=${arr.length})`);
+              console.log("gateways.js rebuilt (count=" + arr.length + ", sorted by latency)");
+              if (arr.length < 3) {
+                console.warn("WARNING: fewer than 3 online gateways found (" + arr.length + "). Consider adding more gateways to gateways.txt.");
+              }
             } else {
               console.warn("No online gateways found. gateways.js was not updated.");
             }
