@@ -1,123 +1,155 @@
-base,method,test_url,exists,nodes_total,nodes_ready,nodes_ok,codes,fastest_s,permanent_link,request_id
-https://siderus.io/ipfs/,GET,https://siderus.io/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,,,,,,,
-https://ipfs.jes.xxx/ipfs/,GET,https://ipfs.jes.xxx/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,,,,,,,
-https://eu.siderus.io/ipfs/,GET,https://eu.siderus.io/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,,,,,,,
-https://ipfs.eternum.io/ipfs/,GET,https://ipfs.eternum.io/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,,,,,,,
-https://gateway.temporal.cloud/ipfs/,GET,https://gateway.temporal.cloud/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,,,,,,,
-https://jorropo.ovh/ipfs/,GET,https://jorropo.ovh/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,,,,,,,
-http://gateway.ipfs.io/ipfs/,GET,http://gateway.ipfs.io/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,,,,,,,
-https://na.siderus.io/ipfs/,GET,https://na.siderus.io/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,,,,,,,
-https://ipfs.jeroendeneef.com/ipfs/,GET,https://ipfs.jeroendeneef.com/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,,,,,,,
-https://nas-ipfs.4ce.cn/ipfs/,GET,https://nas-ipfs.4ce.cn/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,,,,,,,
-https://4everland.io/ipfs/,GET,https://4everland.io/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,,,,,,,
-https://alexdav.id/ipfs/,GET,https://alexdav.id/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,,,,,,,
-https://api.thegraph.com/ipfs/api/v0/cat?arg=,POST,https://api.thegraph.com/ipfs/api/v0/cat?arg=bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,,,,,,,
-https://api.universalprofile.cloud/ipfs/,GET,https://api.universalprofile.cloud/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,,,,,,,
-https://aragon.ventures/ipfs/,GET,https://aragon.ventures/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,,,,,,,
-https://astyanax.io/ipfs/,GET,https://astyanax.io/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,,,,,,,
-https://c4rex.co/ipfs/,GET,https://c4rex.co/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,,,,,,,
-https://cdn.cwinfo.net/ipfs/,GET,https://cdn.cwinfo.net/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,,,,,,,
-https://cdn.ipfsscan.io/ipfs/,GET,https://cdn.ipfsscan.io/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,,,,,,,
-https://cloudflare-ipfs.com/ipfs/,GET,https://cloudflare-ipfs.com/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,,,,,,,
-https://crustwebsites.net/ipfs/,GET,https://crustwebsites.net/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,,,,,,,
-https://cthd.icu/ipfs/,GET,https://cthd.icu/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,,,,,,,
-https://dlunar.net/ipfs/,GET,https://dlunar.net/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,,,,,,,
-https://dweb.eu.org/ipfs/,GET,https://dweb.eu.org/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,,,,,,,
-https://dweb.link/ipfs/,GET,https://dweb.link/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,,,,,,,
-https://fleek.cool/ipfs/,GET,https://fleek.cool/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,,,,,,,
-https://flk-ipfs.xyz/ipfs/,GET,https://flk-ipfs.xyz/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,,,,,,,
-https://gateway.ipfs.io/ipfs/,GET,https://gateway.ipfs.io/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,,,,,,,
-https://gateway.lighthouse.storage/ipfs/,GET,https://gateway.lighthouse.storage/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,,,,,,,
-https://gateway.originprotocol.com/ipfs/,GET,https://gateway.originprotocol.com/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,,,,,,,
-https://gateway.pinata.cloud/ipfs/,GET,https://gateway.pinata.cloud/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,,,,,,,
-https://gateway.serph.network/ipfs/,GET,https://gateway.serph.network/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,,,,,,,
-https://gravity.jup.io/ipfs/,GET,https://gravity.jup.io/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,,,,,,,
-https://gw-seattle.crustcloud.io/ipfs/,GET,https://gw-seattle.crustcloud.io/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,,,,,,,
-https://gw.crustapps.net/ipfs/,GET,https://gw.crustapps.net/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,,,,,,,
-https://gw.ipfs-lens.dev/ipfs/,GET,https://gw.ipfs-lens.dev/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,,,,,,,
-https://hardbin.com/ipfs/,GET,https://hardbin.com/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,,,,,,,
-https://hashnews.k1ic.com/ipfs/,GET,https://hashnews.k1ic.com/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,,,,,,,
-https://hub.textile.io/ipfs/,GET,https://hub.textile.io/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,,,,,,,
-https://infura-ipfs.io/ipfs/,GET,https://infura-ipfs.io/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,,,,,,,
-https://ipfs.1-2.dev/ipfs/,GET,https://ipfs.1-2.dev/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,,,,,,,
-https://ipfs.alloyxuast.tk/ipfs/,GET,https://ipfs.alloyxuast.tk/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,,,,,,,
-https://ipfs.algonode.dev/ipfs/,GET,https://ipfs.algonode.dev/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,,,,,,,
-https://ipfs.algonode.xyz/ipfs/,GET,https://ipfs.algonode.xyz/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,,,,,,,
-https://ipfs.anonymize.com/ipfs/,GET,https://ipfs.anonymize.com/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,,,,,,,
-https://ipfs.arching-kaos.com/ipfs/,GET,https://ipfs.arching-kaos.com/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,,,,,,,
-https://ipfs.best-practice.se/ipfs/,GET,https://ipfs.best-practice.se/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,,,,,,,
-https://ipfs.busy.org/ipfs/,GET,https://ipfs.busy.org/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,,,,,,,
-https://ipfs.chisdealhd.co.uk/ipfs/,GET,https://ipfs.chisdealhd.co.uk/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,,,,,,,
-https://ipfs.cyou/ipfs/,GET,https://ipfs.cyou/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,,,,,,,
-https://ipfs.decentralized-content.com/ipfs/,GET,https://ipfs.decentralized-content.com/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,,,,,,,
-https://ipfs.decoo.io/ipfs/,GET,https://ipfs.decoo.io/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,,,,,,,
-https://ipfs.denarius.io/ipfs/,GET,https://ipfs.denarius.io/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,,,,,,,
-https://ipfs.dlux.io/ipfs/,GET,https://ipfs.dlux.io/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,,,,,,,
-https://ipfs.drink.cafe/ipfs/,GET,https://ipfs.drink.cafe/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,,,,,,,
-https://ipfs.eth.aragon.network/ipfs/,GET,https://ipfs.eth.aragon.network/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,,,,,,,
-https://ipfs.filebase.io/ipfs/,GET,https://ipfs.filebase.io/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,,,,,,,
-https://ipfs.fleek.co/ipfs/,GET,https://ipfs.fleek.co/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,,,,,,,
-https://ipfs.flock.io/ipfs/,GET,https://ipfs.flock.io/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,,,,,,,
-https://ipfs.fooock.com/ipfs/,GET,https://ipfs.fooock.com/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,,,,,,,
-https://ipfs.funnychain.co/ipfs/,GET,https://ipfs.funnychain.co/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,,,,,,,
-https://ipfs.genenetwork.org/ipfs/,GET,https://ipfs.genenetwork.org/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,,,,,,,
-https://ipfs.gitcoin.co/api/v0/cat?arg=,POST,https://ipfs.gitcoin.co/api/v0/cat?arg=bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,,,,,,,
-https://ipfs-2.gitcoin.co/api/v0/cat?arg=,POST,https://ipfs-2.gitcoin.co/api/v0/cat?arg=bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,,,,,,,
-https://ipfs-3.gitcoin.co/api/v0/cat?arg=,POST,https://ipfs-3.gitcoin.co/api/v0/cat?arg=bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,,,,,,,
-https://ipfs-gateway.cloud/ipfs/,GET,https://ipfs-gateway.cloud/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,,,,,,,
-https://ipfs-gateway.omniflix.studio/ipfs/,GET,https://ipfs-gateway.omniflix.studio/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,,,,,,,
-https://ipfs.greyh.at/ipfs/,GET,https://ipfs.greyh.at/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,,,,,,,
-https://ipfs.ink/ipfs/,GET,https://ipfs.ink/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,,,,,,,
-https://ipfs.io/ipfs/,GET,https://ipfs.io/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,,,,,,,
-https://ipfs.jbb.one/ipfs/,GET,https://ipfs.jbb.one/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,,,,,,,
-https://ipfs.joaoleitao.org/ipfs/,GET,https://ipfs.joaoleitao.org/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,,,,,,,
-https://ipfs.kaleido.art/ipfs/,GET,https://ipfs.kaleido.art/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,,,,,,,
-https://ipfs.kavin.rocks/ipfs/,GET,https://ipfs.kavin.rocks/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,,,,,,,
-https://ipfs.kinematiks.com/ipfs/,GET,https://ipfs.kinematiks.com/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,,,,,,,
-https://ipfs.lain.la/ipfs/,GET,https://ipfs.lain.la/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,,,,,,,
-https://ipfs.litnet.work/ipfs/,GET,https://ipfs.litnet.work/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,,,,,,,
-https://ipfs.mttk.net/ipfs/,GET,https://ipfs.mttk.net/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,,,,,,,
-https://ipfs.namebase.io/ipfs/,GET,https://ipfs.namebase.io/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,,,,,,,
-https://ipfs.network.thegraph.com/ipfs/api/v0/cat?arg=,POST,https://ipfs.network.thegraph.com/ipfs/api/v0/cat?arg=bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,,,,,,,
-https://ipfs.omniflix.studio/ipfs/,GET,https://ipfs.omniflix.studio/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,,,,,,,
-https://ipfs.oversas.org/ipfs/,GET,https://ipfs.oversas.org/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,,,,,,,
-https://ipfs.overpi.com/ipfs/,GET,https://ipfs.overpi.com/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,,,,,,,
-https://ipfs.questbook.app:8080/api/v0/cat?arg=,POST,https://ipfs.questbook.app:8080/api/v0/cat?arg=bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,,,,,,,
-https://ipfs.runfission.com/ipfs/,GET,https://ipfs.runfission.com/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,,,,,,,
-https://ipfs.scalaproject.io/ipfs/,GET,https://ipfs.scalaproject.io/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,,,,,,,
-https://ipfs.slang.cx/ipfs/,GET,https://ipfs.slang.cx/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,,,,,,,
-https://ipfs.sloppyta.co/ipfs/,GET,https://ipfs.sloppyta.co/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,,,,,,,
-https://ipfs.smartholdem.io/ipfs/,GET,https://ipfs.smartholdem.io/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,,,,,,,
-https://ipfs.staging.cloudflare-ipfs.com/ipfs/,GET,https://ipfs.staging.cloudflare-ipfs.com/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,,,,,,,
-https://ipfs.stardustxr.org/ipfs/,GET,https://ipfs.stardustxr.org/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,,,,,,,
-https://ipfs.tayfundogdas.me/ipfs/,GET,https://ipfs.tayfundogdas.me/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,,,,,,,
-https://ipfs.telos.miami/ipfs/,GET,https://ipfs.telos.miami/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,,,,,,,
-https://ipfs.treejer.com/ipfs/,GET,https://ipfs.treejer.com/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,,,,,,,
-https://ipfs.tribecap.co/ipfs/,GET,https://ipfs.tribecap.co/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,,,,,,,
-https://ipfs.trusti.id/ipfs/,GET,https://ipfs.trusti.id/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,,,,,,,
-https://ipfs.tubby.cloud/ipfs/,GET,https://ipfs.tubby.cloud/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,,,,,,,
-https://ipfs.uploads.nu/ipfs/,GET,https://ipfs.uploads.nu/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,,,,,,,
-https://ipfs.web3.party/ipfs/,GET,https://ipfs.web3.party/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,,,,,,,
-https://ipfs.xoqq.ch/ipfs/,GET,https://ipfs.xoqq.ch/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,,,,,,,
-https://ipfs.yt/ipfs/,GET,https://ipfs.yt/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,,,,,,,
-https://ipfs0.sjc.cloudsigma.com/ipfs/,GET,https://ipfs0.sjc.cloudsigma.com/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,,,,,,,
-https://ipfs1.pixura.io/ipfs/,GET,https://ipfs1.pixura.io/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,,,,,,,
-https://ipfsgateway.makersplace.com/ipfs/,GET,https://ipfsgateway.makersplace.com/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,,,,,,,
-https://ipns.co/ipfs/,GET,https://ipns.co/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,,,,,,,
-https://jorropo.net/ipfs/,GET,https://jorropo.net/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,,,,,,,
-https://konubinix.eu/ipfs/,GET,https://konubinix.eu/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,,,,,,,
-https://magic.decentralized-content.com/ipfs/,GET,https://magic.decentralized-content.com/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,,,,,,,
-https://natoboram.mynetgear.com/ipfs/,GET,https://natoboram.mynetgear.com/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,,,,,,,
-https://nftstorage.link/ipfs/,GET,https://nftstorage.link/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,,,,,,,
-https://ninetailed.ninja/ipfs/,GET,https://ninetailed.ninja/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,,,,,,,
-https://permaweb.eu.org/ipfs/,GET,https://permaweb.eu.org/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,,,,,,,
-https://permaweb.io/ipfs/,GET,https://permaweb.io/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,,,,,,,
-https://ravencoinipfs-gateway.com/ipfs/,GET,https://ravencoinipfs-gateway.com/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,,,,,,,
-https://search.ipfsgate.com/ipfs/,GET,https://search.ipfsgate.com/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,,,,,,,
-https://storry.tv/ipfs/,GET,https://storry.tv/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,,,,,,,
-https://storjipfs-gateway.com/ipfs/,GET,https://storjipfs-gateway.com/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,,,,,,,
-https://trustless-gateway.link/ipfs/,GET,https://trustless-gateway.link/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,,,,,,,
-https://tth-ipfs.com/ipfs/,GET,https://tth-ipfs.com/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,,,,,,,
-https://via0.com/ipfs/,GET,https://via0.com/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,,,,,,,
-https://video.oneloveipfs.com/ipfs/,GET,https://video.oneloveipfs.com/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,,,,,,,
-https://w3s.link/ipfs/,GET,https://w3s.link/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,,,,,,,
+base,method,test_url,exists,nodes_total,nodes_ready,nodes_ok,codes,fastest_s,permanent_link,request_id,probe_source
+http://apillon.io/ipfs/,GET,http://apillon.io/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,1,1,1,1,200,0.273,,,direct
+http://fleek.co/ipfs/,GET,http://fleek.co/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,1,1,0,403,0.050,,,direct
+http://gateway.ipfs.io/ipfs/,GET,http://gateway.ipfs.io/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,1,1,1,1,200,0.410,,,direct
+https://4everland.io/ipfs/,GET,https://4everland.io/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,1,1,0,403,0.206,,,direct
+https://alexdav.id/ipfs/,GET,https://alexdav.id/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,1,1,0,404,0.909,,,direct
+https://apac.orbitor.dev/ipfs/,GET,https://apac.orbitor.dev/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,1,1,1,1,200,0.250,,,direct
+https://api.thegraph.com/ipfs/api/v0/cat?arg=,POST,https://api.thegraph.com/ipfs/api/v0/cat?arg=bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,1,1,1,1,200,0.171,,,direct
+https://api.universalprofile.cloud/ipfs/,GET,https://api.universalprofile.cloud/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,1,1,1,1,200,0.126,,,direct
+https://aragon.ventures/ipfs/,GET,https://aragon.ventures/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,1,1,0,404,0.085,,,direct
+https://astyanax.io/ipfs/,GET,https://astyanax.io/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,1,1,0,"ERR:ConnectionError:HTTPSConnectionPool(host='astyanax.io'; port=443): Max retries exceeded with url: /ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m (Caused by NameResolutionError(""",0.009,,,direct
+https://c4rex.co/ipfs/,GET,https://c4rex.co/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,1,1,0,ERR:ConnectionError:('Connection aborted.'; RemoteDisconnected('Remote end closed connection without response')),10.259,,,direct
+https://cdn.cwinfo.net/ipfs/,GET,https://cdn.cwinfo.net/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,1,1,0,404,1.358,,,direct
+https://cdn.ipfsscan.io/ipfs/,GET,https://cdn.ipfsscan.io/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,1,1,1,1,200,0.386,,,direct
+https://ceramic.network/ipfs/,GET,https://ceramic.network/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,1,1,0,404,0.176,,,direct
+https://check.ipfs.network/ipfs/,GET,https://check.ipfs.network/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,1,1,0,404,0.083,,,direct
+https://cid.ipfs.tech/ipfs/,GET,https://cid.ipfs.tech/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,1,1,0,404,0.102,,,direct
+https://cloudflare-ipfs.com/ipfs/,GET,https://cloudflare-ipfs.com/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,1,1,0,ERR:ConnectionError:HTTPSConnectionPool(host='cloudflare-ipfs.com'; port=443): Max retries exceeded with url: /ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m (Caused by NameResolutio,0.038,,,direct
+https://crustwebsites.net/ipfs/,GET,https://crustwebsites.net/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,1,1,0,523,1.245,,,direct
+https://cthd.icu/ipfs/,GET,https://cthd.icu/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,1,1,0,"ERR:ConnectionError:HTTPSConnectionPool(host='cthd.icu'; port=443): Max retries exceeded with url: /ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m (Caused by NameResolutionError(""HTT",0.013,,,direct
+https://curl.haxx.se/ipfs/,GET,https://curl.haxx.se/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,1,1,0,404,0.988,,,direct
+https://dag.ipfs.tech/ipfs/,GET,https://dag.ipfs.tech/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,1,1,0,404,0.050,,,direct
+https://dget.top/ipfs/,GET,https://dget.top/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,1,1,0,403,0.301,,,direct
+https://dlunar.net/ipfs/,GET,https://dlunar.net/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,1,1,0,"ERR:ConnectionError:HTTPSConnectionPool(host='dlunar.net'; port=443): Max retries exceeded with url: /ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m (Caused by NameResolutionError(""H",0.036,,,direct
+https://durin.site/ipfs/,GET,https://durin.site/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,1,1,0,"ERR:ConnectionError:HTTPSConnectionPool(host='durin.site'; port=443): Max retries exceeded with url: /ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m (Caused by NameResolutionError(""H",0.020,,,direct
+https://dweb.eu.org/ipfs/,GET,https://dweb.eu.org/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,1,1,0,403,0.131,,,direct
+https://dweb.link/ipfs/,GET,https://dweb.link/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,1,1,1,1,200,0.239,,,direct
+https://eu.orbitor.dev/ipfs/,GET,https://eu.orbitor.dev/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,1,1,1,1,200,0.256,,,direct
+https://eu.siderus.io/ipfs/,GET,https://eu.siderus.io/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,1,1,0,ERR:ConnectionError:HTTPSConnectionPool(host='eu.siderus.io'; port=443): Max retries exceeded with url: /ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m (Caused by NameResolutionError,0.171,,,direct
+https://explore.ipld.io/ipfs/,GET,https://explore.ipld.io/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,1,1,0,404,0.116,,,direct
+https://filebase.com/ipfs/,GET,https://filebase.com/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,1,1,0,404,0.124,,,direct
+https://fileverse.io/ipfs/,GET,https://fileverse.io/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,1,1,0,404,0.223,,,direct
+https://fission.codes/ipfs/,GET,https://fission.codes/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,1,1,0,ERR:ConnectionError:HTTPSConnectionPool(host='fission.codes'; port=443): Max retries exceeded with url: /ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m (Caused by NameResolutionError,0.269,,,direct
+https://fleek.cool/ipfs/,GET,https://fleek.cool/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,1,1,0,404,1.243,,,direct
+https://flk-ipfs.xyz/ipfs/,GET,https://flk-ipfs.xyz/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,1,1,0,ERR:ConnectionError:HTTPSConnectionPool(host='flk-ipfs.xyz'; port=443): Max retries exceeded with url: /ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m (Caused by NameResolutionError(,10.014,,,direct
+https://gateway.ipfs.io/ipfs/,GET,https://gateway.ipfs.io/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,1,1,1,1,200,0.096,,,direct
+https://gateway.lighthouse.storage/ipfs/,GET,https://gateway.lighthouse.storage/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,1,1,1,1,200,0.211,,,direct
+https://gateway.originprotocol.com/ipfs/,GET,https://gateway.originprotocol.com/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,1,1,0,ERR:ConnectionError:HTTPSConnectionPool(host='gateway.originprotocol.com'; port=443): Max retries exceeded with url: /ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m (Caused by NameRe,0.034,,,direct
+https://gateway.pinata.cloud/ipfs/,GET,https://gateway.pinata.cloud/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,1,1,1,1,200,7.082,,,direct
+https://gateway.serph.network/ipfs/,GET,https://gateway.serph.network/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,1,1,1,1,200,2.052,,,direct
+https://gateway.temporal.cloud/ipfs/,GET,https://gateway.temporal.cloud/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,1,1,0,ERR:ConnectionError:HTTPSConnectionPool(host='gateway.temporal.cloud'; port=443): Max retries exceeded with url: /ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m (Caused by NameResolu,0.060,,,direct
+https://github.com/ipfs/,GET,https://github.com/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,1,1,0,404,0.121,,,direct
+https://gravity.jup.io/ipfs/,GET,https://gravity.jup.io/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,1,1,0,ERR:ConnectionError:HTTPSConnectionPool(host='gravity.jup.io'; port=443): Max retries exceeded with url: /ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m (Caused by NameResolutionErro,0.124,,,direct
+https://gw-seattle.crustcloud.io/ipfs/,GET,https://gw-seattle.crustcloud.io/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,1,1,0,403,0.787,,,direct
+https://gw.crustapps.net/ipfs/,GET,https://gw.crustapps.net/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,1,1,0,ERR:ReadTimeout:HTTPSConnectionPool(host='gw.crustapps.net'; port=443): Read timed out. (read timeout=15),15.090,,,direct
+https://gw.ipfs-lens.dev/ipfs/,GET,https://gw.ipfs-lens.dev/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,1,1,1,1,200,0.170,,,direct
+https://hardbin.com/ipfs/,GET,https://hardbin.com/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,1,1,0,ERR:ConnectTimeout:HTTPSConnectionPool(host='hardbin.com'; port=443): Max retries exceeded with url: /ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m (Caused by ConnectTimeoutError(<,15.213,,,direct
+https://hashnews.k1ic.com/ipfs/,GET,https://hashnews.k1ic.com/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,1,1,0,404,0.147,,,direct
+https://hub.textile.io/ipfs/,GET,https://hub.textile.io/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,1,1,0,403,0.208,,,direct
+https://infura-ipfs.io/ipfs/,GET,https://infura-ipfs.io/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,1,1,1,1,200,0.097,,,direct
+https://ipfs-2.gitcoin.co/api/v0/cat?arg=,POST,https://ipfs-2.gitcoin.co/api/v0/cat?arg=bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,1,1,0,ERR:ConnectTimeout:HTTPSConnectionPool(host='ipfs-2.gitcoin.co'; port=443): Max retries exceeded with url: /api/v0/cat?arg=bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m (Caused by Conne,15.051,,,direct
+https://ipfs-3.gitcoin.co/api/v0/cat?arg=,POST,https://ipfs-3.gitcoin.co/api/v0/cat?arg=bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,1,1,0,ERR:ConnectTimeout:HTTPSConnectionPool(host='ipfs-3.gitcoin.co'; port=443): Max retries exceeded with url: /api/v0/cat?arg=bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m (Caused by Conne,15.069,,,direct
+https://ipfs-gateway.cloud/ipfs/,GET,https://ipfs-gateway.cloud/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,1,1,0,ERR:ConnectionError:HTTPSConnectionPool(host='ipfs-gateway.cloud'; port=443): Max retries exceeded with url: /ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m (Caused by NameResolution,0.029,,,direct
+https://ipfs-gateway.omniflix.studio/ipfs/,GET,https://ipfs-gateway.omniflix.studio/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,1,1,0,ERR:ConnectionError:HTTPSConnectionPool(host='ipfs-gateway.omniflix.studio'; port=443): Max retries exceeded with url: /ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m (Caused by Name,0.136,,,direct
+https://ipfs.1-2.dev/ipfs/,GET,https://ipfs.1-2.dev/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,1,1,0,ERR:ConnectionError:HTTPSConnectionPool(host='ipfs.1-2.dev'; port=443): Max retries exceeded with url: /ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m (Caused by NameResolutionError(,0.151,,,direct
+https://ipfs.algonode.dev/ipfs/,GET,https://ipfs.algonode.dev/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,1,1,0,403,0.552,,,direct
+https://ipfs.algonode.xyz/ipfs/,GET,https://ipfs.algonode.xyz/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,1,1,0,403,0.336,,,direct
+https://ipfs.alloyxuast.tk/ipfs/,GET,https://ipfs.alloyxuast.tk/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,1,1,0,ERR:ConnectionError:HTTPSConnectionPool(host='ipfs.alloyxuast.tk'; port=443): Max retries exceeded with url: /ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m (Caused by NameResolution,0.122,,,direct
+https://ipfs.anonymize.com/ipfs/,GET,https://ipfs.anonymize.com/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,1,1,0,ERR:ConnectionError:HTTPSConnectionPool(host='ipfs.anonymize.com'; port=443): Max retries exceeded with url: /ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m (Caused by NameResolution,0.089,,,direct
+https://ipfs.arching-kaos.com/ipfs/,GET,https://ipfs.arching-kaos.com/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,1,1,0,ERR:ReadTimeout:HTTPSConnectionPool(host='ipfs.arching-kaos.com'; port=443): Read timed out. (read timeout=15),15.479,,,direct
+https://ipfs.best-practice.se/ipfs/,GET,https://ipfs.best-practice.se/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,1,1,1,1,200,0.441,,,direct
+https://ipfs.busy.org/ipfs/,GET,https://ipfs.busy.org/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,1,1,0,ERR:ConnectionError:HTTPSConnectionPool(host='ipfs.busy.org'; port=443): Max retries exceeded with url: /ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m (Caused by NameResolutionError,0.014,,,direct
+https://ipfs.chisdealhd.co.uk/ipfs/,GET,https://ipfs.chisdealhd.co.uk/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,1,1,0,ERR:ConnectionError:HTTPSConnectionPool(host='ipfs.chisdealhd.co.uk'; port=443): Max retries exceeded with url: /ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m (Caused by NameResolut,0.352,,,direct
+https://ipfs.cyou/ipfs/,GET,https://ipfs.cyou/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,1,1,0,"ERR:ConnectionError:HTTPSConnectionPool(host='ipfs.cyou'; port=443): Max retries exceeded with url: /ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m (Caused by NameResolutionError(""HT",0.010,,,direct
+https://ipfs.decentralized-content.com/ipfs/,GET,https://ipfs.decentralized-content.com/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,1,1,1,1,200,0.100,,,direct
+https://ipfs.decoo.io/ipfs/,GET,https://ipfs.decoo.io/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,1,1,0,ERR:ReadTimeout:HTTPSConnectionPool(host='ipfs.decoo.io'; port=443): Read timed out. (read timeout=15),15.174,,,direct
+https://ipfs.denarius.io/ipfs/,GET,https://ipfs.denarius.io/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,1,1,0,ERR:SSLError:HTTPSConnectionPool(host='ipfs.denarius.io'; port=443): Max retries exceeded with url: /ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m (Caused by SSLError(SSLCert,0.108,,,direct
+https://ipfs.dlux.io/ipfs/,GET,https://ipfs.dlux.io/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,1,1,0,ERR:ConnectionError:HTTPSConnectionPool(host='ipfs.dlux.io'; port=443): Max retries exceeded with url: /ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m (Caused by NameResolutionError(,0.126,,,direct
+https://ipfs.drink.cafe/ipfs/,GET,https://ipfs.drink.cafe/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,1,1,0,ERR:ConnectionError:HTTPSConnectionPool(host='ipfs.drink.cafe'; port=443): Max retries exceeded with url: /ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m (Caused by NameResolutionErr,0.181,,,direct
+https://ipfs.ecolatam.com/ipfs/,GET,https://ipfs.ecolatam.com/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,1,1,1,1,200,0.300,,,direct
+https://ipfs.eternum.io/ipfs/,GET,https://ipfs.eternum.io/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,1,1,0,403,0.055,,,direct
+https://ipfs.eth.aragon.network/ipfs/,GET,https://ipfs.eth.aragon.network/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,1,1,0,ERR:SSLError:HTTPSConnectionPool(host='ipfs.eth.aragon.network'; port=443): Max retries exceeded with url: /ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m (Caused by SSLError(,0.241,,,direct
+https://ipfs.filebase.io/ipfs/,GET,https://ipfs.filebase.io/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,1,1,1,1,200,0.049,,,direct
+https://ipfs.fleek.co/ipfs/,GET,https://ipfs.fleek.co/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,1,1,1,1,200,0.170,,,direct
+https://ipfs.flock.io/ipfs/,GET,https://ipfs.flock.io/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,1,1,0,ERR:ConnectionError:HTTPSConnectionPool(host='ipfs.flock.io'; port=443): Max retries exceeded with url: /ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m (Caused by NameResolutionError,0.083,,,direct
+https://ipfs.fooock.com/ipfs/,GET,https://ipfs.fooock.com/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,1,1,0,ERR:SSLError:HTTPSConnectionPool(host='ipfs.fooock.com'; port=443): Max retries exceeded with url: /ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m (Caused by SSLError(SSLCertV,0.247,,,direct
+https://ipfs.funnychain.co/ipfs/,GET,https://ipfs.funnychain.co/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,1,1,1,1,200,0.807,,,direct
+https://ipfs.genenetwork.org/ipfs/,GET,https://ipfs.genenetwork.org/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,1,1,0,ERR:SSLError:HTTPSConnectionPool(host='ipfs.genenetwork.org'; port=443): Max retries exceeded with url: /ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m (Caused by SSLError(SSL,0.116,,,direct
+https://ipfs.gitcoin.co/api/v0/cat?arg=,POST,https://ipfs.gitcoin.co/api/v0/cat?arg=bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,1,1,0,ERR:ConnectTimeout:HTTPSConnectionPool(host='ipfs.gitcoin.co'; port=443): Max retries exceeded with url: /api/v0/cat?arg=bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m (Caused by Connect,15.036,,,direct
+https://ipfs.greyh.at/ipfs/,GET,https://ipfs.greyh.at/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,1,1,0,404,0.256,,,direct
+https://ipfs.ink/ipfs/,GET,https://ipfs.ink/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,1,1,1,1,200,0.419,,,direct
+https://ipfs.io/ipfs/,GET,https://ipfs.io/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,1,1,1,1,200,0.049,,,direct
+https://ipfs.jbb.one/ipfs/,GET,https://ipfs.jbb.one/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,1,1,0,ERR:SSLError:HTTPSConnectionPool(host='ipfs.jbb.one'; port=443): Max retries exceeded with url: /ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m (Caused by SSLError(SSLCertVeri,0.699,,,direct
+https://ipfs.jeroendeneef.com/ipfs/,GET,https://ipfs.jeroendeneef.com/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,1,1,0,ERR:ConnectionError:HTTPSConnectionPool(host='ipfs.jeroendeneef.com'; port=443): Max retries exceeded with url: /ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m (Caused by NewConnecti,15.052,,,direct
+https://ipfs.jes.xxx/ipfs/,GET,https://ipfs.jes.xxx/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,1,1,0,ERR:ConnectionError:HTTPSConnectionPool(host='ipfs.jes.xxx'; port=443): Max retries exceeded with url: /ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m (Caused by NameResolutionError(,0.013,,,direct
+https://ipfs.joaoleitao.org/ipfs/,GET,https://ipfs.joaoleitao.org/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,1,1,0,502,0.565,,,direct
+https://ipfs.kaleido.art/ipfs/,GET,https://ipfs.kaleido.art/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,1,1,0,404,0.102,,,direct
+https://ipfs.kavin.rocks/ipfs/,GET,https://ipfs.kavin.rocks/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,1,1,0,502,0.904,,,direct
+https://ipfs.kinematiks.com/ipfs/,GET,https://ipfs.kinematiks.com/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,1,1,0,ERR:ConnectionError:HTTPSConnectionPool(host='ipfs.kinematiks.com'; port=443): Max retries exceeded with url: /ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m (Caused by NameResolutio,0.041,,,direct
+https://ipfs.lain.la/ipfs/,GET,https://ipfs.lain.la/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,1,1,0,ERR:SSLError:HTTPSConnectionPool(host='ipfs.lain.la'; port=443): Max retries exceeded with url: /ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m (Caused by SSLError(SSLCertVeri,0.100,,,direct
+https://ipfs.litnet.work/ipfs/,GET,https://ipfs.litnet.work/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,1,1,1,1,200,0.345,,,direct
+https://ipfs.mttk.net/ipfs/,GET,https://ipfs.mttk.net/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,1,1,1,1,200,0.921,,,direct
+https://ipfs.namebase.io/ipfs/,GET,https://ipfs.namebase.io/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,1,1,0,ERR:ConnectionError:HTTPSConnectionPool(host='ipfs.namebase.io'; port=443): Max retries exceeded with url: /ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m (Caused by NameResolutionEr,0.019,,,direct
+https://ipfs.network.thegraph.com/ipfs/api/v0/cat?arg=,POST,https://ipfs.network.thegraph.com/ipfs/api/v0/cat?arg=bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,1,1,1,1,200,0.094,,,direct
+https://ipfs.omniflix.studio/ipfs/,GET,https://ipfs.omniflix.studio/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,1,1,0,ERR:ConnectionError:HTTPSConnectionPool(host='ipfs.omniflix.studio'; port=443): Max retries exceeded with url: /ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m (Caused by NameResoluti,0.269,,,direct
+https://ipfs.orbitor.dev/ipfs/,GET,https://ipfs.orbitor.dev/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,1,1,1,1,200,0.309,,,direct
+https://ipfs.overpi.com/ipfs/,GET,https://ipfs.overpi.com/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,1,1,0,404,0.138,,,direct
+https://ipfs.oversas.org/ipfs/,GET,https://ipfs.oversas.org/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,1,1,0,403,0.487,,,direct
+https://ipfs.questbook.app:8080/api/v0/cat?arg=,POST,https://ipfs.questbook.app:8080/api/v0/cat?arg=bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,1,1,0,404,1.105,,,direct
+https://ipfs.runfission.com/ipfs/,GET,https://ipfs.runfission.com/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,1,1,1,1,200,1.219,,,direct
+https://ipfs.scalaproject.io/ipfs/,GET,https://ipfs.scalaproject.io/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,1,1,0,ERR:ConnectionError:HTTPSConnectionPool(host='ipfs.scalaproject.io'; port=443): Max retries exceeded with url: /ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m (Caused by NameResoluti,0.176,,,direct
+https://ipfs.slang.cx/ipfs/,GET,https://ipfs.slang.cx/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,1,1,0,ERR:ConnectionError:HTTPSConnectionPool(host='ipfs.slang.cx'; port=443): Max retries exceeded with url: /ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m (Caused by NameResolutionError,0.129,,,direct
+https://ipfs.sloppyta.co/ipfs/,GET,https://ipfs.sloppyta.co/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,1,1,0,ERR:ConnectTimeout:HTTPSConnectionPool(host='ipfs.sloppyta.co'; port=443): Max retries exceeded with url: /ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m (Caused by ConnectTimeoutEr,15.025,,,direct
+https://ipfs.smartholdem.io/ipfs/,GET,https://ipfs.smartholdem.io/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,1,1,0,ERR:ConnectionError:HTTPSConnectionPool(host='ipfs.smartholdem.io'; port=443): Max retries exceeded with url: /ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m (Caused by NameResolutio,0.027,,,direct
+https://ipfs.staging.cloudflare-ipfs.com/ipfs/,GET,https://ipfs.staging.cloudflare-ipfs.com/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,1,1,0,ERR:ConnectionError:HTTPSConnectionPool(host='ipfs.staging.cloudflare-ipfs.com'; port=443): Max retries exceeded with url: /ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m (Caused by ,0.047,,,direct
+https://ipfs.stardustxr.org/ipfs/,GET,https://ipfs.stardustxr.org/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,1,1,1,1,200,0.494,,,direct
+https://ipfs.tayfundogdas.me/ipfs/,GET,https://ipfs.tayfundogdas.me/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,1,1,0,ERR:ConnectionError:HTTPSConnectionPool(host='ipfs.tayfundogdas.me'; port=443): Max retries exceeded with url: /ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m (Caused by NameResoluti,0.008,,,direct
+https://ipfs.telos.miami/ipfs/,GET,https://ipfs.telos.miami/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,1,1,0,ERR:ConnectionError:HTTPSConnectionPool(host='ipfs.telos.miami'; port=443): Max retries exceeded with url: /ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m (Caused by NameResolutionEr,0.456,,,direct
+https://ipfs.treejer.com/ipfs/,GET,https://ipfs.treejer.com/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,1,1,0,521,0.234,,,direct
+https://ipfs.tribecap.co/ipfs/,GET,https://ipfs.tribecap.co/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,1,1,0,ERR:ConnectionError:HTTPSConnectionPool(host='ipfs.tribecap.co'; port=443): Max retries exceeded with url: /ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m (Caused by NameResolutionEr,0.035,,,direct
+https://ipfs.trusti.id/ipfs/,GET,https://ipfs.trusti.id/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,1,1,0,ERR:ConnectionError:HTTPSConnectionPool(host='ipfs.trusti.id'; port=443): Max retries exceeded with url: /ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m (Caused by NameResolutionErro,0.023,,,direct
+https://ipfs.tubby.cloud/ipfs/,GET,https://ipfs.tubby.cloud/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,1,1,0,ERR:ConnectionError:HTTPSConnectionPool(host='ipfs.tubby.cloud'; port=443): Max retries exceeded with url: /ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m (Caused by NameResolutionEr,0.061,,,direct
+https://ipfs.uploads.nu/ipfs/,GET,https://ipfs.uploads.nu/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,1,1,0,ERR:ConnectionError:HTTPSConnectionPool(host='ipfs.uploads.nu'; port=443): Max retries exceeded with url: /ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m (Caused by NameResolutionErr,0.209,,,direct
+https://ipfs.web3.party/ipfs/,GET,https://ipfs.web3.party/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,1,1,0,ERR:ConnectionError:('Connection aborted.'; RemoteDisconnected('Remote end closed connection without response')),0.859,,,direct
+https://ipfs.xoqq.ch/ipfs/,GET,https://ipfs.xoqq.ch/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,1,1,0,ERR:ConnectionError:HTTPSConnectionPool(host='ipfs.xoqq.ch'; port=443): Max retries exceeded with url: /ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m (Caused by NameResolutionError(,0.188,,,direct
+https://ipfs.yt/ipfs/,GET,https://ipfs.yt/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,1,1,0,"ERR:ConnectionError:HTTPSConnectionPool(host='ipfs.yt'; port=443): Max retries exceeded with url: /ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m (Caused by NameResolutionError(""HTTP",0.138,,,direct
+https://ipfs0.sjc.cloudsigma.com/ipfs/,GET,https://ipfs0.sjc.cloudsigma.com/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,1,1,0,ERR:ConnectTimeout:HTTPSConnectionPool(host='ipfs0.sjc.cloudsigma.com'; port=443): Max retries exceeded with url: /ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m (Caused by ConnectT,15.364,,,direct
+https://ipfs1.pixura.io/ipfs/,GET,https://ipfs1.pixura.io/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,1,1,0,ERR:ConnectionError:HTTPSConnectionPool(host='ipfs1.pixura.io'; port=443): Max retries exceeded with url: /ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m (Caused by NameResolutionErr,0.196,,,direct
+https://ipfsgateway.makersplace.com/ipfs/,GET,https://ipfsgateway.makersplace.com/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,1,1,0,403,0.363,,,direct
+https://ipns.co/ipfs/,GET,https://ipns.co/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,1,1,0,"ERR:ConnectionError:HTTPSConnectionPool(host='ipns.co'; port=443): Max retries exceeded with url: /ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m (Caused by NewConnectionError(""HTTPS",15.039,,,direct
+https://jorropo.net/ipfs/,GET,https://jorropo.net/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,1,1,0,"ERR:ConnectionError:HTTPSConnectionPool(host='jorropo.net'; port=443): Max retries exceeded with url: /ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m (Caused by NameResolutionError(""",0.169,,,direct
+https://jorropo.ovh/ipfs/,GET,https://jorropo.ovh/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,1,1,0,"ERR:ConnectionError:HTTPSConnectionPool(host='jorropo.ovh'; port=443): Max retries exceeded with url: /ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m (Caused by NameResolutionError(""",0.016,,,direct
+https://konubinix.eu/ipfs/,GET,https://konubinix.eu/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,1,1,0,404,0.683,,,direct
+https://latam.orbitor.dev/ipfs/,GET,https://latam.orbitor.dev/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,1,1,1,1,200,0.320,,,direct
+https://libp2p.io/ipfs/,GET,https://libp2p.io/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,1,1,0,404,0.241,,,direct
+https://lighthouse.storage/ipfs/,GET,https://lighthouse.storage/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,1,1,0,404,0.357,,,direct
+https://magic.decentralized-content.com/ipfs/,GET,https://magic.decentralized-content.com/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,1,1,1,1,200,0.128,,,direct
+https://matters.town/ipfs/,GET,https://matters.town/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,1,1,1,1,200,0.716,,,direct
+https://na.siderus.io/ipfs/,GET,https://na.siderus.io/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,1,1,0,ERR:ConnectionError:HTTPSConnectionPool(host='na.siderus.io'; port=443): Max retries exceeded with url: /ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m (Caused by NameResolutionError,0.172,,,direct
+https://nas-ipfs.4ce.cn/ipfs/,GET,https://nas-ipfs.4ce.cn/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,1,1,0,ERR:ConnectionError:HTTPSConnectionPool(host='nas-ipfs.4ce.cn'; port=443): Max retries exceeded with url: /ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m (Caused by NameResolutionErr,0.031,,,direct
+https://natoboram.mynetgear.com/ipfs/,GET,https://natoboram.mynetgear.com/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,1,1,0,ERR:ConnectionError:HTTPSConnectionPool(host='natoboram.mynetgear.com'; port=443): Max retries exceeded with url: /ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m (Caused by NameResol,0.037,,,direct
+https://nft.storage/ipfs/,GET,https://nft.storage/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,1,1,0,404,0.432,,,direct
+https://nftstorage.link/ipfs/,GET,https://nftstorage.link/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,1,1,1,1,200,0.291,,,direct
+https://ninetailed.ninja/ipfs/,GET,https://ninetailed.ninja/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,1,1,0,404,0.400,,,direct
+https://peergos.org/ipfs/,GET,https://peergos.org/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,1,1,0,404,0.527,,,direct
+https://permaweb.eu.org/ipfs/,GET,https://permaweb.eu.org/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,1,1,0,403,0.275,,,direct
+https://permaweb.io/ipfs/,GET,https://permaweb.io/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,1,1,1,1,200,0.205,,,direct
+https://pinata.cloud/ipfs/,GET,https://pinata.cloud/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,1,1,0,404,0.122,,,direct
+https://ravencoinipfs-gateway.com/ipfs/,GET,https://ravencoinipfs-gateway.com/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,1,1,0,ERR:SSLError:HTTPSConnectionPool(host='ravencoinipfs-gateway.com'; port=443): Max retries exceeded with url: /ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m (Caused by SSLErro,0.213,,,direct
+https://search.ipfsgate.com/ipfs/,GET,https://search.ipfsgate.com/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,1,1,0,ERR:ConnectionError:HTTPSConnectionPool(host='search.ipfsgate.com'; port=443): Max retries exceeded with url: /ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m (Caused by NameResolutio,0.089,,,direct
+https://siderus.io/ipfs/,GET,https://siderus.io/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,1,1,0,404,0.244,,,direct
+https://storacha.network/ipfs/,GET,https://storacha.network/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,1,1,0,404,0.089,,,direct
+https://storjipfs-gateway.com/ipfs/,GET,https://storjipfs-gateway.com/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,1,1,0,ERR:ConnectTimeout:HTTPSConnectionPool(host='storjipfs-gateway.com'; port=443): Max retries exceeded with url: /ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m (Caused by ConnectTime,15.101,,,direct
+https://storry.tv/ipfs/,GET,https://storry.tv/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,1,1,1,1,200,0.312,,,direct
+https://trustless-gateway.link/ipfs/,GET,https://trustless-gateway.link/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,1,1,0,406,0.157,,,direct
+https://tryquiet.org/ipfs/,GET,https://tryquiet.org/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,1,1,0,404,0.226,,,direct
+https://tth-ipfs.com/ipfs/,GET,https://tth-ipfs.com/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,1,1,0,ERR:ConnectionError:HTTPSConnectionPool(host='tth-ipfs.com'; port=443): Max retries exceeded with url: /ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m (Caused by NameResolutionError(,0.082,,,direct
+https://via0.com/ipfs/,GET,https://via0.com/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,1,1,0,404,0.331,,,direct
+https://video.oneloveipfs.com/ipfs/,GET,https://video.oneloveipfs.com/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,1,1,0,ERR:ConnectionError:HTTPSConnectionPool(host='video.oneloveipfs.com'; port=443): Max retries exceeded with url: /ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m (Caused by NameResolut,0.091,,,direct
+https://w3s.link/ipfs/,GET,https://w3s.link/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,1,1,1,1,200,11.766,,,direct
+https://www.4everland.org/ipfs/,GET,https://www.4everland.org/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,1,1,0,404,0.539,,,direct
+https://www.dappling.network/ipfs/,GET,https://www.dappling.network/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,1,1,0,404,0.395,,,direct
+https://www.quicknode.com/ipfs/,GET,https://www.quicknode.com/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,1,1,0,404,0.669,,,direct
+https://{IPNS/ipfs/,GET,https://{IPNS/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,1,1,0,"ERR:ConnectionError:HTTPSConnectionPool(host='%7bipns'; port=443): Max retries exceeded with url: /ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m (Caused by NameResolutionError(""HTTP",0.001,,,direct
+https://{gateway/ipfs/,GET,https://{gateway/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m,0,1,1,0,"ERR:ConnectionError:HTTPSConnectionPool(host='%7bgateway'; port=443): Max retries exceeded with url: /ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m (Caused by NameResolutionError(""H",0.001,,,direct
