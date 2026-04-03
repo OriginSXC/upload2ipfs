@@ -23,7 +23,7 @@ The **Download Gateways** are refreshed daily in `gateways.txt`. I would be grat
 
 * **Upload Files**: Users can upload files to the IPFS network.
 * **Download Files**: Download files from the IPFS network using a known IPFS hash.
-* **Gateway Management**: Automatically updates available IPFS gateways daily and supports user submissions of new gateways.
+* **Gateway Management**: Automatically updates available IPFS gateways daily, performs daily discovery from public GitHub/web sources, and supports user submissions of new gateways.
 
 ## How to Use
 
@@ -64,7 +64,7 @@ Contributions are welcome, whether it's code or providing available IPFS gateway
 
 * **上传文件**: 用户可以上传文件到IPFS网络。
 * **下载文件**: 通过已知的IPFS哈希值，从IPFS网络下载文件。
-* **网关管理**: 每天自动更新可用的IPFS网关，并支持用户提交新的网关。
+* **网关管理**: 每天自动更新可用的IPFS网关、从公开 GitHub/网络来源进行自动发现，并支持用户提交新的网关。
 
 ## 使用方法
 
