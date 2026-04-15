@@ -1,0 +1,56 @@
+name: IPFS Gateway Discovery & Probe
+
+on:
+  workflow_dispatch:
+    inputs:
+      cid:
+        description: "IPFS CID to test"
+        required: false
+        default: ""
+  schedule:
+    - cron: "5 1 * * *"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: ipfs-gateways-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  discover-and-probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - run: pip install requests==2.32.3
+
+      - name: Discover gateways
+        run: python scripts/discover_gateways.py
+
+      - name: Probe via Cloudflare Worker
+        env:
+          CF_WORKER_URL: ${{ secrets.CF_WORKER_URL }}
+          CF_AUTH_TOKEN: ${{ secrets.CF_AUTH_TOKEN }}
+          INPUT_CID: ${{ github.event.inputs.cid }}
+        run: python scripts/probe_via_worker.py
+
+      - name: Build gateways.js and patch index.html
+        run: node scripts/build_gateways.js
+
+      - name: Commit results
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add gateways.txt gateways.js online_gateways.txt gateway_speeds.json index.html
+          if git diff --staged --quiet; then
+            echo "No changes"; exit 0
+          fi
+          git commit -m "chore: update gateways $(date -u +'%Y-%m-%d')"
+          git pull --rebase origin "${GITHUB_REF_NAME}"
+          git push origin HEAD:"${GITHUB_REF_NAME}"
