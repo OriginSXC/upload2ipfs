@@ -167,7 +167,7 @@
         "use strict";
 
         // ====== Configuration ======
-        const TIMEOUT_MS = 5000; // Timeout for gateway probes
+        const TIMEOUT_MS = 15000; // Timeout for gateway probes; some public gateways (e.g. pinata) take 7s+
         const CONCURRENCY = 8; // Maximum concurrent probes
         const SHOW_LATENCY_IN_OPTIONS = true; // Append "(X ms)" after gateway text
 

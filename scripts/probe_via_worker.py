@@ -80,7 +80,7 @@ def main():
         if idx < len(batches) - 1:
             time.sleep(RETRY_DELAY)
 
-    # Worker 只看是否有响应，普通网站的 404 页也会被判为在线，这里再按内容复核一遍
+    # 从 runner 再按内容复核一遍 Worker 判为在线的网关
     online = [r for r in all_results if r.get("ok")]
     expected = EXPECTED_BODY.get(cid)
     with ThreadPoolExecutor(VERIFY_WORKERS) as ex:
@@ -92,6 +92,15 @@ def main():
     print(f"Content check: {len(rejected)} rejected, "
           f"{sum(v is True for v in verdicts)} confirmed, "
           f"{sum(v is None for v in verdicts)} inconclusive (kept)")
+
+    # 有些网关（如 pinata）会对 Cloudflare Worker 的出口限流回 429，换 runner 直连能确认内容就收回来
+    limited = [r for r in all_results if not r.get("ok") and r.get("status") == 429]
+    with ThreadPoolExecutor(VERIFY_WORKERS) as ex:
+        rescue = list(ex.map(lambda r: verify_direct(r["base"], cid, expected), limited))
+    for r, v in zip(limited, rescue):
+        if v is True:
+            print(f"[RESCUE] {r['base']} 429 from Worker, confirmed from runner")
+            online.append({"base": r["base"], "ok": True, "latency": None})
 
     # 写在线列表和速度数据
     online.sort(key=lambda r: r.get("latency") or 9999)
