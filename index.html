@@ -13,9 +13,6 @@
     <meta name="theme-color" content="#0f172a">    
     <meta name="description" content="Upload files to the IPFS network using this simple tool." />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" />
-    
-    <!-- js-ipfs on CDN exposes global `Ipfs` in browsers; optional, used only for client-side CID fallback -->
-    <script src="https://cdn.jsdelivr.net/npm/ipfs/dist/index.min.js"></script>
 
     <style>
       body {
@@ -170,12 +167,14 @@
         "use strict";
 
         // ====== Configuration ======
-        const TIMEOUT_MS = 5000; // Timeout for gateway probes
+        const TIMEOUT_MS = 15000; // Timeout for gateway probes; some public gateways (e.g. pinata) take 7s+
         const CONCURRENCY = 8; // Maximum concurrent probes
         const SHOW_LATENCY_IN_OPTIONS = true; // Append "(X ms)" after gateway text
 
         // A known public CID to test download availability
         const TEST_CID = "bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m";
+        // Known content of TEST_CID; plain websites answer /ipfs/<cid> with a 404 or a soft-200 HTML page
+        const TEST_CID_CONTENT = "Hello from IPFS Gateway Checker\n";
 
         // For endpoints with /api/v0/cat?arg= vs /ipfs/ we normalize per-gateway here
         const gatewayMatchingList = {
@@ -194,80 +193,18 @@
 
         const downloadGateways = [
  
-  "https://hashnews.k1ic.com/ipfs/",
-  "https://lighthouse.storage/ipfs/",
-  "https://ipfs.io/ipfs/",
-  "https://ipfs.kaleido.art/ipfs/",
-  "https://hub.textile.io/ipfs/",
-  "https://gw.ipfs-lens.dev/ipfs/",
   "https://api.thegraph.com/ipfs/api/v0/cat?arg=",
-  "http://fleek.co/ipfs/",
-  "https://apac.orbitor.dev/ipfs/",
-  "https://github.com/ipfs/",
-  "https://magic.decentralized-content.com/ipfs/",
-  "https://latam.orbitor.dev/ipfs/",
-  "https://c4rex.co/ipfs/",
-  "https://nft.storage/ipfs/",
-  "https://aragon.ventures/ipfs/",
   "https://api.universalprofile.cloud/ipfs/",
-  "https://ceramic.network/ipfs/",
-  "https://matters.town/ipfs/",
-  "https://pinata.cloud/ipfs/",
-  "https://peergos.org/ipfs/",
-  "https://libp2p.io/ipfs/",
-  "https://konubinix.eu/ipfs/",
-  "https://permaweb.io/ipfs/",
-  "https://dag.ipfs.tech/ipfs/",
-  "https://siderus.io/ipfs/",
-  "https://storacha.network/ipfs/",
-  "https://ipfs.network.thegraph.com/ipfs/api/v0/cat?arg=",
-  "https://tryquiet.org/ipfs/",
-  "https://ipfs.algonode.dev/ipfs/",
-  "https://gw-seattle.crustcloud.io/ipfs/",
-  "https://ipfs.algonode.xyz/ipfs/",
-  "https://ninetailed.ninja/ipfs/",
-  "https://ipfs.orbitor.dev/ipfs/",
-  "https://trustless-gateway.link/ipfs/",
-  "https://ipfs.overpi.com/ipfs/",
-  "https://alexdav.id/ipfs/",
-  "https://permaweb.eu.org/ipfs/",
-  "https://www.quicknode.com/ipfs/",
-  "https://check.ipfs.network/ipfs/",
-  "https://storry.tv/ipfs/",
-  "https://ipfs.litnet.work/ipfs/",
-  "https://via0.com/ipfs/",
-  "https://filebase.com/ipfs/",
-  "https://nftstorage.link/ipfs/",
-  "https://eu.orbitor.dev/ipfs/",
-  "https://ipfs.best-practice.se/ipfs/",
-  "https://fileverse.io/ipfs/",
-  "https://www.4everland.org/ipfs/",
-  "https://explore.ipld.io/ipfs/",
-  "https://gateway.lighthouse.storage/ipfs/",
-  "https://ipfs.decentralized-content.com/ipfs/",
-  "https://gateway.pinata.cloud/ipfs/",
-  "https://www.dappling.network/ipfs/",
-  "https://ipfs.oversas.org/ipfs/",
-  "https://fleek.cool/ipfs/",
-  "http://apillon.io/ipfs/",
-  "https://4everland.io/ipfs/",
-  "http://gateway.ipfs.io/ipfs/",
+  "https://apac.orbitor.dev/ipfs/",
   "https://ipfs.stardustxr.org/ipfs/",
-  "https://cid.ipfs.tech/ipfs/",
-  "https://dweb.link/ipfs/",
-  "https://ipfs.ecolatam.com/ipfs/",
-  "https://ipfs.eternum.io/ipfs/",
-  "https://gateway.ipfs.io/ipfs/",
-  "https://dget.top/ipfs/",
-  "https://cdn.ipfsscan.io/ipfs/",
-  "https://ipfs.questbook.app:8080/api/v0/cat?arg=",
+  "https://eu.orbitor.dev/ipfs/",
   "https://ipfs.filebase.io/ipfs/",
-  "https://curl.haxx.se/ipfs/",
-  "https://gateway.serph.network/ipfs/",
-  "https://cdn.cwinfo.net/ipfs/",
-  "https://ipfsgateway.makersplace.com/ipfs/",
-  "https://ipfs.mttk.net/ipfs/",
-  "https://ipfs.runfission.com/ipfs/"
+  "https://latam.orbitor.dev/ipfs/",
+  "https://4everland.io/ipfs/",
+  "https://magic.decentralized-content.com/ipfs/",
+  "https://ipfs.network.thegraph.com/ipfs/api/v0/cat?arg=",
+  "https://ipfs.orbitor.dev/ipfs/",
+  "https://gateway.pinata.cloud/ipfs/"
 
 ];
 
@@ -358,26 +295,19 @@
         }
 
         async function probeDownloadGateway(base, cid) {
+            // The test file is only 32 bytes, so fetch it whole and compare the content
             const controller = new AbortController();
-            const url = normalizeDownloadUrl(base, cid);
             try {
                 const res = await withTimeout(
-                    fetch(url, { method: "HEAD", signal: controller.signal }),
+                    fetch(normalizeDownloadUrl(base, cid), { cache: "no-store", signal: controller.signal })
+                        .then(async (r) => ({ ok: r.ok, text: r.ok ? await r.text() : "" })),
                     TIMEOUT_MS,
                     controller
                 );
-                if (res.ok) return true;
-                if (res.status === 405) throw new Error("HEAD not allowed, falling back to GET");
+                return res.ok && res.text === TEST_CID_CONTENT;
             } catch (_) {
-                const controller2 = new AbortController();
-                const res2 = await withTimeout(
-                    fetch(url, { headers: { Range: "bytes=0-0" }, signal: controller2.signal }),
-                    TIMEOUT_MS,
-                    controller2
-                ).catch(() => null);
-                if (res2 && (res2.ok || res2.status === 206)) return true;
+                return false;
             }
-            return false;
         }
 
         async function probeUploadGateway(url) {
@@ -397,53 +327,56 @@
             }
         }
 
-        async function checkGateways(gateways, selectElem, progressEl, isUpload = false) {
-            const btn = progressEl.closest('.row').querySelector('button');
+        async function checkGateways(gateways, selectElem, progressEl, btn, isUpload = false) {
+            if (btn.disabled) return;
             btn.disabled = true;
-            selectElem.innerHTML = "";
-            const total = gateways.length;
-            let completed = 0;
-            let workingCount = 0;
-            updateProgressBar(progressEl, 0, 0, total);
+            try {
+                selectElem.innerHTML = "";
+                const total = gateways.length;
+                let completed = 0;
+                let workingCount = 0;
+                updateProgressBar(progressEl, 0, 0, total);
 
-            const results = [];
+                const results = [];
 
-            async function testOne(gw) {
-                const start = performance.now();
-                let ok = false;
-                try {
-                    ok = isUpload ? await probeUploadGateway(gw) : await probeDownloadGateway(gw, TEST_CID);
-                } catch (e) {
-                    // console.error(`Probe failed for ${gw}`, e);
+                async function testOne(gw) {
+                    const start = performance.now();
+                    let ok = false;
+                    try {
+                        ok = isUpload ? await probeUploadGateway(gw) : await probeDownloadGateway(gw, TEST_CID);
+                    } catch (e) {
+                        // console.error(`Probe failed for ${gw}`, e);
+                    }
+                    const ms = Math.round(performance.now() - start);
+                    completed++;
+                    if (ok) {
+                        workingCount++;
+                        results.push({ gw, ms });
+                    }
+                    updateProgressBar(progressEl, completed, workingCount, total);
                 }
-                const ms = Math.round(performance.now() - start);
-                completed++;
-                if (ok) {
-                    workingCount++;
-                    results.push({ gw, ms });
+
+                for (let i = 0; i < gateways.length; i += CONCURRENCY) {
+                    const chunk = gateways.slice(i, i + CONCURRENCY);
+                    await Promise.all(chunk.map(testOne));
                 }
-                updateProgressBar(progressEl, completed, workingCount, total);
+
+                results.sort((a, b) => a.ms - b.ms);
+
+                selectElem.innerHTML = "";
+                results.forEach(r => {
+                    const label = SHOW_LATENCY_IN_OPTIONS ? `${r.gw} (${r.ms} ms)` : r.gw;
+                    const option = document.createElement("option");
+                    option.value = r.gw;
+                    option.text = label;
+                    selectElem.add(option);
+                });
+
+                const key = isUpload ? "uploadGateways.filtered" : "downloadGateways.filtered";
+                localStorage.setItem(key, JSON.stringify(results.map(r => r.gw)));
+            } finally {
+                btn.disabled = false;
             }
-
-            for (let i = 0; i < gateways.length; i += CONCURRENCY) {
-                const chunk = gateways.slice(i, i + CONCURRENCY);
-                await Promise.all(chunk.map(testOne));
-            }
-
-            results.sort((a, b) => a.ms - b.ms);
-
-            selectElem.innerHTML = "";
-            results.forEach(r => {
-                const label = SHOW_LATENCY_IN_OPTIONS ? `${r.gw} (${r.ms} ms)` : r.gw;
-                const option = document.createElement("option");
-                option.value = r.gw;
-                option.text = label;
-                selectElem.add(option);
-            });
-
-            const key = isUpload ? "uploadGateways.filtered" : "downloadGateways.filtered";
-            localStorage.setItem(key, JSON.stringify(results.map(r => r.gw)));
-            btn.disabled = false;
         }
 
         function restoreSelectFromLocalStorage(selectElem, key, fallbackList) {
@@ -458,15 +391,11 @@
         }
         
         async function appendResultToUI(obj, file) {
-            let hash = obj.Hash || obj.cid || null;
-            let name = obj.Name || (file ? file.name : "unknown file");
+            const hash = obj.Hash || obj.cid || null;
+            const name = obj.Name || (file ? file.name : "unknown file");
             const size = obj.Size || obj.size || (file ? file.size : "");
 
-            if (!hash && file) {
-                hash = await generateCID(file);
-            }
-
-            if (!hash) return;
+            if (!hash) throw new Error("Gateway response did not include a CID.");
 
             const base = downloadSelect.value || downloadGateways[0];
             const url = normalizeDownloadUrl(base, hash);
@@ -607,11 +536,13 @@
                 submitBtn.style.display = this.files && this.files.length > 0 ? "inline-block" : "none";
             });
 
-            document.getElementById("check-download-gateways").addEventListener("click", () =>
-                checkGateways(downloadGateways, downloadSelect, downloadProgress, false)
+            const checkDownloadBtn = document.getElementById("check-download-gateways");
+            const checkUploadBtn = document.getElementById("check-upload-gateways");
+            checkDownloadBtn.addEventListener("click", () =>
+                checkGateways(downloadGateways, downloadSelect, downloadProgress, checkDownloadBtn, false)
             );
-            document.getElementById("check-upload-gateways").addEventListener("click", () =>
-                checkGateways(uploadGateways, uploadSelect, uploadProgress, true)
+            checkUploadBtn.addEventListener("click", () =>
+                checkGateways(uploadGateways, uploadSelect, uploadProgress, checkUploadBtn, true)
             );
 
             document.getElementById("submit").addEventListener("click", submitForm);

@@ -8,19 +8,19 @@ OUTPUT = Path("gateways.txt")
 API_SUFFIX = "/api/v0/cat?arg="
 IPFS_SUFFIX = "/ipfs/"
 USER_AGENT = "upload2ipfs-gateway-discovery"
+# 只用专门的网关列表；从 README/文档网页里正则抓 URL 会把项目官网、GitHub 等普通网站误当成网关
 SOURCES = [
     "https://raw.githubusercontent.com/ipfs/public-gateway-checker/main/gateways.json",
     "https://ipfs.github.io/public-gateway-checker/gateways.json",
-    "https://raw.githubusercontent.com/ipfs/awesome-ipfs/main/README.md",
-    "https://docs.ipfs.tech/concepts/ipfs-gateway/",
 ]
+HOST_RE = re.compile(r"^[A-Za-z0-9.-]+(:\d+)?$")
 
 def normalize_gateway(url: str):
     u = url.strip().strip("'\"`),.;")
     if not u.startswith(("http://", "https://")):
         return None
     parsed = urlparse(u)
-    if not parsed.netloc:
+    if not parsed.netloc or not HOST_RE.match(parsed.netloc):
         return None
     api_idx = u.find(API_SUFFIX)
     if api_idx != -1:
