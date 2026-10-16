@@ -82,6 +82,7 @@ https://ipfs.sloppyta.co/ipfs/
 https://ipfs.smartholdem.io/ipfs/
 https://ipfs.staging.cloudflare-ipfs.com/ipfs/
 https://ipfs.stardustxr.org/ipfs/
+https://ipfs.storry.tv/ipfs/
 https://ipfs.tayfundogdas.me/ipfs/
 https://ipfs.telos.miami/ipfs/
 https://ipfs.treejer.com/ipfs/
