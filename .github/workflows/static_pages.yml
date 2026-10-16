@@ -13,7 +13,7 @@ on:
   # Auto-deploy after the probe workflow updates index.html via GITHUB_TOKEN
   # (GITHUB_TOKEN commits cannot trigger push events, so we use workflow_run)
   workflow_run:
-    workflows: ["IPFS Gateway Remote Probe (multi-region) + Patch index.html"]
+    workflows: ["IPFS Gateway Discovery & Probe"]
     types: [completed]
     branches: [master]
 
