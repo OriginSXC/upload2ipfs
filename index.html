@@ -88,8 +88,99 @@
       </div>
     </div>
 
+    <!-- Usage Guide Modal -->
+    <div class="modal fade" id="guideModal" tabindex="-1" aria-labelledby="guideModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-scrollable modal-lg">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="guideModalLabel">使用说明 / How to use</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <ul class="nav nav-tabs mb-3" role="tablist">
+              <li class="nav-item" role="presentation">
+                <button class="nav-link" id="guide-zh-tab" data-bs-toggle="tab" data-bs-target="#guide-zh" type="button" role="tab" aria-controls="guide-zh">中文</button>
+              </li>
+              <li class="nav-item" role="presentation">
+                <button class="nav-link" id="guide-en-tab" data-bs-toggle="tab" data-bs-target="#guide-en" type="button" role="tab" aria-controls="guide-en">English</button>
+              </li>
+            </ul>
+            <div class="tab-content">
+              <div class="tab-pane fade" id="guide-zh" role="tabpanel" aria-labelledby="guide-zh-tab" lang="zh-CN">
+                <h6>上传</h6>
+                <ol>
+                  <li>（可选）点 <strong>Check &amp; filter upload gateways</strong>，测不通的上传网关会从列表中去掉，剩下的按速度排序，结果保存在浏览器里。</li>
+                  <li>在 <strong>Select a gateway to upload your files</strong> 里选一个上传网关。</li>
+                  <li>点 <strong>Choose Files</strong> 选择文件（按住 <kbd>Ctrl</kbd> 可多选），再点 <strong>Upload</strong>。上传途中可以点 <strong>Cancel Upload</strong> 取消。</li>
+                </ol>
+                <h6>上传结果</h6>
+                <ul>
+                  <li>每个文件一行，显示 CID、文件名和大小，点链接即可打开或下载。</li>
+                  <li><strong>Copy URL</strong> 复制这个文件的链接；<strong>Copy All URLs</strong> 复制全部链接，一行一个。</li>
+                  <li>这一行的下拉框显示链接当前用的是哪个下载网关。</li>
+                </ul>
+                <h6>链接打不开怎么办</h6>
+                <p>刚上传的文件不会立刻出现在所有网关上，换一个网关通常就能下载：</p>
+                <ol>
+                  <li>点这一行的 <strong>Find working</strong>：同时尝试所有下载网关，每个选项标上 <code>✓ 耗时</code> 或 <code>✗</code>，并自动切到最快能拿到你这个文件的网关。</li>
+                  <li>也可以在这一行的下拉框里自己换一个网关。</li>
+                  <li>改页面上方的 <strong>Select a gateway to view your uploaded files</strong>，所有结果一起切换。</li>
+                  <li>显示 <strong>None yet, retry later</strong> 说明文件还没传开，等一两分钟再试。</li>
+                </ol>
+                <p><strong>Check &amp; filter download gateways</strong> 会用一个已知文件测试所有下载网关，只保留能用的并按速度排序。</p>
+                <h6>注意事项</h6>
+                <ul class="mb-0">
+                  <li><strong>上传的内容是公开的</strong>：任何拿到 CID 的人都能下载，而且无法删除。请不要上传敏感文件。</li>
+                  <li>免费的公共网关不保证永久保存文件。重要文件请在自己的 IPFS 节点或 pinning 服务上固定（pin）。</li>
+                  <li>官方网关 <code>ipfs.io</code>、<code>dweb.link</code> 已于 2026 年 9 月退役，所以不在列表里。</li>
+                </ul>
+              </div>
+              <div class="tab-pane fade" id="guide-en" role="tabpanel" aria-labelledby="guide-en-tab" lang="en">
+                <h6>Upload</h6>
+                <ol>
+                  <li><em>(Optional)</em> Click <strong>Check &amp; filter upload gateways</strong>. Gateways that fail are removed and the rest are sorted by speed. The result is remembered in your browser.</li>
+                  <li>Pick a gateway under <strong>Select a gateway to upload your files</strong>.</li>
+                  <li>Click <strong>Choose Files</strong> (hold <kbd>Ctrl</kbd> to select several), then <strong>Upload</strong>. Use <strong>Cancel Upload</strong> to stop.</li>
+                </ol>
+                <h6>Results</h6>
+                <ul>
+                  <li>Each file gets one row with its CID, file name and size. Click the link to open or download it.</li>
+                  <li><strong>Copy URL</strong> copies that file's link; <strong>Copy All URLs</strong> copies every link, one per line.</li>
+                  <li>The dropdown in the row shows which download gateway the link uses.</li>
+                </ul>
+                <h6>If a link does not open</h6>
+                <p>A freshly uploaded file is not on every gateway right away. Switching gateway usually fixes it:</p>
+                <ol>
+                  <li>Click <strong>Find working</strong> in that row. All download gateways are tried at once, each option is marked <code>✓ time</code> or <code>✗</code>, and the row switches to the fastest gateway that returns your file.</li>
+                  <li>Or pick another gateway in the row's dropdown yourself.</li>
+                  <li>Changing <strong>Select a gateway to view your uploaded files</strong> at the top switches all rows at once.</li>
+                  <li><strong>None yet, retry later</strong> means the file has not spread yet. Wait a minute and try again.</li>
+                </ol>
+                <p><strong>Check &amp; filter download gateways</strong> tests every download gateway with a known file, keeps only the working ones and sorts them by speed.</p>
+                <h6>Notes</h6>
+                <ul class="mb-0">
+                  <li><strong>Everything you upload is public.</strong> Anyone with the CID can download it, and it cannot be deleted. Do not upload sensitive files.</li>
+                  <li>Free public gateways do not promise to keep files forever. For important files, pin them on your own IPFS node or a pinning service.</li>
+                  <li>The official gateways <code>ipfs.io</code> and <code>dweb.link</code> were retired in September 2026, so they are not in the list.</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <a href="https://github.com/OriginSXC/upload2ipfs#readme" target="_blank" rel="noopener noreferrer" class="me-auto">GitHub</a>
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <div class="container py-5">
       <h1>Upload files to IPFS</h1>
+      <div class="text-center mb-3">
+        <button type="button" class="btn btn-outline-light btn-sm" data-bs-toggle="modal" data-bs-target="#guideModal">
+          使用说明 / How to use
+        </button>
+      </div>
 
       <div class="row">
         <div class="col-md-6">
@@ -605,6 +696,10 @@
         // ====== Init ======
         window.addEventListener("load", function () {
             errorModalInstance = new bootstrap.Modal(document.getElementById('errorModal'));
+
+            // Open the usage guide on the tab matching the browser language
+            const guideLang = (navigator.language || "").toLowerCase().startsWith("zh") ? "zh" : "en";
+            bootstrap.Tab.getOrCreateInstance(document.getElementById(`guide-${guideLang}-tab`)).show();
             
             if (!localStorage.getItem("termsAccepted")) {
                 const warningModal = new bootstrap.Modal(document.getElementById("warningModal"), {
