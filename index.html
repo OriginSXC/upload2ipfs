@@ -390,6 +390,30 @@
             }
         }
         
+        function buildFileUrl(base, hash, name) {
+            const url = normalizeDownloadUrl(base, hash);
+            const paramConnector = url.includes("?") ? "&" : "?";
+            return url + paramConnector + "filename=" + encodeURIComponent(name);
+        }
+
+        // Download gateways offered for switching: the (possibly filtered) main dropdown, else the full list
+        function availableDownloadGateways() {
+            const values = Array.from(downloadSelect.options).map((o) => o.value);
+            return values.length ? values : downloadGateways;
+        }
+
+        // A freshly uploaded file may not be reachable from every gateway yet, so each result can switch gateways
+        function setResultGateway(li, base) {
+            const { hash, name } = li.dataset;
+            li.dataset.gateway = base;
+            li.querySelector("a").href = buildFileUrl(base, hash, name);
+            const select = li.querySelector("select");
+            if (!Array.from(select.options).some((o) => o.value === base)) {
+                select.add(new Option(base, base));
+            }
+            select.value = base;
+        }
+
         async function appendResultToUI(obj, file) {
             const hash = obj.Hash || obj.cid || null;
             const name = obj.Name || (file ? file.name : "unknown file");
@@ -397,29 +421,39 @@
 
             if (!hash) throw new Error("Gateway response did not include a CID.");
 
-            const base = downloadSelect.value || downloadGateways[0];
-            const url = normalizeDownloadUrl(base, hash);
-            const paramConnector = url.includes("?") ? "&" : "?";
-            const urlWithFilename = url + paramConnector + "filename=" + encodeURIComponent(name);
-
             const li = document.createElement("li");
-            li.className = "list-group-item d-flex justify-content-between align-items-center";
+            li.className = "list-group-item d-flex flex-wrap justify-content-between align-items-center gap-2";
+            li.dataset.hash = hash;
+            li.dataset.name = name;
 
             const a = document.createElement("a");
-            a.href = urlWithFilename;
+            a.className = "text-break";
             a.target = "_blank";
             a.rel = "noopener noreferrer";
             a.textContent = `${hash} (${name}) - Size: ${size} bytes`;
 
+            const gatewaySelect = document.createElement("select");
+            gatewaySelect.className = "form-select form-select-sm";
+            gatewaySelect.style.cssText = "min-width: 0; max-width: 20rem;";
+            gatewaySelect.title = "Download gateway for this file";
+            availableDownloadGateways().forEach((gw) => gatewaySelect.add(new Option(gw, gw)));
+            gatewaySelect.addEventListener("change", () => setResultGateway(li, gatewaySelect.value));
+
             const copyBtn = document.createElement("button");
             copyBtn.className = "btn btn-sm btn-outline-secondary btn-copy";
             copyBtn.textContent = "Copy URL";
-            copyBtn.addEventListener("click", () => copyToClipboard(urlWithFilename, copyBtn));
+            copyBtn.addEventListener("click", () => copyToClipboard(a.href, copyBtn));
+
+            const actions = document.createElement("div");
+            actions.className = "d-flex gap-2 mw-100";
+            actions.appendChild(gatewaySelect);
+            actions.appendChild(copyBtn);
 
             li.appendChild(a);
-            li.appendChild(copyBtn);
+            li.appendChild(actions);
             hashesList.appendChild(li);
-            
+            setResultGateway(li, downloadSelect.value || downloadGateways[0]);
+
             copyAllUrlsBtn.style.display = 'inline-block';
         }
 
@@ -520,6 +554,7 @@
 
             downloadSelect.addEventListener("change", () => {
                 localStorage.setItem("downloadGateways.last", downloadSelect.value);
+                hashesList.querySelectorAll("li").forEach((li) => setResultGateway(li, downloadSelect.value));
                 const match = gatewayMatchingList[downloadSelect.value];
                 if (match) uploadSelect.value = match;
             });
