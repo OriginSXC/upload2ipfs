@@ -414,6 +414,68 @@
             select.value = base;
         }
 
+        // First bytes of each uploaded file, used to confirm a gateway really serves that file
+        const resultPrefixes = new WeakMap();
+        const PREFIX_BYTES = 64;
+
+        // Resolves to true once the gateway returns the file's first bytes; aborts the download right after
+        async function probeFileOnGateway(base, hash, prefix) {
+            const controller = new AbortController();
+            const timer = setTimeout(() => controller.abort(), TIMEOUT_MS);
+            try {
+                const headers = prefix.length ? { Range: `bytes=0-${prefix.length - 1}` } : {};
+                const res = await fetch(normalizeDownloadUrl(base, hash), { headers, cache: "no-store", signal: controller.signal });
+                if (!res.ok) return false;
+                if (!prefix.length) return true;
+                const reader = res.body.getReader();
+                const got = new Uint8Array(prefix.length);
+                let size = 0;
+                while (size < prefix.length) {
+                    const { done, value } = await reader.read();
+                    if (done) break;
+                    const n = Math.min(value.length, prefix.length - size);
+                    got.set(value.subarray(0, n), size);
+                    size += n;
+                }
+                return size === prefix.length && got.every((b, i) => b === prefix[i]);
+            } catch (_) {
+                return false;
+            } finally {
+                clearTimeout(timer);
+                controller.abort();
+            }
+        }
+
+        async function findWorkingGateway(li, button) {
+            const select = li.querySelector("select");
+            const prefix = resultPrefixes.get(li) || new Uint8Array(0);
+            const gateways = Array.from(select.options).map((o) => o.value);
+            const startGateway = li.dataset.gateway;
+            const originalText = button.textContent;
+            let done = 0;
+            let found = false;
+            button.disabled = true;
+            button.textContent = `Searching 0/${gateways.length}`;
+
+            await Promise.all(gateways.map(async (gw) => {
+                const start = performance.now();
+                const ok = await probeFileOnGateway(gw, li.dataset.hash, prefix);
+                const ms = Math.round(performance.now() - start);
+                const option = Array.from(select.options).find((o) => o.value === gw);
+                if (option) option.text = ok ? `✓ ${ms} ms  ${gw}` : `✗  ${gw}`;
+                // Switch to the first gateway that works, unless the user picked one meanwhile
+                if (ok && !found) {
+                    found = true;
+                    if (li.dataset.gateway === startGateway) setResultGateway(li, gw);
+                }
+                button.textContent = `Searching ${++done}/${gateways.length}`;
+            }));
+
+            button.disabled = false;
+            button.textContent = found ? "Found ✓" : "None yet, retry later";
+            setTimeout(() => { button.textContent = originalText; }, 3000);
+        }
+
         async function appendResultToUI(obj, file) {
             const hash = obj.Hash || obj.cid || null;
             const name = obj.Name || (file ? file.name : "unknown file");
@@ -422,6 +484,7 @@
             if (!hash) throw new Error("Gateway response did not include a CID.");
 
             const li = document.createElement("li");
+            if (file) resultPrefixes.set(li, new Uint8Array(await file.slice(0, PREFIX_BYTES).arrayBuffer()));
             li.className = "list-group-item d-flex flex-wrap justify-content-between align-items-center gap-2";
             li.dataset.hash = hash;
             li.dataset.name = name;
@@ -439,14 +502,23 @@
             availableDownloadGateways().forEach((gw) => gatewaySelect.add(new Option(gw, gw)));
             gatewaySelect.addEventListener("change", () => setResultGateway(li, gatewaySelect.value));
 
+            const findBtn = document.createElement("button");
+            findBtn.type = "button";
+            findBtn.className = "btn btn-sm btn-outline-info btn-copy";
+            findBtn.textContent = "Find working";
+            findBtn.title = "Check which gateways can already serve this file and switch to the fastest";
+            findBtn.addEventListener("click", () => findWorkingGateway(li, findBtn));
+
             const copyBtn = document.createElement("button");
+            copyBtn.type = "button";
             copyBtn.className = "btn btn-sm btn-outline-secondary btn-copy";
             copyBtn.textContent = "Copy URL";
             copyBtn.addEventListener("click", () => copyToClipboard(a.href, copyBtn));
 
             const actions = document.createElement("div");
-            actions.className = "d-flex gap-2 mw-100";
+            actions.className = "d-flex flex-wrap gap-2 mw-100";
             actions.appendChild(gatewaySelect);
+            actions.appendChild(findBtn);
             actions.appendChild(copyBtn);
 
             li.appendChild(a);
