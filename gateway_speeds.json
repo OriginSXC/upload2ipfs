@@ -1,13 +1,13 @@
 {
-  "https://api.thegraph.com/ipfs/api/v0/cat?arg=": 0.283,
-  "https://api.universalprofile.cloud/ipfs/": 0.39,
-  "https://apac.orbitor.dev/ipfs/": 0.445,
-  "https://ipfs.stardustxr.org/ipfs/": 0.544,
-  "https://eu.orbitor.dev/ipfs/": 0.627,
-  "https://ipfs.filebase.io/ipfs/": 0.745,
-  "https://latam.orbitor.dev/ipfs/": 1.443,
-  "https://4everland.io/ipfs/": 1.685,
-  "https://magic.decentralized-content.com/ipfs/": 2.034,
-  "https://ipfs.network.thegraph.com/ipfs/api/v0/cat?arg=": 3.254,
-  "https://ipfs.orbitor.dev/ipfs/": 3.467
+  "https://apac.orbitor.dev/ipfs/": 0.443,
+  "https://api.thegraph.com/ipfs/api/v0/cat?arg=": 0.447,
+  "https://api.universalprofile.cloud/ipfs/": 0.59,
+  "https://ipfs.filebase.io/ipfs/": 0.596,
+  "https://eu.orbitor.dev/ipfs/": 0.753,
+  "https://ipfs.stardustxr.org/ipfs/": 0.989,
+  "https://latam.orbitor.dev/ipfs/": 1.684,
+  "https://4everland.io/ipfs/": 1.832,
+  "https://magic.decentralized-content.com/ipfs/": 2.313,
+  "https://ipfs.network.thegraph.com/ipfs/api/v0/cat?arg=": 3.18,
+  "https://ipfs.orbitor.dev/ipfs/": 3.512
 }
