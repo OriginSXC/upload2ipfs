@@ -1,14 +1,14 @@
 {
-  "https://apac.orbitor.dev/ipfs/": 0.456,
-  "https://api.thegraph.com/ipfs/api/v0/cat?arg=": 0.493,
-  "https://api.universalprofile.cloud/ipfs/": 0.539,
-  "https://ipfs.filebase.io/ipfs/": 0.663,
-  "https://ipfs.stardustxr.org/ipfs/": 0.787,
-  "https://eu.orbitor.dev/ipfs/": 0.83,
-  "https://gw.ipfs-lens.dev/ipfs/": 1.357,
-  "https://latam.orbitor.dev/ipfs/": 1.473,
-  "https://magic.decentralized-content.com/ipfs/": 2.019,
-  "https://4everland.io/ipfs/": 2.082,
-  "https://ipfs.network.thegraph.com/ipfs/api/v0/cat?arg=": 5.513,
-  "https://ipfs.orbitor.dev/ipfs/": 5.725
+  "https://apac.orbitor.dev/ipfs/": 0.323,
+  "https://api.universalprofile.cloud/ipfs/": 0.514,
+  "https://api.thegraph.com/ipfs/api/v0/cat?arg=": 0.581,
+  "https://eu.orbitor.dev/ipfs/": 0.755,
+  "https://ipfs.filebase.io/ipfs/": 1.035,
+  "https://latam.orbitor.dev/ipfs/": 1.363,
+  "https://gw.ipfs-lens.dev/ipfs/": 1.728,
+  "https://magic.decentralized-content.com/ipfs/": 1.881,
+  "https://4everland.io/ipfs/": 2.689,
+  "https://gateway.pinata.cloud/ipfs/": 4.577,
+  "https://ipfs.network.thegraph.com/ipfs/api/v0/cat?arg=": 5.705,
+  "https://ipfs.orbitor.dev/ipfs/": 5.867
 }
